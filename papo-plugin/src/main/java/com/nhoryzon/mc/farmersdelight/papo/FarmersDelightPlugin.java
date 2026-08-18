@@ -94,6 +94,8 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
 
         this.furnitureTracker.enable();
+        Bukkit.getCommandMap().register("farmersdelight",
+                new com.nhoryzon.mc.farmersdelight.papo.command.FDPlaceCommand("fdplace"));
 
         getLogger().info("Farmer's Delight (Papo port) enabled: "
                 + recipes.cooking.size() + " cooking recipes, "

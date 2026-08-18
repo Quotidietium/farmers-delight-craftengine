@@ -79,6 +79,14 @@ papo-plugin/
 - **物理与细节机制**：安全网弹跳缓冲、稻捆落地伤害 0.2×、炉灶赤脚烫伤（每 0.5s 判定）、原版堆肥器接受 FD 可堆肥物（35 种按几率）、箱子战利品注入（键前缀修正）、菌落物品放置即成熟（age 3）、菌落剪刀采收、榻榻米相邻视觉配对/破坏解除、下界合金刀防火（fire_resistant 组件）、营火置于稻/稻草捆上方产生信号烟
 - **CE 分类**：7 个物品浏览器分类（烹饪设施/作物与种子/食物与食材/餐食与饮品/工具与刀具/材料/家具与装饰），158 物品全部分类、多语言（en/zh_cn/zh_tw）
 
+### 第五轮用户反馈修复（同日，家具不显示 + 大分类）
+
+**「砧板等放下后不显示」根因**：CE 的普通配置重载（`reloadPlugin`）**不会再生资源包**——只有 `ce reload pack/all` 才调用 `generateResourcePack()`。我们的 PackInstaller 此前只做配置重载，客户端拿到的资源包缺失/陈旧内部展示物品的 items/ 定义 → 家具实体在服务端正常生成（已用控制台 `/fdplace` + `data get` 实证 ITEM_DISPLAY + INTERACTION 实体都在）但客户端无法解析模型 → 隐形。
+**修复**：`CraftEngineHook.reloadContent()` 现在在配置重载成功后自动执行 `generateResourcePack() + uploadResourcePack()`——插件每次安装/更新内容后资源包自动重建并推送。冒烟验证：清空后启动，`generated/resource_pack.zip`（2.1MB、1541 条目、76 个内部展示定义）自动出现。
+**诊断工具**：新增 `/fdplace` 控制台命令（CommandMap 注册）放置家具并回显实体数据。
+
+**顶级大分类**：`farmersdelight:main`「农夫乐事」（金字图标 cooking_pot，priority 0）嵌套 7 个子分类（hidden:true + `#` 引用），三语言名称（en/zh_cn/zh_tw）。
+
 ### 第四轮引用审计修复（同日，关键缺陷）
 
 引用完整性审计发现 **mod 招牌的舒适/滋养餐食效果全部静默失效**：生成器 Foods 解析缺少 4 参数构造分支（hunger/saturation/effect/chance）导致 27 种碗餐效果丢失，且效果表键缺少命名空间前缀无法匹配。修复后 42 条食物效果全部生效（12 舒适 + 15 滋养 + 特殊饮品 + 原版汤类），并以 jar 内容审计确认部署产物正确。

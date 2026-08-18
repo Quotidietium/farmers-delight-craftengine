@@ -49,6 +49,7 @@ def generate_lang() -> tuple[str, int]:
         "en_us": {
             "farmersdelight.enchantment.backstabbing": "Backstabbing",
             "farmersdelight.sign.edit": "Enter sign text (or 'cancel'):",
+            "category.farmersdelight.main": "Farmer's Delight",
             "category.farmersdelight.tools": "Tools & Knives",
             "category.farmersdelight.farming": "Crops & Seeds",
             "category.farmersdelight.cooking": "Cooking Stations",
@@ -60,6 +61,7 @@ def generate_lang() -> tuple[str, int]:
         "zh_cn": {
             "farmersdelight.enchantment.backstabbing": "背刺",
             "farmersdelight.sign.edit": "请输入告示牌文本（输入 cancel 取消）：",
+            "category.farmersdelight.main": "农夫乐事",
             "category.farmersdelight.tools": "工具与刀具",
             "category.farmersdelight.farming": "作物与种子",
             "category.farmersdelight.cooking": "烹饪设施",
@@ -69,6 +71,7 @@ def generate_lang() -> tuple[str, int]:
             "category.farmersdelight.furniture": "家具与装饰",
         },
         "zh_tw": {
+            "category.farmersdelight.main": "農夫樂事",
             "category.farmersdelight.tools": "工具與刀具",
             "category.farmersdelight.farming": "作物與種子",
             "category.farmersdelight.cooking": "烹飪設施",

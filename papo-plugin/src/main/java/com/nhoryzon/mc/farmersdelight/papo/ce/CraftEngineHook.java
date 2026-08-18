@@ -151,9 +151,28 @@ public final class CraftEngineHook implements Listener {
 
     /* ---------------- reload ---------------- */
 
+    /**
+     * Reloads CE content and REGENERATES the resource pack. Critical: a plain
+     * config reload does not rebuild the pack; without regeneration clients keep
+     * stale item model definitions and custom furniture renders invisible.
+     */
     public static void reloadContent() {
         BukkitCraftEngine ce = plugin();
-        ce.reloadPlugin(task -> Bukkit.getScheduler().runTaskAsynchronously(ce.javaPlugin(), task),
-                task -> Bukkit.getScheduler().runTask(ce.javaPlugin(), task), true);
+        var async = (java.util.concurrent.Executor) task ->
+                Bukkit.getScheduler().runTaskAsynchronously(ce.javaPlugin(), task);
+        ce.reloadPlugin(async,
+                task -> Bukkit.getScheduler().runTask(ce.javaPlugin(), task), true)
+                .thenAcceptAsync(result -> {
+                    if (result.success()) {
+                        try {
+                            ce.packManager().generateResourcePack();
+                            ce.packManager().uploadResourcePack();
+                        } catch (Throwable t) {
+                            ce.logger().warn("FD pack: failed to regenerate/upload resource pack", t);
+                        }
+                    } else {
+                        ce.logger().warn("FD pack: CraftEngine reload reported failure");
+                    }
+                }, async);
     }
 }
