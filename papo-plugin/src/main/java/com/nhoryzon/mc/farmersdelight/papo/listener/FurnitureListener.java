@@ -190,6 +190,53 @@ public final class FurnitureListener implements Listener {
         }
     }
 
+    /* ===================== dual-path fallback (Bukkit entity interact) =====================
+     * CE routes furniture clicks through its own packet listener (FurnitureInteractEvent).
+     * If that path is unavailable, Bukkit's PlayerInteractEntityEvent on the furniture's
+     * interaction/collider entities still reaches us here. Deduplicated per player+tick. */
+    private final java.util.Map<java.util.UUID, Long> lastRoute = new java.util.concurrent.ConcurrentHashMap<>();
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onBukkitEntityInteract(org.bukkit.event.player.PlayerInteractEntityEvent event) {
+        if (event.getHand() != org.bukkit.inventory.EquipmentSlot.HAND) return;
+        if (plugin.furnitureTracker().tracked().isEmpty()) return;
+        var furniture = net.momirealms.craftengine.bukkit.api.CraftEngineFurniture
+                .getLoadedFurnitureByCollider(event.getRightClicked());
+        if (furniture == null) {
+            furniture = net.momirealms.craftengine.bukkit.api.CraftEngineFurniture
+                    .getLoadedFurnitureByMetaEntity(event.getRightClicked());
+        }
+        if (furniture == null) return;
+        long now = System.currentTimeMillis();
+        Long last = lastRoute.get(event.getPlayer().getUniqueId());
+        if (last != null && now - last < 200) return; // same click via both paths
+        lastRoute.put(event.getPlayer().getUniqueId(), now);
+
+        Key id = furniture.id();
+        Player player = event.getPlayer();
+        ItemStack held = player.getInventory().getItemInMainHand();
+
+        if (id.equals(FD.CUTTING_BOARD)) {
+            event.setCancelled(true);
+            interactCuttingBoard(furniture, player, held);
+        } else if (id.equals(FD.COOKING_POT)) {
+            event.setCancelled(true);
+            interactCookingPot(furniture, player, held);
+        } else if (id.equals(FD.SKILLET)) {
+            event.setCancelled(true);
+            interactSkillet(furniture, player, held);
+        } else if (id.equals(FD.ROPE)) {
+            event.setCancelled(true);
+            interactRope(furniture, player, held);
+        } else if (isFeast(id)) {
+            event.setCancelled(true);
+            interactFeast(furniture, player, held);
+        } else if (id.toString().endsWith("_canvas_sign") || id.toString().endsWith("_canvas_wall_sign")) {
+            event.setCancelled(true);
+            interactSign(furniture, player);
+        }
+    }
+
     /* ===================== cutting board ===================== */
 
     private void interactCuttingBoard(BukkitFurniture board, Player player, ItemStack held) {

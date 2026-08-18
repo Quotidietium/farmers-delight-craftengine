@@ -36,6 +36,17 @@ public final class FDPlaceCommand extends Command {
                 return true;
             }
             Location loc = new Location(world, x, y, z);
+            if (id.startsWith("block:")) {
+                String blockId = id.substring(6);
+                boolean ok = CraftEngineHook.placeBlock(loc, FD.key(blockId), true);
+                sender.sendMessage("placeBlock " + blockId + " -> " + ok);
+                if (ok) {
+                    org.bukkit.block.Block b = loc.getBlock();
+                    var inv = FarmersDelightPlugin.get().gameTicker().ceStorageInventory(b);
+                    sender.sendMessage("  storage inventory: " + (inv == null ? "NULL" : inv.getSize() + " slots"));
+                }
+                return true;
+            }
             BukkitFurniture furniture = CraftEngineHook.placeFurniture(loc, FD.key(id));
             if (furniture == null) {
                 sender.sendMessage("FAILED to place furniture " + id + " (null)");

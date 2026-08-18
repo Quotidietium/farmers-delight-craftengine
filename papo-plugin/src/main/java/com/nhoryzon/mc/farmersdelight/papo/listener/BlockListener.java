@@ -150,18 +150,10 @@ public final class BlockListener implements Listener {
                 event.setCancelled(true);
                 interactStove(block, player, held, state);
             }
-            case "basket" -> {
-                event.setCancelled(true);
-                ContainerBlockGui.open(plugin, block, id, player);
-                block.getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5),
-                        "minecraft:block.bamboo_wood.open", SoundCategory.BLOCKS, 0.7f, 1.0f);
-            }
-            case "oak_cabinet", "birch_cabinet", "spruce_cabinet", "jungle_cabinet",
+            case "basket", "oak_cabinet", "birch_cabinet", "spruce_cabinet", "jungle_cabinet",
                  "acacia_cabinet", "dark_oak_cabinet", "mangrove_cabinet",
                  "crimson_cabinet", "warped_cabinet" -> {
-                event.setCancelled(true);
-                ticker().setBlockProperty(block, "open", true);
-                ContainerBlockGui.open(plugin, block, id, player);
+                // GUI handled natively by CE simple_storage_block behavior
             }
             case "rich_soil" -> {
                 if (held != null && isHoe(held.getType())) {
@@ -382,27 +374,8 @@ public final class BlockListener implements Listener {
             ticker().refreshStoveDisplays(block, new ItemStack[6]);
             ticker().stoveIndex.remove(block);
         } else if (s.equals("farmersdelight:basket")) {
-            ItemStack[] inv = plugin.blockStore().getItems(block, "inv");
-            if (inv != null) {
-                for (ItemStack g : inv) {
-                    if (g != null && !g.getType().isAir()) {
-                        block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), g);
-                    }
-                }
-            }
-            plugin.blockStore().clear(block, "inv");
             plugin.blockStore().clear(block, "facing");
             ticker().basketIndex.remove(block);
-        } else if (s.endsWith("_cabinet")) {
-            ItemStack[] inv = plugin.blockStore().getItems(block, "inv");
-            if (inv != null) {
-                for (ItemStack g : inv) {
-                    if (g != null && !g.getType().isAir()) {
-                        block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.5, 0.5), g);
-                    }
-                }
-            }
-            plugin.blockStore().clear(block, "inv");
         } else if (PIE_IDS.contains(s)) {
             event.setDropItems(false); // pies drop nothing, like cake
         } else if (s.equals("farmersdelight:rich_soil") || s.equals("farmersdelight:rich_soil_farmland")) {

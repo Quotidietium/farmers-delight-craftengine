@@ -428,28 +428,40 @@ public final class GameTicker {
         }
         Boolean enabled = getBool(state, "enabled");
         if (enabled != null && !enabled) return;
-        ItemStack[] inv = plugin.blockStore().getItems(basket, "inv");
-        if (inv == null) inv = new ItemStack[27];
-        if (isFull(inv)) return;
+        org.bukkit.inventory.Inventory inv = ceStorageInventory(basket);
+        if (inv == null) return;
 
-        // never pull while a player is viewing the basket (avoids save-race item loss)
-        if (com.nhoryzon.mc.farmersdelight.papo.gui.ContainerBlockGui.isOpen(basket)) return;
         String facing = plugin.blockStore().getString(basket, "facing");
         Vector dir = dirOf(facing);
         Location center = basket.getLocation().add(0.5, 0.5, 0.5).add(dir.clone().multiply(0.75));
         for (Entity entity : basket.getWorld().getNearbyEntities(center, 0.5, 0.5, 0.5)) {
             if (!(entity instanceof Item item)) continue;
             ItemStack stack = item.getItemStack();
-            int moved = addToInventory(inv, stack);
-            if (moved > 0) {
-                stack.setAmount(stack.getAmount() - moved);
-                if (stack.getAmount() <= 0) item.remove();
-                else item.setItemStack(stack);
-                plugin.blockStore().setItems(basket, "inv", inv);
+            java.util.HashMap<Integer, ItemStack> left = inv.addItem(stack);
+            if (left.isEmpty()) {
+                item.remove();
+            } else {
+                item.setItemStack(left.values().iterator().next());
             }
         }
     }
 
+    /** Access the CE simple_storage_block container inventory at a block position. */
+    public org.bukkit.inventory.Inventory ceStorageInventory(Block block) {
+        try {
+            var bukkitWorld = net.momirealms.craftengine.bukkit.api.BukkitAdaptor.adapt(block.getWorld());
+            var ceWorld = bukkitWorld.storageWorld();
+            var blockPos = new net.momirealms.craftengine.core.world.BlockPos(block.getX(), block.getY(), block.getZ());
+            var blockEntity = ceWorld.getBlockEntityAtIfLoaded(blockPos);
+            if (blockEntity == null || blockEntity.controller == null) return null;
+            if (blockEntity.controller instanceof net.momirealms.craftengine.bukkit.block.entity.SimpleStorageBlockEntityController controller) {
+                return controller.inventory();
+            }
+        } catch (Throwable t) {
+            plugin.getLogger().warning("ceStorageInventory failed: " + t.getMessage());
+        }
+        return null;
+    }
     private boolean isFull(ItemStack[] inv) {
         for (ItemStack s : inv) {
             if (s == null || s.getType().isAir() || s.getAmount() < s.getMaxStackSize()) return false;

@@ -129,6 +129,16 @@ def generate_blocks() -> tuple[str, list[str]]:
         if bid == "rice":
             lines.append("      fluid_state: water")
 
+        # CE native storage GUI (cabinets + basket): right-click opens CE's own container
+        if bid == "basket" or bid.endswith("_cabinet"):
+            lines.append("    behavior:")
+            lines.append("      type: simple_storage_block")
+            lines.append(f"      title: {yaml_str('<!i><lang:block.' + NS + '.' + bid + '>')}")
+            lines.append("      rows: 3")
+            lines.append("      sounds:")
+            lines.append("        open: minecraft:block.barrel.open")
+            lines.append("        close: minecraft:block.barrel.close")
+
         # loot
         if bid not in PLUGIN_LOOT_BLOCKS:
             lines.append("    loot:")

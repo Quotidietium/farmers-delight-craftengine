@@ -75,6 +75,13 @@ blocks:
         hit: minecraft:block.wood.hit
         fall: minecraft:block.wood.fall
       item: "farmersdelight:acacia_cabinet"
+    behavior:
+      type: simple_storage_block
+      title: "<!i><lang:block.farmersdelight.acacia_cabinet>"
+      rows: 3
+      sounds:
+        open: minecraft:block.barrel.open
+        close: minecraft:block.barrel.close
     loot:
       pools:
         - rolls: 1
@@ -273,6 +280,13 @@ blocks:
         hit: minecraft:block.wood.hit
         fall: minecraft:block.wood.fall
       item: "farmersdelight:basket"
+    behavior:
+      type: simple_storage_block
+      title: "<!i><lang:block.farmersdelight.basket>"
+      rows: 3
+      sounds:
+        open: minecraft:block.barrel.open
+        close: minecraft:block.barrel.close
     loot:
       pools:
         - rolls: 1
@@ -375,6 +389,13 @@ blocks:
         hit: minecraft:block.wood.hit
         fall: minecraft:block.wood.fall
       item: "farmersdelight:birch_cabinet"
+    behavior:
+      type: simple_storage_block
+      title: "<!i><lang:block.farmersdelight.birch_cabinet>"
+      rows: 3
+      sounds:
+        open: minecraft:block.barrel.open
+        close: minecraft:block.barrel.close
     loot:
       pools:
         - rolls: 1
@@ -783,6 +804,13 @@ blocks:
         hit: minecraft:block.wood.hit
         fall: minecraft:block.wood.fall
       item: "farmersdelight:crimson_cabinet"
+    behavior:
+      type: simple_storage_block
+      title: "<!i><lang:block.farmersdelight.crimson_cabinet>"
+      rows: 3
+      sounds:
+        open: minecraft:block.barrel.open
+        close: minecraft:block.barrel.close
     loot:
       pools:
         - rolls: 1
@@ -864,6 +892,13 @@ blocks:
         hit: minecraft:block.wood.hit
         fall: minecraft:block.wood.fall
       item: "farmersdelight:dark_oak_cabinet"
+    behavior:
+      type: simple_storage_block
+      title: "<!i><lang:block.farmersdelight.dark_oak_cabinet>"
+      rows: 3
+      sounds:
+        open: minecraft:block.barrel.open
+        close: minecraft:block.barrel.close
     loot:
       pools:
         - rolls: 1
@@ -945,6 +980,13 @@ blocks:
         hit: minecraft:block.wood.hit
         fall: minecraft:block.wood.fall
       item: "farmersdelight:jungle_cabinet"
+    behavior:
+      type: simple_storage_block
+      title: "<!i><lang:block.farmersdelight.jungle_cabinet>"
+      rows: 3
+      sounds:
+        open: minecraft:block.barrel.open
+        close: minecraft:block.barrel.close
     loot:
       pools:
         - rolls: 1
@@ -1026,6 +1068,13 @@ blocks:
         hit: minecraft:block.wood.hit
         fall: minecraft:block.wood.fall
       item: "farmersdelight:mangrove_cabinet"
+    behavior:
+      type: simple_storage_block
+      title: "<!i><lang:block.farmersdelight.mangrove_cabinet>"
+      rows: 3
+      sounds:
+        open: minecraft:block.barrel.open
+        close: minecraft:block.barrel.close
     loot:
       pools:
         - rolls: 1
@@ -1107,6 +1156,13 @@ blocks:
         hit: minecraft:block.wood.hit
         fall: minecraft:block.wood.fall
       item: "farmersdelight:oak_cabinet"
+    behavior:
+      type: simple_storage_block
+      title: "<!i><lang:block.farmersdelight.oak_cabinet>"
+      rows: 3
+      sounds:
+        open: minecraft:block.barrel.open
+        close: minecraft:block.barrel.close
     loot:
       pools:
         - rolls: 1
@@ -1667,6 +1723,13 @@ blocks:
         hit: minecraft:block.wood.hit
         fall: minecraft:block.wood.fall
       item: "farmersdelight:spruce_cabinet"
+    behavior:
+      type: simple_storage_block
+      title: "<!i><lang:block.farmersdelight.spruce_cabinet>"
+      rows: 3
+      sounds:
+        open: minecraft:block.barrel.open
+        close: minecraft:block.barrel.close
     loot:
       pools:
         - rolls: 1
@@ -2098,6 +2161,13 @@ blocks:
         hit: minecraft:block.wood.hit
         fall: minecraft:block.wood.fall
       item: "farmersdelight:warped_cabinet"
+    behavior:
+      type: simple_storage_block
+      title: "<!i><lang:block.farmersdelight.warped_cabinet>"
+      rows: 3
+      sounds:
+        open: minecraft:block.barrel.open
+        close: minecraft:block.barrel.close
     loot:
       pools:
         - rolls: 1
