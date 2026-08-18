@@ -163,6 +163,8 @@ public final class FurnitureListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onInteract(FurnitureInteractEvent event) {
         BukkitFurniture furniture = event.furniture();
+        plugin.getLogger().info("[PATH-A] CE furniture event: " + furniture.id()
+                + " player=" + event.player().getName());
         Key id = furniture.id();
         Player player = event.player();
         org.bukkit.inventory.EquipmentSlot slot = event.hand() == net.momirealms.craftengine.core.entity.player.InteractionHand.OFF_HAND
@@ -207,6 +209,8 @@ public final class FurnitureListener implements Listener {
                     .getLoadedFurnitureByMetaEntity(event.getRightClicked());
         }
         if (furniture == null) return;
+        plugin.getLogger().info("[PATH-B] Bukkit entity interact fallback: " + furniture.id()
+                + " player=" + event.getPlayer().getName());
         long now = System.currentTimeMillis();
         Long last = lastRoute.get(event.getPlayer().getUniqueId());
         if (last != null && now - last < 200) return; // same click via both paths

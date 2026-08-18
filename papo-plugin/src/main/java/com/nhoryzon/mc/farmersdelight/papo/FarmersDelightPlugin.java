@@ -86,6 +86,7 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(this), this);
         Bukkit.getPluginManager().registerEvents(new MiscListener(this), this);
         Bukkit.getPluginManager().registerEvents(new com.nhoryzon.mc.farmersdelight.papo.listener.PhysicsListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new com.nhoryzon.mc.farmersdelight.papo.listener.GuiDiagnosticListener(this), this);
         Bukkit.getPluginManager().registerEvents(new CookingPotGui.ListenerImpl(this), this);
         Bukkit.getPluginManager().registerEvents(new ContainerBlockGui.ListenerImpl(this), this);
         Bukkit.getPluginManager().registerEvents(this.signSessions, this);
