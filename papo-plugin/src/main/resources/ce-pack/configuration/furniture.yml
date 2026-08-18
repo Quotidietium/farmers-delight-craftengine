@@ -378,6 +378,11 @@ furniture:
             width: 0.5
             height: 0.625
             interactive: true
+    behavior:
+      type: simple_storage_furniture
+      data_key: farmersdelight:pot_contents
+      title: "<!i><lang:farmersdelight.container.cooking_pot>"
+      rows: 1
 
   "farmersdelight:skillet":
     settings:

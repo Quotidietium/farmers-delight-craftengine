@@ -74,9 +74,45 @@ public final class GameTicker {
         return furniture.baseEntity().getPersistentDataContainer();
     }
 
+    private static java.lang.reflect.Field STORAGE_INV_FIELD;
+
+    static {
+        try {
+            STORAGE_INV_FIELD = net.momirealms.craftengine.bukkit.entity.furniture.behavior.
+                    SimpleStorageFurnitureBehaviorTemplate.SimpleStorageFurnitureController.class
+                    .getDeclaredField("inventory");
+            STORAGE_INV_FIELD.setAccessible(true);
+        } catch (ReflectiveOperationException e) {
+            STORAGE_INV_FIELD = null;
+        }
+    }
+
+    /** CE simple_storage_furniture inventory of this furniture (single storage backend). */
+    public static org.bukkit.inventory.Inventory ceFurnitureInventory(BukkitFurniture furniture) {
+        if (STORAGE_INV_FIELD == null || furniture == null) return null;
+        try {
+            if (furniture.controller instanceof net.momirealms.craftengine.bukkit.entity.furniture.behavior
+                    .SimpleStorageFurnitureBehaviorTemplate.SimpleStorageFurnitureController controller) {
+                return (org.bukkit.inventory.Inventory) STORAGE_INV_FIELD.get(controller);
+            }
+        } catch (Throwable ignored) {
+        }
+        return null;
+    }
+
     public static ItemStack[] inv(BukkitFurniture furniture) {
-        byte[] bytes = data(furniture).get(invKey(), PersistentDataType.BYTE_ARRAY);
+        org.bukkit.inventory.Inventory ce = ceFurnitureInventory(furniture);
+        if (ce != null) {
+            ItemStack[] out = new ItemStack[9];
+            ItemStack[] contents = ce.getContents();
+            for (int i = 0; i < 9 && i < contents.length; i++) {
+                ItemStack c = contents[i];
+                out[i] = (c == null || c.getType().isAir()) ? null : c;
+            }
+            return out;
+        }
         ItemStack[] out = new ItemStack[9];
+        byte[] bytes = data(furniture).get(invKey(), PersistentDataType.BYTE_ARRAY);
         if (bytes == null) return out;
         for (ItemStack stack : ItemStack.deserializeItemsFromBytes(bytes)) {
             for (int i = 0; i < 9; i++) {
@@ -90,6 +126,15 @@ public final class GameTicker {
     }
 
     public static void saveInv(BukkitFurniture furniture, ItemStack[] items) {
+        org.bukkit.inventory.Inventory ce = ceFurnitureInventory(furniture);
+        if (ce != null) {
+            for (int i = 0; i < 9; i++) {
+                ItemStack item = (items != null && i < items.length && items[i] != null
+                        && !items[i].getType().isAir()) ? items[i] : null;
+                ce.setItem(i, item);
+            }
+            return;
+        }
         java.util.List<ItemStack> list = new java.util.ArrayList<>();
         for (ItemStack stack : items) {
             list.add(stack == null ? new ItemStack(Material.AIR) : stack);

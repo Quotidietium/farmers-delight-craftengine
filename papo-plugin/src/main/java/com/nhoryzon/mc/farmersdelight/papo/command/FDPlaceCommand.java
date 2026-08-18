@@ -53,6 +53,10 @@ public final class FDPlaceCommand extends Command {
                 return true;
             }
             FarmersDelightPlugin.get().furnitureTracker().track(furniture.baseEntity());
+            var ceInv = com.nhoryzon.mc.farmersdelight.papo.logic.GameTicker.ceFurnitureInventory(furniture);
+            if (ceInv != null) {
+                sender.sendMessage("  CE furniture storage: " + ceInv.getSize() + " slots");
+            }
             var base = furniture.baseEntity();
             sender.sendMessage("placed " + id + " base=" + base.getUniqueId()
                     + " type=" + base.getType() + " loc=" + base.getLocation().toVector());

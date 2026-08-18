@@ -152,6 +152,11 @@ def generate_furniture() -> str:
     _variant(lines, "ground", "cooking_pot", ("0.125,0,0.125", 0.75, 0.625, True), fid="cooking_pot")
     _variant(lines, "tray", "cooking_pot_tray", ("0.0625,0,0.0625", 0.875, 0.625, True), fid="cooking_pot")
     _variant(lines, "handle", "cooking_pot_handle", ("0.25,0,0.25", 0.5, 0.625, True), fid="cooking_pot")
+    lines.append("    behavior:")
+    lines.append("      type: simple_storage_furniture")
+    lines.append("      data_key: farmersdelight:pot_contents")
+    lines.append('      title: "<!i><lang:farmersdelight.container.cooking_pot>"')
+    lines.append("      rows: 1")
     chunks.append("\n".join(lines))
 
     # ---------------- skillet: ground + tray
