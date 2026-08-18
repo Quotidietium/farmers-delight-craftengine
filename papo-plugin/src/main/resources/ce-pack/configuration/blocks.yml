@@ -500,35 +500,35 @@ blocks:
           range: 0~7
       appearances:
         app0:
-          auto_state: kelp
+          auto_state: cave_vines
           model:
             path: "farmersdelight:block/cabbages_stage0"
         app1:
-          auto_state: kelp
+          auto_state: cave_vines
           model:
             path: "farmersdelight:block/cabbages_stage1"
         app2:
-          auto_state: kelp
+          auto_state: cave_vines
           model:
             path: "farmersdelight:block/cabbages_stage2"
         app3:
-          auto_state: kelp
+          auto_state: cave_vines
           model:
             path: "farmersdelight:block/cabbages_stage3"
         app4:
-          auto_state: kelp
+          auto_state: cave_vines
           model:
             path: "farmersdelight:block/cabbages_stage4"
         app5:
-          auto_state: kelp
+          auto_state: cave_vines
           model:
             path: "farmersdelight:block/cabbages_stage5"
         app6:
-          auto_state: kelp
+          auto_state: cave_vines
           model:
             path: "farmersdelight:block/cabbages_stage6"
         app7:
-          auto_state: kelp
+          auto_state: cave_vines
           model:
             path: "farmersdelight:block/cabbages_stage7"
       variants:

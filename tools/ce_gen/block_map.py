@@ -32,7 +32,7 @@ PLANT_BLOCKS = {
 # distribute plant appearances across several no-collision auto_state groups
 # (capacities: kelp 26, twisting_vines 26, weeping_vines 26, cave_vines 52)
 PLANT_GROUP = {
-    "rice": "kelp", "rice_panicle": "kelp", "cabbages": "kelp", "onions": "kelp",
+    "rice": "kelp", "rice_panicle": "kelp", "cabbages": "cave_vines", "onions": "kelp",
     "tomatoes": "twisting_vines", "budding_tomatoes": "twisting_vines",
     "wild_rice": "cave_vines",
     "wild_cabbages": "weeping_vines", "wild_onions": "weeping_vines",
