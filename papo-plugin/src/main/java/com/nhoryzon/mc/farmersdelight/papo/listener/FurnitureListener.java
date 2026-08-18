@@ -175,8 +175,10 @@ public final class FurnitureListener implements Listener {
             event.setCancelled(true);
             interactCuttingBoard(furniture, player, held);
         } else if (id.equals(FD.COOKING_POT)) {
-            event.setCancelled(true);
-            interactCookingPot(furniture, player, held);
+            // pot GUI: let CE's native storage behavior open first (proven pipeline);
+            // our listener swaps in the custom layout one tick later.
+            // Only the container-serving interaction cancels here.
+            interactCookingPotServeOnly(furniture, player, held, event::setCancelled);
         } else if (id.equals(FD.SKILLET)) {
             event.setCancelled(true);
             interactSkillet(furniture, player, held);
@@ -224,8 +226,10 @@ public final class FurnitureListener implements Listener {
             event.setCancelled(true);
             interactCuttingBoard(furniture, player, held);
         } else if (id.equals(FD.COOKING_POT)) {
-            event.setCancelled(true);
-            interactCookingPot(furniture, player, held);
+            // pot GUI: let CE's native storage behavior open first (proven pipeline);
+            // our listener swaps in the custom layout one tick later.
+            // Only the container-serving interaction cancels here.
+            interactCookingPotServeOnly(furniture, player, held, event::setCancelled);
         } else if (id.equals(FD.SKILLET)) {
             event.setCancelled(true);
             interactSkillet(furniture, player, held);
@@ -323,6 +327,34 @@ public final class FurnitureListener implements Listener {
     }
 
     /* ===================== cooking pot ===================== */
+
+    /** Serve a meal when holding the right container; otherwise leave the event
+     *  uncancelled so CE's native storage GUI opens (custom layout swaps in after). */
+    private void interactCookingPotServeOnly(BukkitFurniture pot, Player player, ItemStack held,
+                                             java.util.function.Consumer<Boolean> cancel) {
+        if ((held == null || held.getType().isAir()) && player.isSneaking()) {
+            String current = pot.currentVariant() == null ? "ground" : pot.currentVariant().name();
+            String next = switch (current) {
+                case "ground" -> "tray";
+                case "tray" -> "handle";
+                default -> "ground";
+            };
+            pot.setVariant(next, false);
+            cancel.accept(true);
+            return;
+        }
+        ItemStack meal = GameTicker.inv(pot)[GameTicker.SLOT_MEAL];
+        if (meal != null && !meal.getType().isAir() && held != null && !held.getType().isAir()) {
+            ItemStack portion = CookingPotGui.serveMeal(pot, held);
+            if (portion != null) {
+                giveOrDrop(player, portion);
+                pot.location().getWorld().playSound(
+                        pot.location().clone().add(0.5, 0.5, 0.5),
+                        "minecraft:item.armor.equip_generic", SoundCategory.BLOCKS, 0.8f, 1.0f);
+                cancel.accept(true);
+            }
+        }
+    }
 
     private void interactCookingPot(BukkitFurniture pot, Player player, ItemStack held) {
         // sneak + empty hand cycles the support mode (ground/tray/handle)
