@@ -1,0 +1,392 @@
+package com.nhoryzon.mc.farmersdelight.papo.listener;
+
+import com.nhoryzon.mc.farmersdelight.papo.FD;
+import com.nhoryzon.mc.farmersdelight.papo.FarmersDelightPlugin;
+import com.nhoryzon.mc.farmersdelight.papo.ce.CraftEngineHook;
+import com.nhoryzon.mc.farmersdelight.papo.gui.CookingPotGui;
+import com.nhoryzon.mc.farmersdelight.papo.logic.GameTicker;
+import com.nhoryzon.mc.farmersdelight.papo.recipe.FDRecipes;
+import net.momirealms.craftengine.bukkit.api.event.FurnitureBreakEvent;
+import net.momirealms.craftengine.bukkit.api.event.FurnitureInteractEvent;
+import net.momirealms.craftengine.bukkit.api.event.FurniturePlaceEvent;
+import net.momirealms.craftengine.bukkit.entity.furniture.BukkitFurniture;
+import net.momirealms.craftengine.core.util.Key;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.SoundCategory;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Vector;
+
+import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
+/** Interactions with FD furniture: cutting board, cooking pot, skillet, feasts, rope, canvas signs. */
+public final class FurnitureListener implements Listener {
+
+    private final FarmersDelightPlugin plugin;
+
+    public FurnitureListener(FarmersDelightPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    private GameTicker ticker() {
+        return plugin.gameTicker();
+    }
+
+    /* ===================== placement tracking ===================== */
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlace(FurniturePlaceEvent event) {
+        BukkitFurniture furniture = event.furniture();
+        plugin.furnitureTracker().track(furniture.baseEntity());
+        String facing = facingOf(furniture);
+        GameTicker.data(furniture).set(GameTicker.fdKey("facing"),
+                PersistentDataType.STRING, facing);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBreak(FurnitureBreakEvent event) {
+        BukkitFurniture furniture = event.furniture();
+        plugin.furnitureTracker().untrack(furniture.baseEntity());
+        Key id = furniture.id();
+        if (id.equals(FD.COOKING_POT)) {
+            ItemStack[] inv = GameTicker.inv(furniture);
+            for (ItemStack stack : inv) {
+                if (stack != null && !stack.getType().isAir()) {
+                    furniture.location().getWorld().dropItemNaturally(
+                            furniture.location().clone().add(0.5, 0.6, 0.5), stack);
+                }
+            }
+        } else if (id.equals(FD.CUTTING_BOARD) || id.equals(FD.SKILLET)) {
+            ItemStack stored = ticker().skilletItem(furniture);
+            if (stored != null) {
+                furniture.location().getWorld().dropItemNaturally(
+                        furniture.location().clone().add(0.5, 0.4, 0.5), stored);
+            }
+            ticker().setDisplayChild(furniture, "itemEntity", null, 0.5, 0.4, 0.5, 0.3f);
+        } else if (id.toString().endsWith("_canvas_sign") || id.toString().endsWith("_canvas_wall_sign")) {
+            removeSignText(furniture);
+        }
+    }
+
+    /* ===================== interactions ===================== */
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onInteract(FurnitureInteractEvent event) {
+        BukkitFurniture furniture = event.furniture();
+        Key id = furniture.id();
+        Player player = event.player();
+        org.bukkit.inventory.EquipmentSlot slot = event.hand() == net.momirealms.craftengine.core.entity.player.InteractionHand.OFF_HAND
+                ? org.bukkit.inventory.EquipmentSlot.OFF_HAND : org.bukkit.inventory.EquipmentSlot.HAND;
+        ItemStack held = player.getInventory().getItem(slot);
+
+        if (id.equals(FD.CUTTING_BOARD)) {
+            event.setCancelled(true);
+            interactCuttingBoard(furniture, player, held);
+        } else if (id.equals(FD.COOKING_POT)) {
+            event.setCancelled(true);
+            interactCookingPot(furniture, player, held);
+        } else if (id.equals(FD.SKILLET)) {
+            event.setCancelled(true);
+            interactSkillet(furniture, player, held);
+        } else if (id.equals(FD.ROPE)) {
+            event.setCancelled(true);
+            interactRope(furniture, player, held);
+        } else if (isFeast(id)) {
+            event.setCancelled(true);
+            interactFeast(furniture, player, held);
+        } else if (id.toString().endsWith("_canvas_sign") || id.toString().endsWith("_canvas_wall_sign")) {
+            event.setCancelled(true);
+            interactSign(furniture, player);
+        }
+    }
+
+    /* ===================== cutting board ===================== */
+
+    private void interactCuttingBoard(BukkitFurniture board, Player player, ItemStack held) {
+        ItemStack stored = ticker().skilletItem(board);
+        Location loc = board.location().clone().add(0.5, 0.2, 0.5);
+
+        if (stored == null || stored.getType().isAir()) {
+            if (held == null || held.getType().isAir()) return;
+            // place item onto the board
+            ItemStack one = held.clone();
+            one.setAmount(1);
+            ticker().setDisplayChild(board, "itemEntity", one, 0.5, 0.12, 0.5, 0.45f);
+            consumeHeld(player, held);
+            board.location().getWorld().playSound(loc, "minecraft:block.wood.place",
+                    SoundCategory.BLOCKS, 0.8f, 1.0f);
+            return;
+        }
+
+        if (held == null || held.getType().isAir()) {
+            // take the stored item back
+            ticker().setDisplayChild(board, "itemEntity", null, 0.5, 0.12, 0.5, 0.45f);
+            giveOrDrop(player, stored);
+            return;
+        }
+
+        // try cutting
+        FDRecipes.CuttingRecipe recipe = plugin.recipes().matchCutting(stored, held);
+        if (recipe == null) {
+            // fall back: allow tool to carve display
+            if (player.isSneaking() && isTool(held)) {
+                ticker().setDisplayChild(board, "itemEntity", held.clone(), 0.5, 0.12, 0.5, 0.45f);
+                board.location().getWorld().playSound(loc, "minecraft:block.wood.place",
+                        SoundCategory.BLOCKS, 0.8f, 1.0f);
+            }
+            return;
+        }
+
+        int fortune = held.getEnchantmentLevel(Enchantment.LOOTING);
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
+        Vector eject = dirOf(facingOf(board)).clone().multiply(-1).multiply(0.35).setY(0.25);
+        for (FDRecipes.CuttingResult result : recipe.results()) {
+            float chance = result.chance() + 0.1f * fortune;
+            int count = 0;
+            for (int i = 0; i < result.count(); i++) {
+                if (rand.nextFloat() < chance) count++;
+            }
+            if (count <= 0) continue;
+            ItemStack out = CraftEngineHook.buildItem(Key.of(result.item()));
+            if (out == null) continue;
+            out.setAmount(count);
+            Item dropped = loc.getWorld().dropItem(loc, out);
+            dropped.setVelocity(eject);
+        }
+        // durability + sound + particles
+        damageTool(player, held);
+        String sound = recipe.sound() != null ? recipe.sound()
+                : (FDRecipes.isKnife(held) ? FD.SND_CB_KNIFE : "minecraft:block.wood.hit");
+        loc.getWorld().playSound(loc, sound, SoundCategory.BLOCKS, 1.0f, 1.0f);
+        spawnCuttingParticles(loc, stored, 5);
+        ticker().setDisplayChild(board, "itemEntity", null, 0.5, 0.12, 0.5, 0.45f);
+    }
+
+    private boolean isTool(ItemStack stack) {
+        String name = stack.getType().name().toLowerCase();
+        return name.endsWith("_pickaxe") || name.endsWith("_axe") || name.endsWith("_shovel")
+                || name.endsWith("_hoe") || stack.getType() == Material.SHEARS
+                || stack.getType() == Material.TRIDENT || FDRecipes.isKnife(stack);
+    }
+
+    private void spawnCuttingParticles(Location loc, ItemStack item, int count) {
+        loc.getWorld().spawnParticle(Particle.ITEM, loc.clone().add(0, 0.15, 0), count,
+                0.2, 0.1, 0.2, 0.05, item);
+    }
+
+    /* ===================== cooking pot ===================== */
+
+    private void interactCookingPot(BukkitFurniture pot, Player player, ItemStack held) {
+        // sneak + empty hand cycles the support mode (ground/tray/handle)
+        if ((held == null || held.getType().isAir()) && player.isSneaking()) {
+            String current = pot.currentVariant() == null ? "ground" : pot.currentVariant().name();
+            String next = switch (current == null ? "ground" : current) {
+                case "ground" -> "tray";
+                case "tray" -> "handle";
+                default -> "ground";
+            };
+            pot.setVariant(next, false);
+            return;
+        }
+        // serve a portion when holding the right container
+        ItemStack meal = GameTicker.inv(pot)[GameTicker.SLOT_MEAL];
+        if (meal != null && !meal.getType().isAir() && held != null && !held.getType().isAir()) {
+            ItemStack portion = CookingPotGui.serveMeal(pot, held);
+            if (portion != null) {
+                giveOrDrop(player, portion);
+                pot.location().getWorld().playSound(
+                        pot.location().clone().add(0.5, 0.5, 0.5),
+                        "minecraft:item.armor.equip_generic", SoundCategory.BLOCKS, 0.8f, 1.0f);
+                return;
+            }
+        }
+        CookingPotGui.open(plugin, pot, player);
+    }
+
+    /* ===================== skillet (placed) ===================== */
+
+    private void interactSkillet(BukkitFurniture skillet, Player player, ItemStack held) {
+        ItemStack current = ticker().skilletItem(skillet);
+        if (current != null && !current.getType().isAir()) return;
+        if (held == null || held.getType().isAir()) return;
+        ItemStack cooked = ticker().campfireResult(held);
+        if (cooked == null) return;
+        ItemStack one = held.clone();
+        one.setAmount(1);
+        ticker().setSkilletItem(skillet, one);
+        consumeHeld(player, held);
+        int fireAspect = held.getEnchantmentLevel(Enchantment.FIRE_ASPECT);
+        int base = ticker().campfireTime(held);
+        int total = skilletCookTime(base, fireAspect);
+        GameTicker.data(skillet).set(GameTicker.fdKey("cooktotal"), PersistentDataType.INTEGER, total);
+        GameTicker.data(skillet).set(GameTicker.fdKey("cook"), PersistentDataType.INTEGER, 0);
+        GameTicker.data(skillet).set(GameTicker.fdKey("result"), PersistentDataType.STRING,
+                GameTicker.idOf(cooked));
+        skillet.location().getWorld().playSound(skillet.location().clone().add(0.5, 0.4, 0.5),
+                FD.SND_SKILLET_ADD_FOOD, SoundCategory.BLOCKS, 0.8f, 1.0f);
+    }
+
+    private int skilletCookTime(int base, int fireAspect) {
+        int t = (int) (base * 0.2f);
+        t -= base * 0.05f * fireAspect;
+        return Math.max(60, (t / 20) * 20);
+    }
+
+    /* ===================== rope ===================== */
+
+    private void interactRope(BukkitFurniture rope, Player player, ItemStack held) {
+        if (held != null && !held.getType().isAir()) return;
+        if (player.isSneaking()) {
+            // reel in the whole rope column
+            Location loc = rope.location();
+            int removed = 0;
+            for (int y = loc.getBlockY(); y > loc.getWorld().getMinHeight(); y--) {
+                var entry = plugin.furnitureTracker().at(
+                        new Location(loc.getWorld(), loc.getBlockX(), y, loc.getBlockZ()).add(0.5, 0, 0.5), FD.ROPE);
+                if (entry == null) break;
+                ticker().setDisplayChild(entry.furniture(), "itemEntity", null, 0.5, 0.4, 0.5, 0.3f);
+                CraftEngineHook.removeFurniture(entry.furniture(), false, false);
+                removed++;
+            }
+            if (removed > 0) {
+                ItemStack stack = CraftEngineHook.buildItem(FD.ROPE);
+                if (stack != null) {
+                    stack.setAmount(removed);
+                    player.getInventory().addItem(stack).values()
+                            .forEach(left -> player.getWorld().dropItemNaturally(player.getLocation(), left));
+                }
+            }
+            return;
+        }
+        // ring a bell hanging above (up to 24 blocks of rope)
+        Location loc = rope.location();
+        for (int y = loc.getBlockY() + 1; y <= loc.getBlockY() + 24; y++) {
+            Block b = loc.getWorld().getBlockAt(loc.getBlockX(), y, loc.getBlockZ());
+            if (b.getType() == Material.BELL) {
+                org.bukkit.block.Bell bell = (org.bukkit.block.Bell) b.getState();
+                bell.ring(player, BlockFace.DOWN);
+                return;
+            }
+            var entry = plugin.furnitureTracker().at(
+                    new Location(loc.getWorld(), loc.getBlockX(), y, loc.getBlockZ()).add(0.5, 0, 0.5), FD.ROPE);
+            if (entry == null) return;
+        }
+    }
+
+    /* ===================== feasts ===================== */
+
+    private boolean isFeast(Key id) {
+        return id.equals(FD.ROAST_CHICKEN_BLOCK) || id.equals(FD.STUFFED_PUMPKIN_BLOCK)
+                || id.equals(FD.HONEY_GLAZED_HAM_BLOCK) || id.equals(FD.SHEPHERDS_PIE_BLOCK)
+                || id.equals(FD.RICE_ROLL_MEDLEY_BLOCK);
+    }
+
+    private void interactFeast(BukkitFurniture feast, Player player, ItemStack held) {
+        String variant = feast.currentVariant() == null ? "s0" : feast.currentVariant().name();
+        int servings = variant.startsWith("s")
+                ? Integer.parseInt(variant.substring(1)) : 0;
+        if (servings <= 0) {
+            // empty platter: break it
+            removeSignText(feast);
+            CraftEngineHook.removeFurniture(feast, false, true);
+            return;
+        }
+        if (held == null || held.getType() != Material.BOWL) return;
+        ItemStack serving = feastServing(feast.id(), servings);
+        if (serving == null) return;
+        held.setAmount(held.getAmount() - 1);
+        giveOrDrop(player, serving);
+        feast.setVariant("s" + (servings - 1), false);
+        feast.location().getWorld().playSound(feast.location().clone().add(0.5, 0.4, 0.5),
+                "minecraft:entity.generic.eat", SoundCategory.BLOCKS, 0.8f, 1.0f);
+    }
+
+    private ItemStack feastServing(Key feastId, int servings) {
+        String id = feastId.toString();
+        String item = switch (id.substring(id.indexOf(':') + 1)) {
+            case "roast_chicken_block" -> "roast_chicken";
+            case "stuffed_pumpkin_block" -> "stuffed_pumpkin";
+            case "honey_glazed_ham_block" -> "honey_glazed_ham";
+            case "shepherds_pie_block" -> "shepherds_pie";
+            case "rice_roll_medley_block" -> switch (servings) {
+                case 8, 7 -> "cod_roll";
+                case 6, 5, 4 -> "salmon_roll";
+                default -> "kelp_roll";
+            };
+            default -> null;
+        };
+        return item == null ? null : CraftEngineHook.buildItem(Key.of(FD.MOD_ID, item));
+    }
+
+    /* ===================== canvas signs ===================== */
+
+    private void interactSign(BukkitFurniture sign, Player player) {
+        plugin.signSessions().begin(player, sign);
+    }
+
+    private void removeSignText(BukkitFurniture furniture) {
+        UUIDLike: {
+            String s = GameTicker.data(furniture).get(GameTicker.fdKey("text"), PersistentDataType.STRING);
+            if (s == null) break UUIDLike;
+            try {
+                Entity e = org.bukkit.Bukkit.getEntity(java.util.UUID.fromString(s));
+                if (e != null) e.remove();
+            } catch (IllegalArgumentException ignored) {
+            }
+            GameTicker.data(furniture).remove(GameTicker.fdKey("text"));
+        }
+    }
+
+    /* ===================== helpers ===================== */
+
+    public String facingOf(BukkitFurniture furniture) {
+        float yaw = furniture.baseEntity().getLocation().getYaw();
+        double rot = (yaw % 360 + 360) % 360;
+        if (rot >= 315 || rot < 45) return "south";
+        if (rot < 135) return "west";
+        if (rot < 225) return "north";
+        return "east";
+    }
+
+    public Vector dirOf(String facing) {
+        return switch (facing == null ? "east" : facing) {
+            case "north" -> new Vector(0, 0, -1);
+            case "south" -> new Vector(0, 0, 1);
+            case "west" -> new Vector(-1, 0, 0);
+            default -> new Vector(1, 0, 0);
+        };
+    }
+
+    private void consumeHeld(Player player, ItemStack held) {
+        if (player.getGameMode() == GameMode.CREATIVE) return;
+        held.setAmount(held.getAmount() - 1);
+    }
+
+    private void giveOrDrop(Player player, ItemStack stack) {
+        if (stack == null || stack.getType().isAir()) return;
+        player.getInventory().addItem(stack).values()
+                .forEach(left -> player.getWorld().dropItemNaturally(player.getLocation(), left));
+    }
+
+    private void damageTool(Player player, ItemStack tool) {
+        if (player.getGameMode() == GameMode.CREATIVE) return;
+        tool.damage(1, player);
+    }
+
+    private List<Entity> unused() {
+        return List.of();
+    }
+}
