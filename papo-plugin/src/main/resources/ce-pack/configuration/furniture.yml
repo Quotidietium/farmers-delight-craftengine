@@ -333,7 +333,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -350,7 +350,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -367,7 +367,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -405,16 +405,16 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
             can_use_item_on: true
             can_be_hit_by_projectile: true
             blocks_building: true
-            position: 0.15625,0,0.15625
-            width: 0.6875
-            height: 0.125
+            position: 0.125,0,0.125
+            width: 0.75
+            height: 0.25
             interactive: true
       tray:
         elements:
@@ -422,16 +422,16 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
             can_use_item_on: true
             can_be_hit_by_projectile: true
             blocks_building: true
-            position: 0.09375,0,0.09375
-            width: 0.8125
-            height: 0.125
+            position: 0.0625,0,0.0625
+            width: 0.875
+            height: 0.25
             interactive: true
 
   "farmersdelight:cutting_board":
@@ -455,7 +455,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -488,7 +488,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -521,7 +521,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -554,7 +554,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -587,7 +587,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -620,7 +620,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -637,7 +637,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -670,7 +670,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -687,7 +687,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -720,7 +720,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -737,7 +737,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -754,7 +754,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -771,7 +771,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -788,7 +788,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -821,7 +821,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -838,7 +838,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -855,7 +855,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -872,7 +872,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -889,7 +889,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -922,7 +922,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -939,7 +939,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -956,7 +956,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -973,7 +973,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -990,7 +990,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1023,7 +1023,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1040,7 +1040,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1057,7 +1057,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1074,7 +1074,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1091,7 +1091,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1124,7 +1124,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1141,7 +1141,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1158,7 +1158,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1175,7 +1175,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1192,7 +1192,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1209,7 +1209,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1226,7 +1226,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1243,7 +1243,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1260,7 +1260,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0,0
+            translation: 0,0.5,0
             scale: 1
         hitboxes:
           - type: interaction
@@ -1293,6 +1293,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -1351,6 +1352,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -1409,6 +1411,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -1467,6 +1470,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -1525,6 +1529,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -1583,6 +1588,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -1641,6 +1647,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -1699,6 +1706,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -1757,6 +1765,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -1815,6 +1824,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -1873,6 +1883,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -1931,6 +1942,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -1989,6 +2001,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -2047,6 +2060,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -2105,6 +2119,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -2163,6 +2178,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false
@@ -2221,6 +2237,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
+            translation: 0,0.5,0
         hitboxes:
           - type: interaction
             blocks_building: false

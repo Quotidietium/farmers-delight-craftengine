@@ -116,7 +116,7 @@ def _variant(lines: list[str], name: str, model_basename: str, hitbox, extra_hei
     lines.append("            display_transform: none")
     lines.append("            billboard: fixed")
     lines.append("            position: 0.5,0,0.5")
-    lines.append("            translation: 0,0,0")
+    lines.append("            translation: 0,0.5,0")
     lines.append("            scale: 1")
     lines.append("        hitboxes:")
     lines.append("          - type: interaction")
@@ -161,8 +161,8 @@ def generate_furniture() -> str:
 
     # ---------------- skillet: ground + tray
     lines = _furniture_head("skillet")
-    _variant(lines, "ground", "skillet", ("0.15625,0,0.15625", 0.6875, 0.125, True), fid="skillet")
-    _variant(lines, "tray", "skillet_tray", ("0.09375,0,0.09375", 0.8125, 0.125, True), fid="skillet")
+    _variant(lines, "ground", "skillet", ("0.125,0,0.125", 0.75, 0.25, True), fid="skillet")
+    _variant(lines, "tray", "skillet_tray", ("0.0625,0,0.0625", 0.875, 0.25, True), fid="skillet")
     chunks.append("\n".join(lines))
 
     # ---------------- simple furniture
@@ -209,6 +209,7 @@ def generate_furniture() -> str:
         lines.append("            display_transform: none")
         lines.append("            billboard: fixed")
         lines.append("            position: 0.5,0,0.5")
+        lines.append("            translation: 0,0.5,0")
         lines.append("        hitboxes:")
         lines.append("          - type: interaction")
         lines.append("            blocks_building: false")
