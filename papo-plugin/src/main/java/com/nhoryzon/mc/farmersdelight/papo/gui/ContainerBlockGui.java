@@ -19,6 +19,14 @@ import org.jetbrains.annotations.NotNull;
 /** Generic 27-slot container GUI for baskets and cabinets backed by block PDC data. */
 public final class ContainerBlockGui implements InventoryHolder {
 
+    private static final java.util.Set<org.bukkit.Location> OPEN = java.util.Collections.newSetFromMap(
+            new java.util.concurrent.ConcurrentHashMap<>());
+
+    /** @return true when a GUI is currently open for this block (pauses automation). */
+    public static boolean isOpen(Block block) {
+        return OPEN.contains(block.getLocation());
+    }
+
     private final Block block;
     private final Component title;
     private final Inventory inventory;
@@ -37,6 +45,7 @@ public final class ContainerBlockGui implements InventoryHolder {
         if (contents == null) contents = new ItemStack[27];
         Component title = Component.translatable("block." + blockId.toString().replace(":", "."));
         ContainerBlockGui gui = new ContainerBlockGui(block, title, contents);
+        OPEN.add(block.getLocation());
         player.openInventory(gui.inventory);
     }
 
@@ -73,6 +82,7 @@ public final class ContainerBlockGui implements InventoryHolder {
         @EventHandler
         public void onClose(InventoryCloseEvent event) {
             if (holderOf(event.getInventory()) instanceof ContainerBlockGui gui) {
+                OPEN.remove(gui.block().getLocation());
                 gui.save(plugin);
                 // close cabinet doors again
                 var state = com.nhoryzon.mc.farmersdelight.papo.ce.CraftEngineHook.customBlockState(gui.block());

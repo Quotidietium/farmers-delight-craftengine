@@ -263,7 +263,11 @@ public final class BlockListener implements Listener {
                     one.setAmount(1);
                     grill[i] = one;
                     consumeBoneMeal(player, held); // consumes one food item
-                    plugin.blockStore().setString(stove, "facing", "north");
+                    var facingProp = state.<String>getProperty("facing");
+                    if (facingProp != null) {
+                        String facing = state.getNullable(facingProp);
+                        plugin.blockStore().setString(stove, "facing", facing == null ? "north" : facing);
+                    }
                     int[] totals = new int[6];
                     int[] existing = grillTimes(plugin.blockStore().getString(stove, "grill_totals"));
                     System.arraycopy(existing, 0, totals, 0, 6);

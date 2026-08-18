@@ -291,12 +291,10 @@ public final class PlayerListener implements Listener {
                 event.setCancelled(true);
                 Integer bites = plugin.gameTicker().getInt(custom, "bites");
                 int remaining = 4 - (bites == null ? 0 : bites);
-                for (int i = 0; i < remaining; i++) {
-                    dropSlice(block, 1);
-                }
-                ItemStack whole = CraftEngineHook.buildItem(Key.of(id));
-                if (whole != null) {
-                    block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.4, 0.5), whole);
+                ItemStack sliceStack = CraftEngineHook.buildItem(Key.of(FD.MOD_ID, slice));
+                if (sliceStack != null && remaining > 0) {
+                    sliceStack.setAmount(remaining);
+                    block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.4, 0.5), sliceStack);
                 }
                 plugin.gameTicker().cropIndex.remove(block);
                 CraftEngineHook.removeBlock(block, false);

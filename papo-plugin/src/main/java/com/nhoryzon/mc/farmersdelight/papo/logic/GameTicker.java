@@ -432,6 +432,8 @@ public final class GameTicker {
         if (inv == null) inv = new ItemStack[27];
         if (isFull(inv)) return;
 
+        // never pull while a player is viewing the basket (avoids save-race item loss)
+        if (com.nhoryzon.mc.farmersdelight.papo.gui.ContainerBlockGui.isOpen(basket)) return;
         String facing = plugin.blockStore().getString(basket, "facing");
         Vector dir = dirOf(facing);
         Location center = basket.getLocation().add(0.5, 0.5, 0.5).add(dir.clone().multiply(0.75));

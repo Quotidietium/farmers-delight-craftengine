@@ -9,27 +9,21 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionEffectTypeCategory;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Server-side simulation of the mod's Comfort and Nourishment status effects
  * (custom potion types cannot be registered on a Paper server).
+ * State lives entirely in the player's PDC, so effects survive relogs/restarts.
  */
 public final class EffectManager {
 
-    private record Active(long until, boolean comfort) {
-    }
-
     private final FarmersDelightPlugin plugin;
-    private final Map<UUID, Active> active = new HashMap<>();
     private final NamespacedKey comfortKey;
     private final NamespacedKey nourishKey;
     private final BukkitTask task;
@@ -43,7 +37,6 @@ public final class EffectManager {
 
     public void shutdown() {
         task.cancel();
-        active.clear();
     }
 
     /* ------------ entry points ------------ */
@@ -69,19 +62,22 @@ public final class EffectManager {
     }
 
     public void giveComfort(Player player, int ticks) {
-        long until = System.currentTimeMillis() + ticks * 50L;
-        active.merge(player.getUniqueId(), new Active(until, true), (a, b) -> b);
+        long until = Math.max(existing(player, comfortKey), System.currentTimeMillis() + ticks * 50L);
         player.getPersistentDataContainer().set(comfortKey,
                 org.bukkit.persistence.PersistentDataType.LONG, until);
         player.sendActionBar(Component.translatable("farmersdelight.effect.comfort", NamedTextColor.GOLD));
     }
 
     public void giveNourishment(Player player, int ticks) {
-        long until = System.currentTimeMillis() + ticks * 50L;
-        active.merge(player.getUniqueId(), new Active(until, false), (a, b) -> b);
+        long until = Math.max(existing(player, nourishKey), System.currentTimeMillis() + ticks * 50L);
         player.getPersistentDataContainer().set(nourishKey,
                 org.bukkit.persistence.PersistentDataType.LONG, until);
         player.sendActionBar(Component.translatable("farmersdelight.effect.nourishment", NamedTextColor.GOLD));
+    }
+
+    private long existing(Player player, NamespacedKey key) {
+        Long v = player.getPersistentDataContainer().get(key, org.bukkit.persistence.PersistentDataType.LONG);
+        return v == null ? 0 : v;
     }
 
     private void applyVanilla(Player player, FDRecipes.FoodEffect effect) {
@@ -96,7 +92,7 @@ public final class EffectManager {
     private void removeRandomEffect(Player player, boolean harmfulOnly) {
         List<PotionEffect> candidates = new ArrayList<>();
         for (PotionEffect effect : player.getActivePotionEffects()) {
-            if (harmfulOnly && effect.getType().getCategory() != org.bukkit.potion.PotionEffectTypeCategory.HARMFUL) {
+            if (harmfulOnly && effect.getType().getCategory() != PotionEffectTypeCategory.HARMFUL) {
                 continue;
             }
             candidates.add(effect);
@@ -106,26 +102,30 @@ public final class EffectManager {
         player.removePotionEffect(removed.getType());
     }
 
-    /* ------------ ticking ------------ */
+    /* ------------ ticking (PDC driven, survives relog) ------------ */
 
     private void tick() {
         long now = System.currentTimeMillis();
-        Iterator<Map.Entry<UUID, Active>> it = active.entrySet().iterator();
-        while (it.hasNext()) {
-            var entry = it.next();
-            Active a = entry.getValue();
-            if (a.until() <= now) {
-                it.remove();
-                continue;
-            }
-            Player player = Bukkit.getPlayer(entry.getKey());
-            if (player == null || !player.isOnline()) continue;
-            if (a.comfort()) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (remaining(player, comfortKey, now) > 0) {
                 tickComfort(player);
-            } else {
+            }
+            if (remaining(player, nourishKey, now) > 0) {
                 tickNourishment(player);
             }
         }
+    }
+
+    private long remaining(Player player, NamespacedKey key, long now) {
+        Long until = player.getPersistentDataContainer().get(key,
+                org.bukkit.persistence.PersistentDataType.LONG);
+        if (until == null) return 0;
+        long left = until - now;
+        if (left <= 0) {
+            player.getPersistentDataContainer().remove(key);
+            return 0;
+        }
+        return left;
     }
 
     private void tickComfort(Player player) {
@@ -137,36 +137,15 @@ public final class EffectManager {
     }
 
     private void tickNourishment(Player player) {
-        // keep exhaustion drained while the player is not naturally healing with hunger
-        if (player.getFoodLevel() < 18) {
-            player.setExhaustion(0.0f);
-            return;
-        }
-        if (!Boolean.TRUE.equals(player.getWorld().getGameRuleValue(org.bukkit.GameRule.NATURAL_REGENERATION))) return;
-        if (player.getHealth() < player.getMaxHealth() && player.getFoodLevel() >= 18) {
-            // let natural regen proceed; nourishment only stops hunger drain
-            float saturation = player.getSaturation();
-            if (saturation <= 0) {
-                // would start consuming hunger: hold food level
-                player.setFoodLevel(Math.max(18, player.getFoodLevel()));
-            }
-        }
+        // keep exhaustion drained so hunger never depletes (mod NourishmentEffect)
         player.setExhaustion(0.0f);
     }
 
     public boolean hasComfort(Player player) {
-        return remaining(player, comfortKey) > 0;
+        return existing(player, comfortKey) > System.currentTimeMillis();
     }
 
     public boolean hasNourishment(Player player) {
-        return remaining(player, nourishKey) > 0;
-    }
-
-    private long remaining(Player player, NamespacedKey key) {
-        Long until = player.getPersistentDataContainer().get(key,
-                org.bukkit.persistence.PersistentDataType.LONG);
-        if (until == null) return 0;
-        long left = until - System.currentTimeMillis();
-        return Math.max(0, left);
+        return existing(player, nourishKey) > System.currentTimeMillis();
     }
 }

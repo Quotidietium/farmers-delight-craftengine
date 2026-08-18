@@ -54,6 +54,20 @@ public final class FurnitureListener implements Listener {
         String facing = facingOf(furniture);
         GameTicker.data(furniture).set(GameTicker.fdKey("facing"),
                 PersistentDataType.STRING, facing);
+        String placedId = furniture.id().value();
+        // pots & skillets sitting on a stove get the tray visual (mod getTrayState)
+        if (placedId.equals("cooking_pot") || placedId.equals("skillet")) {
+            org.bukkit.block.Block below = furniture.location().getBlock().getRelative(org.bukkit.block.BlockFace.DOWN);
+            var belowState = CraftEngineHook.customBlockState(below);
+            if (belowState != null && belowState.owner().value().id().equals(FD.STOVE)) {
+                furniture.setVariant("tray", false);
+            }
+        }
+        // feasts are placed fully stocked (highest servings variant)
+        if (placedId.endsWith("_block") && (isFeast(furniture.id()))) {
+            int max = placedId.equals("rice_roll_medley_block") ? 8 : 4;
+            furniture.setVariant("s" + max, false);
+        }
         // plain tatami halves pair up visually with neighbours
         if (furniture.id().equals(FD.TATAMI)) {
             var dir = dirOf(facing);
