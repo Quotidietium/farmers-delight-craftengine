@@ -71,6 +71,8 @@ public final class FurnitureListener implements Listener {
                 furniture.setVariant("foot", false);
             }
         }
+        // feast / pot / skillet placement advancements
+        plugin.advancements().onCustomPlace(event.player(), furniture.id().value());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -200,6 +202,13 @@ public final class FurnitureListener implements Listener {
         }
         // durability + sound + particles
         damageTool(player, held);
+        plugin.advancements().onCuttingBoardUsed(player);
+        for (FDRecipes.CuttingResult result : recipe.results()) {
+            if (result.item().endsWith(":straw")) {
+                plugin.advancements().onHarvestStraw(player);
+                break;
+            }
+        }
         String sound = recipe.sound() != null ? recipe.sound()
                 : (FDRecipes.isKnife(held) ? FD.SND_CB_KNIFE : "minecraft:block.wood.hit");
         loc.getWorld().playSound(loc, sound, SoundCategory.BLOCKS, 1.0f, 1.0f);

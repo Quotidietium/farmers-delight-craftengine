@@ -74,6 +74,11 @@ def main():
         gen_recipes.generate_misc_content(), encoding="utf-8")
     print("plugin configs written:", list(p.name for p in PLUGIN_RECIPES.glob("*.yml")))
 
+    # -------- advancements datapack + trigger config
+    from ce_gen.gen_advancements import generate_advancements
+    adv_count = generate_advancements()
+    print(f"advancements datapack: {adv_count} entries")
+
     # -------- pack.yml
     (CE_PACK / "pack.yml").write_text(
         f"author: Zifiv, vectorwing, port-by-Zurker\n"

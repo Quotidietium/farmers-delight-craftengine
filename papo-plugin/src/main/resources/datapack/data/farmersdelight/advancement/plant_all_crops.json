@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:plant_rice",
+ "display": {
+  "announce_to_chat": true,
+  "description": {
+   "translate": "farmersdelight.advancement.plant_all_crops.desc"
+  },
+  "frame": "challenge",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:green_dye"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.plant_all_crops"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

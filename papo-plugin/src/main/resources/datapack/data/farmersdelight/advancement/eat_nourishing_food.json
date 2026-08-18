@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:eat_comfort_food",
+ "display": {
+  "announce_to_chat": false,
+  "description": {
+   "translate": "farmersdelight.advancement.eat_nourishing_food.desc"
+  },
+  "frame": "task",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:paper"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.eat_nourishing_food"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:place_campfire",
+ "display": {
+  "announce_to_chat": false,
+  "description": {
+   "translate": "farmersdelight.advancement.use_skillet.desc"
+  },
+  "frame": "task",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:iron_hoe"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.use_skillet"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

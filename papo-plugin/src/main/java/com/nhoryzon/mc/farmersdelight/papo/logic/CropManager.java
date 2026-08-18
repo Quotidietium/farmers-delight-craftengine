@@ -190,6 +190,10 @@ public final class CropManager {
 
     /** @return true if the interaction was handled (harvest performed). */
     public boolean tryHarvest(Block crop) {
+        return tryHarvest(crop, null);
+    }
+
+    public boolean tryHarvest(Block crop, org.bukkit.entity.Player player) {
         var state = CraftEngineHook.customBlockState(crop);
         if (state == null) return false;
         Key id = state.owner().value().id();
@@ -219,6 +223,12 @@ public final class CropManager {
                     drop(crop, FD.TOMATO, rand.nextInt(1, 3));
                     if (rand.nextDouble() < 0.05) drop(crop, FD.ROTTEN_TOMATO, 1);
                     ticker().setBlockProperty(crop, "age", 5);
+                    if (player != null && ticker().getBool(crop, "ropelogged") != null
+                            && java.lang.Boolean.TRUE.equals(ticker().getBool(crop, "ropelogged"))) {
+                        plugin.advancements().onHarvestRopeloggedTomato(player);
+                    } else if (player != null) {
+                        plugin.advancements().onHarvestRopeloggedTomato(player);
+                    }
                     return true;
                 }
             }

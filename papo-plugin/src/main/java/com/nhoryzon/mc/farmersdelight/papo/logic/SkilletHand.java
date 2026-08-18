@@ -71,6 +71,7 @@ public final class SkilletHand {
                         .forEach(left -> player.getWorld().dropItemNaturally(player.getLocation(), left));
                 player.getWorld().playSound(player.getLocation(), FD.SND_SKILLET_SIZZLE,
                         SoundCategory.PLAYERS, 0.7f, 1.0f);
+                plugin.advancements().onSkilletCooked(player);
                 it.remove();
                 continue;
             }

@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:harvest_ropelogged_tomato",
+ "display": {
+  "announce_to_chat": true,
+  "description": {
+   "translate": "farmersdelight.advancement.hit_raider_with_rotten_tomato.desc"
+  },
+  "frame": "task",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:paper"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.hit_raider_with_rotten_tomato"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

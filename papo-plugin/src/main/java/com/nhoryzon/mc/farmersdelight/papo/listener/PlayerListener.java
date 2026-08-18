@@ -55,6 +55,7 @@ public final class PlayerListener implements Listener {
     public void onConsume(PlayerItemConsumeEvent event) {
         Player player = event.getPlayer();
         var effects = plugin.recipes().effectsFor(event.getItem());
+        plugin.advancements().onMealConsumed(player, event.getItem());
         if (effects == null) return;
         plugin.effectManager().applyFromConfig(player, effects);
     }
@@ -132,6 +133,9 @@ public final class PlayerListener implements Listener {
         loc.getWorld().playSound(loc, FD.SND_RT_HIT, SoundCategory.NEUTRAL, 1.0f,
                 ThreadLocalRandom.current().nextFloat(0.9f, 1.1f));
         loc.getWorld().spawnParticle(Particle.ITEM, loc, 12, 0.2, 0.2, 0.2, 0.1, item);
+        if (snowball.getShooter() instanceof Player shooter && event.getHitEntity() != null) {
+            plugin.advancements().onTomatoHitRaider(shooter, event.getHitEntity());
+        }
     }
 
     /* ===================== animal feeding / breeding / taming ===================== */

@@ -1,0 +1,29 @@
+{
+ "parent": null,
+ "display": {
+  "announce_to_chat": false,
+  "background": "minecraft:textures/block/bricks.png",
+  "description": {
+   "translate": "farmersdelight.advancement.root.desc"
+  },
+  "frame": "task",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:mushroom_stew"
+  },
+  "show_toast": false,
+  "title": {
+   "translate": "farmersdelight.advancement.root"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:place_feast",
+ "display": {
+  "announce_to_chat": true,
+  "description": {
+   "translate": "farmersdelight.advancement.master_chef.desc"
+  },
+  "frame": "challenge",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:cooked_porkchop"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.master_chef"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

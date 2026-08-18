@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:craft_knife",
+ "display": {
+  "announce_to_chat": false,
+  "description": {
+   "translate": "farmersdelight.advancement.use_cutting_board.desc"
+  },
+  "frame": "task",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:oak_slab"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.use_cutting_board"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

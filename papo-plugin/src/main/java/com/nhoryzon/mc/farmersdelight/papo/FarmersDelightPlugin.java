@@ -1,5 +1,6 @@
 package com.nhoryzon.mc.farmersdelight.papo;
 
+import com.nhoryzon.mc.farmersdelight.papo.advancement.AdvancementListener;
 import com.nhoryzon.mc.farmersdelight.papo.ce.CraftEngineHook;
 import com.nhoryzon.mc.farmersdelight.papo.ce.PackInstaller;
 import com.nhoryzon.mc.farmersdelight.papo.data.BlockStore;
@@ -44,6 +45,7 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
     private EffectManager effectManager;
     private SkilletHand skilletHand;
     private SignSessions signSessions;
+    private AdvancementListener advancements;
 
     public static FarmersDelightPlugin get() {
         return instance;
@@ -61,6 +63,7 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
         this.effectManager = new EffectManager(this);
         this.skilletHand = new SkilletHand(this);
         this.signSessions = new SignSessions(this);
+        this.advancements = new AdvancementListener(this);
 
         // install / refresh the bundled CraftEngine pack, then reload CE content
         boolean installed = false;
@@ -85,6 +88,7 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new CookingPotGui.ListenerImpl(this), this);
         Bukkit.getPluginManager().registerEvents(new ContainerBlockGui.ListenerImpl(this), this);
         Bukkit.getPluginManager().registerEvents(this.signSessions, this);
+        Bukkit.getPluginManager().registerEvents(this.advancements, this);
         Bukkit.getPluginManager().registerEvents(new WildCropGenerator(this), this);
         Bukkit.getPluginManager().registerEvents(this, this);
 
@@ -140,6 +144,10 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
 
     public SignSessions signSessions() {
         return signSessions;
+    }
+
+    public AdvancementListener advancements() {
+        return advancements;
     }
 
     public Map<String, Float> compostables() {

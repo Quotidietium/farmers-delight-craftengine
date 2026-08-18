@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:get_fd_seed",
+ "display": {
+  "announce_to_chat": false,
+  "description": {
+   "translate": "farmersdelight.advancement.harvest_ropelogged_tomato.desc"
+  },
+  "frame": "task",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:apple"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.harvest_ropelogged_tomato"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

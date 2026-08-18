@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:eat_nourishing_food",
+ "display": {
+  "announce_to_chat": true,
+  "description": {
+   "translate": "farmersdelight.advancement.place_feast.desc"
+  },
+  "frame": "task",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:cooked_chicken"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.place_feast"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

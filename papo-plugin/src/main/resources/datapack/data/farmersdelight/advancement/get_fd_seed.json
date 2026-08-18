@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:root",
+ "display": {
+  "announce_to_chat": true,
+  "description": {
+   "translate": "farmersdelight.advancement.get_fd_seed.desc"
+  },
+  "frame": "task",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:paper"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.get_fd_seed"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

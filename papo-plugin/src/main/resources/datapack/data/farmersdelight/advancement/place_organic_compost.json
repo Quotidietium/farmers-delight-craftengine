@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:harvest_straw",
+ "display": {
+  "announce_to_chat": false,
+  "description": {
+   "translate": "farmersdelight.advancement.place_organic_compost.desc"
+  },
+  "frame": "task",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:coarse_dirt"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.place_organic_compost"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

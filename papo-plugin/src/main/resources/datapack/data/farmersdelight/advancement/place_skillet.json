@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:use_skillet",
+ "display": {
+  "announce_to_chat": false,
+  "description": {
+   "translate": "farmersdelight.advancement.place_skillet.desc"
+  },
+  "frame": "task",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:iron_hoe"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.place_skillet"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

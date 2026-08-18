@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:place_organic_compost",
+ "display": {
+  "announce_to_chat": true,
+  "description": {
+   "translate": "farmersdelight.advancement.get_rich_soil.desc"
+  },
+  "frame": "goal",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:rooted_dirt"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.get_rich_soil"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

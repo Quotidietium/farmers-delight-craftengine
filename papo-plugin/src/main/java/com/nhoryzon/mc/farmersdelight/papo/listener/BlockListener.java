@@ -83,6 +83,10 @@ public final class BlockListener implements Listener {
                 return;
             }
             ticker().cropIndex.add(block);
+            plugin.advancements().onPlant(event.player(), id.toString());
+        }
+        if (id.equals(FD.ORGANIC_COMPOST)) {
+            plugin.advancements().onCustomPlace(event.player(), "organic_compost");
         }
     }
 
@@ -182,7 +186,7 @@ public final class BlockListener implements Listener {
                     }
                     return;
                 }
-                event.setCancelled(plugin.cropManager().tryHarvest(block));
+                event.setCancelled(plugin.cropManager().tryHarvest(block, player));
             }
             case "sandy_shrub" -> {
                 if (held != null && held.getType() == Material.BONE_MEAL) {

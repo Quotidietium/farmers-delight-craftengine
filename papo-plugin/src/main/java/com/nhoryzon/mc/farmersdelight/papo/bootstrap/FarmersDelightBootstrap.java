@@ -1,7 +1,9 @@
 package com.nhoryzon.mc.farmersdelight.papo.bootstrap;
 
+import io.papermc.paper.datapack.DatapackRegistrar;
 import io.papermc.paper.plugin.bootstrap.BootstrapContext;
 import io.papermc.paper.plugin.bootstrap.PluginBootstrap;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import io.papermc.paper.registry.RegistryKey;
 import io.papermc.paper.registry.TypedKey;
 import io.papermc.paper.registry.data.EnchantmentRegistryEntry;
@@ -15,9 +17,13 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlotGroup;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Objects;
+
 /**
- * Bootstrap 阶段注册 Farmer's Delight 的自定义附魔（背刺）。
- * 附魔的数值效果由主插件的伤害监听器实现（Paper 附魔构建器不含效果组件）。
+ * Bootstrap 阶段注册 Farmer's Delight 的自定义附魔（背刺）
+ * 与捆绑的进度数据包（由插件按触发条件授予）。
  */
 @SuppressWarnings("UnstableApiUsage")
 public class FarmersDelightBootstrap implements PluginBootstrap {
@@ -46,6 +52,17 @@ public class FarmersDelightBootstrap implements PluginBootstrap {
                     .anvilCost(4)
                     .activeSlots(EquipmentSlotGroup.MAINHAND)
             );
+        });
+
+        // discover the bundled advancement datapack inside the plugin jar
+        context.getLifecycleManager().registerEventHandler(LifecycleEvents.DATAPACK_DISCOVERY, event -> {
+            try {
+                var uri = Objects.requireNonNull(
+                        getClass().getClassLoader().getResource("datapack"), "datapack folder missing").toURI();
+                event.registrar().discoverPack(uri, "farmersdelight-advancements");
+            } catch (URISyntaxException | IOException e) {
+                context.getLogger().error("Failed to discover bundled advancement datapack", e);
+            }
         });
     }
 }

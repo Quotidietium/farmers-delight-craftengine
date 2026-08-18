@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:craft_knife",
+ "display": {
+  "announce_to_chat": false,
+  "description": {
+   "translate": "farmersdelight.advancement.harvest_straw.desc"
+  },
+  "frame": "task",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:wheat"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.harvest_straw"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

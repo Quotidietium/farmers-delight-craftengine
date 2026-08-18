@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:craft_knife",
+ "display": {
+  "announce_to_chat": false,
+  "description": {
+   "translate": "farmersdelight.advancement.get_ham.desc"
+  },
+  "frame": "task",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:paper"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.get_ham"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

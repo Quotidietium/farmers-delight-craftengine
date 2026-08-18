@@ -52,8 +52,14 @@ public final class EffectManager {
         for (FDRecipes.FoodEffect effect : effects) {
             if (Math.random() > Math.max(0.0, Math.min(1.0, effect.chance()))) continue;
             switch (effect.effect()) {
-                case "farmersdelight:comfort" -> giveComfort(player, effect.duration());
-                case "farmersdelight:nourishment" -> giveNourishment(player, effect.duration());
+                case "farmersdelight:comfort" -> {
+                    giveComfort(player, effect.duration());
+                    plugin.advancements().onEffectEaten(player, "farmersdelight:comfort");
+                }
+                case "farmersdelight:nourishment" -> {
+                    giveNourishment(player, effect.duration());
+                    plugin.advancements().onEffectEaten(player, "farmersdelight:nourishment");
+                }
                 case "farmersdelight:remove_random_effect" -> removeRandomEffect(player, false);
                 case "farmersdelight:remove_random_bad_effect" -> removeRandomEffect(player, true);
                 case "farmersdelight:heal_2" -> player.setHealth(Math.min(player.getMaxHealth(), player.getHealth() + 2.0));

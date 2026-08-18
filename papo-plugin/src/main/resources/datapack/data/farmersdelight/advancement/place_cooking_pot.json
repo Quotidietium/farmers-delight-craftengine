@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:place_campfire",
+ "display": {
+  "announce_to_chat": true,
+  "description": {
+   "translate": "farmersdelight.advancement.place_cooking_pot.desc"
+  },
+  "frame": "goal",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:mushroom_stew"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.place_cooking_pot"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}

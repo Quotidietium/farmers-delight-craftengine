@@ -1,0 +1,28 @@
+{
+ "parent": "farmersdelight:get_fd_seed",
+ "display": {
+  "announce_to_chat": false,
+  "description": {
+   "translate": "farmersdelight.advancement.get_mushroom_colony.desc"
+  },
+  "frame": "task",
+  "hidden": false,
+  "icon": {
+   "id": "minecraft:red_mushroom"
+  },
+  "show_toast": true,
+  "title": {
+   "translate": "farmersdelight.advancement.get_mushroom_colony"
+  }
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:impossible"
+  }
+ },
+ "requirements": [
+  [
+   "done"
+  ]
+ ]
+}
