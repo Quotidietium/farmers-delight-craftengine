@@ -1,0 +1,16 @@
+name: FarmersDelight
+version: '${version}'
+main: com.nhoryzon.mc.farmersdelight.papo.FarmersDelightPlugin
+description: Farmer's Delight rewritten as a Papo/Paper plugin, assets hosted by CraftEngine
+bootstrapper: com.nhoryzon.mc.farmersdelight.papo.bootstrap.FarmersDelightBootstrap
+api-version: '1.21'
+authors:
+  - Zifiv
+  - vectorwing
+load: POSTWORLD
+dependencies:
+  server:
+    CraftEngine:
+      load: BEFORE
+      required: true
+      join-classpath: true
