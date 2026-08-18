@@ -1,0 +1,56 @@
+# food item -> applied effects on consume (plugin side)
+"apple_cider":
+  - effect: "minecraft:absorption"
+    duration: 1200
+    amplifier: 0
+    chance: 1.0
+"chicken_cuts":
+  - effect: "minecraft:hunger"
+    duration: 600
+    amplifier: 0
+    chance: 0.3
+"cake_slice":
+  - effect: "minecraft:speed"
+    duration: 400
+    amplifier: 0
+    chance: 1.0
+"apple_pie_slice":
+  - effect: "minecraft:speed"
+    duration: 600
+    amplifier: 0
+    chance: 1.0
+"sweet_berry_cheesecake_slice":
+  - effect: "minecraft:speed"
+    duration: 600
+    amplifier: 0
+    chance: 1.0
+"chocolate_pie_slice":
+  - effect: "minecraft:speed"
+    duration: 600
+    amplifier: 0
+    chance: 1.0
+"milk_bottle":
+  - effect: "farmersdelight:remove_random_effect"
+"hot_cocoa":
+  - effect: "farmersdelight:remove_random_bad_effect"
+"melon_juice":
+  - effect: "farmersdelight:heal_2"
+"minecraft:mushroom_stew":
+  - effect: "farmersdelight:comfort"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"minecraft:beetroot_soup":
+  - effect: "farmersdelight:comfort"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"minecraft:rabbit_stew":
+  - effect: "farmersdelight:comfort"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+  - effect: "minecraft:jump_boost"
+    duration: 200
+    amplifier: 1
+    chance: 1.0

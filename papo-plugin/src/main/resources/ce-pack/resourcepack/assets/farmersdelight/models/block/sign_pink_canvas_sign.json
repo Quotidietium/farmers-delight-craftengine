@@ -1,0 +1,148 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "#board",
+    "board": "farmersdelight:block/sign/canvas_pink",
+    "stick": "minecraft:block/oak_planks"
+  },
+  "elements": [
+    {
+      "name": "board",
+      "from": [
+        2,
+        6,
+        7
+      ],
+      "to": [
+        14,
+        15,
+        9
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            2,
+            3,
+            14,
+            12
+          ],
+          "texture": "#board"
+        },
+        "south": {
+          "uv": [
+            2,
+            3,
+            14,
+            12
+          ],
+          "texture": "#board"
+        },
+        "up": {
+          "uv": [
+            2,
+            13,
+            14,
+            15
+          ],
+          "texture": "#stick"
+        },
+        "down": {
+          "uv": [
+            2,
+            13,
+            14,
+            15
+          ],
+          "texture": "#stick"
+        },
+        "west": {
+          "uv": [
+            7,
+            3,
+            9,
+            12
+          ],
+          "texture": "#stick"
+        },
+        "east": {
+          "uv": [
+            7,
+            3,
+            9,
+            12
+          ],
+          "texture": "#stick"
+        }
+      }
+    },
+    {
+      "name": "stick",
+      "from": [
+        7.5,
+        0,
+        7.5
+      ],
+      "to": [
+        8.5,
+        6,
+        8.5
+      ],
+      "faces": {
+        "up": {
+          "uv": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "texture": "#stick"
+        },
+        "down": {
+          "uv": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "texture": "#stick"
+        },
+        "north": {
+          "uv": [
+            1,
+            0,
+            2,
+            6
+          ],
+          "texture": "#stick"
+        },
+        "south": {
+          "uv": [
+            1,
+            0,
+            2,
+            6
+          ],
+          "texture": "#stick"
+        },
+        "west": {
+          "uv": [
+            0,
+            0,
+            1,
+            6
+          ],
+          "texture": "#stick"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            1,
+            6
+          ],
+          "texture": "#stick"
+        }
+      }
+    }
+  ]
+}

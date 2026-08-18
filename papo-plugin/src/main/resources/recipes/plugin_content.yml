@@ -1,0 +1,139 @@
+# Plugin-side content tables (generated)
+compostables:
+  "tree_bark": 0.3
+  "straw": 0.3
+  "cabbage_seeds": 0.3
+  "tomato_seeds": 0.3
+  "rice": 0.5
+  "rice_panicle": 0.5
+  "pumpkin_slice": 0.5
+  "cabbage_leaf": 0.5
+  "cabbage": 0.65
+  "onion": 0.65
+  "tomato": 0.65
+  "wild_cabbages": 0.65
+  "wild_onions": 0.65
+  "wild_tomatoes": 0.65
+  "wild_carrots": 0.65
+  "wild_potatoes": 0.65
+  "wild_beetroots": 0.65
+  "wild_rice": 0.65
+  "pie_crust": 0.65
+  "rice_bale": 0.85
+  "sweet_berry_cookie": 0.85
+  "honey_cookie": 0.85
+  "cake_slice": 0.85
+  "apple_pie_slice": 0.85
+  "sweet_berry_cheesecake_slice": 0.85
+  "chocolate_pie_slice": 0.85
+  "raw_pasta": 0.85
+  "rotten_tomato": 0.85
+  "apple_pie": 1.0
+  "sweet_berry_cheesecake": 1.0
+  "chocolate_pie": 1.0
+  "dumplings": 1.0
+  "stuffed_pumpkin": 1.0
+  "brown_mushroom_colony": 1.0
+  "red_mushroom_colony": 1.0
+trades:
+  farmer:
+    - {input: 'farmersdelight:onion', count: 26, max_uses: 16, villager_xp: 2, price: 1}
+    - {input: 'farmersdelight:tomato', count: 26, max_uses: 16, villager_xp: 2, price: 1}
+    - {input: 'farmersdelight:cabbage', count: 16, max_uses: 16, villager_xp: 5, price: 1}
+    - {input: 'farmersdelight:rice', count: 20, max_uses: 16, villager_xp: 5, price: 1}
+  wandering_trader:
+    - {input: 'farmersdelight:cabbage_seeds', price: 1, max_uses: 12}
+    - {input: 'farmersdelight:tomato_seeds', price: 1, max_uses: 12}
+    - {input: 'farmersdelight:rice', price: 1, max_uses: 12}
+    - {input: 'farmersdelight:onion', price: 1, max_uses: 12}
+loot_injects:
+  "blocks/grass":
+    - {item: "farmersdelight:straw", count: 1, rolls: 1}
+  "blocks/tall_grass":
+    - {item: "farmersdelight:straw", count: 1, rolls: 1}
+  "blocks/wheat":
+    - {item: "farmersdelight:straw", count: 1, rolls: 1}
+  "chests/abandoned_mineshaft":
+    - {item: "farmersdelight:cooking_pot", count: 1, rolls: 1}
+    - {item: "farmersdelight:skillet", count: 1, rolls: 1}
+    - {item: "farmersdelight:tomato_seeds", count: '2.0~4.0', rolls: {'min': 1.0, 'max': 4.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:cabbage_seeds", count: '2.0~4.0', rolls: {'min': 1.0, 'max': 4.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:rice", count: '2.0~4.0', rolls: {'min': 1.0, 'max': 4.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:rope", count: '2.0~12.0', rolls: 3}
+  "chests/bastion_hoglin_stable":
+    - {item: "farmersdelight:diamond_knife", count: 1, rolls: 1}
+    - {item: "farmersdelight:golden_knife", count: 1, rolls: 1}
+    - {item: "farmersdelight:ham", count: '2.0~5.0', rolls: {'min': 1.0, 'max': 2.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:smoked_ham", count: '2.0~5.0', rolls: {'min': 1.0, 'max': 2.0, 'type': 'minecraft:uniform'}}
+  "chests/bastion_treasure":
+    - {item: "farmersdelight:diamond_knife", count: 1, rolls: 1}
+    - {item: "farmersdelight:diamond_knife", count: 1, rolls: 1}
+  "chests/end_city_treasure":
+    - {item: "farmersdelight:diamond_knife", count: 1, rolls: 1}
+    - {item: "farmersdelight:iron_knife", count: 1, rolls: 1}
+  "chests/pillager_outpost":
+    - {item: "farmersdelight:onion", count: '4.0~12.0', rolls: {'min': 1.0, 'max': 2.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:onion_crate", count: '1.0~3.0', rolls: {'min': 1.0, 'max': 2.0, 'type': 'minecraft:uniform'}}
+  "chests/ruined_portal":
+    - {item: "farmersdelight:golden_knife", count: 1, rolls: 1}
+  "chests/shipwreck_supply":
+    - {item: "farmersdelight:tomato_seeds", count: '2.0~4.0', rolls: {'min': 1.0, 'max': 2.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:cabbage_seeds", count: '2.0~4.0', rolls: {'min': 1.0, 'max': 2.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:onion", count: '2.0~4.0', rolls: {'min': 1.0, 'max': 2.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:rice", count: '2.0~4.0', rolls: {'min': 1.0, 'max': 2.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:rope", count: '4.0~12.0', rolls: {'min': 1.0, 'max': 3.0, 'type': 'minecraft:uniform'}}
+  "chests/simple_dungeon":
+    - {item: "farmersdelight:tomato_seeds", count: '2.0~4.0', rolls: {'min': 1.0, 'max': 4.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:cabbage_seeds", count: '2.0~4.0', rolls: {'min': 1.0, 'max': 4.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:rope", count: '2.0~12.0', rolls: 3}
+  "chests/village/crops_villager_houses":
+    - {item: "farmersdelight:tomato_seeds", count: '1.0~3.0', rolls: {'min': 2.0, 'max': 5.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:cabbage_seeds", count: '1.0~3.0', rolls: {'min': 2.0, 'max': 5.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:onion", count: '1.0~3.0', rolls: {'min': 2.0, 'max': 5.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:rice", count: '2.0~4.0', rolls: {'min': 2.0, 'max': 5.0, 'type': 'minecraft:uniform'}}
+  "chests/village/village_butcher":
+    - {item: "farmersdelight:flint_knife", count: 1, rolls: 1}
+    - {item: "farmersdelight:iron_knife", count: 1, rolls: 1}
+    - {item: "farmersdelight:ham", count: 1, rolls: {'min': 1.0, 'max': 2.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:minced_beef", count: '2.0~6.0', rolls: {'min': 1.0, 'max': 2.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:bacon", count: '2.0~6.0', rolls: {'min': 1.0, 'max': 2.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:mutton_chops", count: '2.0~6.0', rolls: {'min': 1.0, 'max': 2.0, 'type': 'minecraft:uniform'}}
+  "chests/village/village_desert_house":
+    - {item: "farmersdelight:tomato_seeds", count: '1.0~3.0', rolls: {'min': 1.0, 'max': 3.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:rice", count: '1.0~3.0', rolls: {'min': 1.0, 'max': 3.0, 'type': 'minecraft:uniform'}}
+  "chests/village/village_plains_house":
+    - {item: "farmersdelight:onion", count: '1.0~3.0', rolls: {'min': 1.0, 'max': 3.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:tomato_seeds", count: '1.0~3.0', rolls: {'min': 1.0, 'max': 3.0, 'type': 'minecraft:uniform'}}
+  "chests/village/village_savanna_house":
+    - {item: "farmersdelight:tomato_seeds", count: '1.0~3.0', rolls: {'min': 1.0, 'max': 3.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:cabbage_seeds", count: '1.0~3.0', rolls: {'min': 1.0, 'max': 3.0, 'type': 'minecraft:uniform'}}
+  "chests/village/village_snowy_house":
+    - {item: "farmersdelight:onion", count: '1.0~3.0', rolls: {'min': 1.0, 'max': 3.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:cabbage_seeds", count: '1.0~3.0', rolls: {'min': 1.0, 'max': 3.0, 'type': 'minecraft:uniform'}}
+  "chests/village/village_taiga_house":
+    - {item: "farmersdelight:cabbage_seeds", count: '1.0~3.0', rolls: {'min': 1.0, 'max': 3.0, 'type': 'minecraft:uniform'}}
+    - {item: "farmersdelight:rice", count: '1.0~3.0', rolls: {'min': 1.0, 'max': 3.0, 'type': 'minecraft:uniform'}}
+  "entities/cave_spider":
+    - {item: "minecraft:string", count: 1, rolls: 1}
+  "entities/chicken":
+    - {item: "minecraft:feather", count: 1, rolls: 1}
+  "entities/cow":
+    - {item: "minecraft:leather", count: 1, rolls: 1}
+  "entities/donkey":
+    - {item: "minecraft:leather", count: 1, rolls: 1}
+  "entities/hoglin":
+    - {item: "farmersdelight:ham", count: 1, rolls: 1}
+  "entities/horse":
+    - {item: "minecraft:leather", count: 1, rolls: 1}
+  "entities/llama":
+    - {item: "minecraft:leather", count: 1, rolls: 1}
+  "entities/mule":
+    - {item: "minecraft:leather", count: 1, rolls: 1}
+  "entities/pig":
+    - {item: "farmersdelight:ham", count: 1, rolls: 1}
+  "entities/rabbit":
+    - {item: "minecraft:rabbit_hide", count: 1, rolls: 1}
+  "entities/shulker":
+    - {item: "minecraft:shulker_shell", count: 1, rolls: 1}
+  "entities/spider":
+    - {item: "minecraft:string", count: 1, rolls: 1}

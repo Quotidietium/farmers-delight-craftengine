@@ -1,0 +1,266 @@
+recipes:
+  "apple_cider":
+    ingredients:
+      - ["minecraft:apple"]
+      - ["minecraft:apple"]
+      - ["minecraft:sugar"]
+    result: "farmersdelight:apple_cider"
+    experience: 1.0
+    cook_time: 200
+    tab: drinks
+
+  "baked_cod_stew":
+    ingredients:
+      - ["minecraft:cod", "farmersdelight:cod_slice"]
+      - ["minecraft:potato"]
+      - ["minecraft:egg"]
+      - ["farmersdelight:tomato"]
+    result: "farmersdelight:baked_cod_stew"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "beef_stew":
+    ingredients:
+      - ["minecraft:beef", "farmersdelight:minced_beef"]
+      - ["minecraft:carrot"]
+      - ["minecraft:potato"]
+    result: "farmersdelight:beef_stew"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "beetroot_soup":
+    ingredients:
+      - ["minecraft:beetroot"]
+      - ["minecraft:beetroot"]
+      - ["minecraft:beetroot"]
+    result: "minecraft:beetroot_soup"
+    container: "minecraft:bowl"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "bone_broth":
+    ingredients:
+      - ["minecraft:bone"]
+    result: "farmersdelight:bone_broth"
+    experience: 0.35
+    cook_time: 200
+    tab: meals
+
+  "cabbage_rolls":
+    ingredients:
+      - ["farmersdelight:cabbage", "farmersdelight:cabbage_leaf"]
+      - ["minecraft:carrot", "minecraft:potato", "minecraft:beetroot"]
+    result: "farmersdelight:cabbage_rolls"
+    experience: 0.35
+    cook_time: 100
+    tab: misc
+
+  "chicken_soup":
+    ingredients:
+      - ["minecraft:chicken", "farmersdelight:chicken_cuts"]
+      - ["minecraft:carrot"]
+    result: "farmersdelight:chicken_soup"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "cooked_rice":
+    ingredients:
+      - ["farmersdelight:rice"]
+    result: "farmersdelight:cooked_rice"
+    experience: 0.35
+    cook_time: 100
+    tab: misc
+
+  "dog_food":
+    ingredients:
+      - ["minecraft:rotten_flesh"]
+      - ["minecraft:bone_meal"]
+      - ["minecraft:rabbit"]
+      - ["farmersdelight:rice"]
+    result: "farmersdelight:dog_food"
+    experience: 1.0
+    cook_time: 200
+    tab: misc
+
+  "dumplings":
+    ingredients:
+      - ["farmersdelight:wheat_dough"]
+      - ["farmersdelight:cabbage", "farmersdelight:cabbage_leaf"]
+      - ["farmersdelight:onion"]
+    result: "farmersdelight:dumplings"
+    result_count: 2
+    experience: 1.0
+    cook_time: 200
+    tab: misc
+
+  "fish_stew":
+    ingredients:
+      - ["farmersdelight:tomato_sauce"]
+      - ["farmersdelight:onion"]
+    result: "farmersdelight:fish_stew"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "fried_rice":
+    ingredients:
+      - ["farmersdelight:rice"]
+      - ["minecraft:egg"]
+      - ["minecraft:carrot"]
+      - ["farmersdelight:onion"]
+    result: "farmersdelight:fried_rice"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "glow_berry_custard":
+    ingredients:
+      - ["minecraft:glow_berries"]
+      - ["minecraft:egg"]
+      - ["minecraft:sugar"]
+    result: "farmersdelight:glow_berry_custard"
+    experience: 1.0
+    cook_time: 200
+    tab: misc
+
+  "hot_cocoa":
+    ingredients:
+      - ["minecraft:sugar"]
+      - ["minecraft:cocoa_beans"]
+      - ["minecraft:cocoa_beans"]
+    result: "farmersdelight:hot_cocoa"
+    experience: 1.0
+    cook_time: 200
+    tab: drinks
+
+  "mushroom_rice":
+    ingredients:
+      - ["minecraft:brown_mushroom"]
+      - ["minecraft:red_mushroom"]
+      - ["farmersdelight:rice"]
+    result: "farmersdelight:mushroom_rice"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "mushroom_stew":
+    ingredients:
+      - ["minecraft:brown_mushroom"]
+      - ["minecraft:red_mushroom"]
+    result: "minecraft:mushroom_stew"
+    container: "minecraft:bowl"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "noodle_soup":
+    ingredients:
+      - ["farmersdelight:fried_egg"]
+      - ["minecraft:dried_kelp"]
+      - ["minecraft:porkchop", "farmersdelight:bacon"]
+    result: "farmersdelight:noodle_soup"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "pasta_with_meatballs":
+    ingredients:
+      - ["farmersdelight:minced_beef"]
+      - ["farmersdelight:tomato_sauce"]
+    result: "farmersdelight:pasta_with_meatballs"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "pasta_with_mutton_chop":
+    ingredients:
+      - ["minecraft:mutton", "farmersdelight:mutton_chops"]
+      - ["farmersdelight:tomato_sauce"]
+    result: "farmersdelight:pasta_with_mutton_chop"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "pumpkin_soup":
+    ingredients:
+      - ["farmersdelight:pumpkin_slice"]
+      - ["minecraft:porkchop", "farmersdelight:bacon"]
+    result: "farmersdelight:pumpkin_soup"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "rabbit_stew":
+    ingredients:
+      - ["minecraft:baked_potato"]
+      - ["minecraft:rabbit"]
+      - ["minecraft:carrot"]
+    result: "minecraft:rabbit_stew"
+    container: "minecraft:bowl"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "ratatouille":
+    ingredients:
+      - ["farmersdelight:tomato"]
+      - ["farmersdelight:onion"]
+      - ["minecraft:beetroot"]
+    result: "farmersdelight:ratatouille"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "squid_ink_pasta":
+    ingredients:
+      - ["farmersdelight:tomato"]
+      - ["minecraft:ink_sac"]
+    result: "farmersdelight:squid_ink_pasta"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "stuffed_pumpkin_block":
+    ingredients:
+      - ["farmersdelight:rice"]
+      - ["farmersdelight:onion"]
+      - ["minecraft:brown_mushroom"]
+      - ["minecraft:potato"]
+      - ["minecraft:sweet_berries", "minecraft:glow_berries"]
+    result: "farmersdelight:stuffed_pumpkin_block"
+    container: "minecraft:pumpkin"
+    experience: 2.0
+    cook_time: 400
+    tab: meals
+
+  "tomato_sauce":
+    ingredients:
+      - ["farmersdelight:tomato"]
+      - ["farmersdelight:tomato"]
+    result: "farmersdelight:tomato_sauce"
+    experience: 0.35
+    cook_time: 100
+    tab: misc
+
+  "vegetable_noodles":
+    ingredients:
+      - ["minecraft:carrot"]
+      - ["minecraft:brown_mushroom"]
+    result: "farmersdelight:vegetable_noodles"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
+
+  "vegetable_soup":
+    ingredients:
+      - ["minecraft:carrot"]
+      - ["minecraft:potato"]
+      - ["minecraft:beetroot"]
+    result: "farmersdelight:vegetable_soup"
+    experience: 1.0
+    cook_time: 200
+    tab: meals
