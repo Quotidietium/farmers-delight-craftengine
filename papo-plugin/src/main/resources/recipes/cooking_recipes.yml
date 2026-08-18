@@ -52,7 +52,7 @@ recipes:
   "cabbage_rolls":
     ingredients:
       - ["farmersdelight:cabbage", "farmersdelight:cabbage_leaf"]
-      - ["minecraft:carrot", "minecraft:potato", "minecraft:beetroot"]
+      - ["minecraft:porkchop", "farmersdelight:bacon", "minecraft:cod", "farmersdelight:cod_slice", "minecraft:salmon", "farmersdelight:salmon_slice", "minecraft:tropical_fish", "minecraft:chicken", "farmersdelight:chicken_cuts", "minecraft:beef", "farmersdelight:minced_beef", "minecraft:mutton", "farmersdelight:mutton_chops", "minecraft:egg", "minecraft:brown_mushroom", "minecraft:red_mushroom", "minecraft:carrot", "minecraft:potato", "minecraft:beetroot"]
     result: "farmersdelight:cabbage_rolls"
     experience: 0.35
     cook_time: 100
@@ -62,6 +62,8 @@ recipes:
     ingredients:
       - ["minecraft:chicken", "farmersdelight:chicken_cuts"]
       - ["minecraft:carrot"]
+      - ["farmersdelight:cabbage", "farmersdelight:cabbage_leaf"]
+      - ["minecraft:beetroot", "minecraft:carrot", "farmersdelight:onion", "minecraft:potato", "farmersdelight:tomato"]
     result: "farmersdelight:chicken_soup"
     experience: 1.0
     cook_time: 200
@@ -79,7 +81,7 @@ recipes:
     ingredients:
       - ["minecraft:rotten_flesh"]
       - ["minecraft:bone_meal"]
-      - ["minecraft:rabbit"]
+      - ["minecraft:chicken", "farmersdelight:chicken_cuts", "minecraft:mutton", "farmersdelight:mutton_chops", "minecraft:rabbit"]
       - ["farmersdelight:rice"]
     result: "farmersdelight:dog_food"
     experience: 1.0
@@ -99,6 +101,7 @@ recipes:
 
   "fish_stew":
     ingredients:
+      - ["minecraft:cod", "farmersdelight:cod_slice", "minecraft:salmon", "farmersdelight:salmon_slice", "minecraft:tropical_fish"]
       - ["farmersdelight:tomato_sauce"]
       - ["farmersdelight:onion"]
     result: "farmersdelight:fish_stew"
@@ -120,6 +123,7 @@ recipes:
   "glow_berry_custard":
     ingredients:
       - ["minecraft:glow_berries"]
+      - ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
       - ["minecraft:egg"]
       - ["minecraft:sugar"]
     result: "farmersdelight:glow_berry_custard"
@@ -129,6 +133,7 @@ recipes:
 
   "hot_cocoa":
     ingredients:
+      - ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
       - ["minecraft:sugar"]
       - ["minecraft:cocoa_beans"]
       - ["minecraft:cocoa_beans"]
@@ -159,6 +164,7 @@ recipes:
 
   "noodle_soup":
     ingredients:
+      - ["farmersdelight:raw_pasta"]
       - ["farmersdelight:fried_egg"]
       - ["minecraft:dried_kelp"]
       - ["minecraft:porkchop", "farmersdelight:bacon"]
@@ -170,6 +176,7 @@ recipes:
   "pasta_with_meatballs":
     ingredients:
       - ["farmersdelight:minced_beef"]
+      - ["farmersdelight:raw_pasta"]
       - ["farmersdelight:tomato_sauce"]
     result: "farmersdelight:pasta_with_meatballs"
     experience: 1.0
@@ -179,6 +186,7 @@ recipes:
   "pasta_with_mutton_chop":
     ingredients:
       - ["minecraft:mutton", "farmersdelight:mutton_chops"]
+      - ["farmersdelight:raw_pasta"]
       - ["farmersdelight:tomato_sauce"]
     result: "farmersdelight:pasta_with_mutton_chop"
     experience: 1.0
@@ -188,7 +196,9 @@ recipes:
   "pumpkin_soup":
     ingredients:
       - ["farmersdelight:pumpkin_slice"]
+      - ["farmersdelight:cabbage", "farmersdelight:cabbage_leaf"]
       - ["minecraft:porkchop", "farmersdelight:bacon"]
+      - ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
     result: "farmersdelight:pumpkin_soup"
     experience: 1.0
     cook_time: 200
@@ -210,6 +220,7 @@ recipes:
       - ["farmersdelight:tomato"]
       - ["farmersdelight:onion"]
       - ["minecraft:beetroot"]
+      - ["minecraft:beetroot", "minecraft:carrot", "farmersdelight:onion", "minecraft:potato", "farmersdelight:tomato"]
     result: "farmersdelight:ratatouille"
     experience: 1.0
     cook_time: 200
@@ -217,6 +228,8 @@ recipes:
 
   "squid_ink_pasta":
     ingredients:
+      - ["minecraft:cod", "farmersdelight:cod_slice", "minecraft:salmon", "farmersdelight:salmon_slice", "minecraft:tropical_fish"]
+      - ["farmersdelight:raw_pasta"]
       - ["farmersdelight:tomato"]
       - ["minecraft:ink_sac"]
     result: "farmersdelight:squid_ink_pasta"
@@ -231,6 +244,7 @@ recipes:
       - ["minecraft:brown_mushroom"]
       - ["minecraft:potato"]
       - ["minecraft:sweet_berries", "minecraft:glow_berries"]
+      - ["minecraft:beetroot", "minecraft:carrot", "farmersdelight:onion", "minecraft:potato", "farmersdelight:tomato"]
     result: "farmersdelight:stuffed_pumpkin_block"
     container: "minecraft:pumpkin"
     experience: 2.0
@@ -250,6 +264,9 @@ recipes:
     ingredients:
       - ["minecraft:carrot"]
       - ["minecraft:brown_mushroom"]
+      - ["farmersdelight:raw_pasta"]
+      - ["farmersdelight:cabbage", "farmersdelight:cabbage_leaf"]
+      - ["minecraft:beetroot", "minecraft:carrot", "farmersdelight:onion", "minecraft:potato", "farmersdelight:tomato"]
     result: "farmersdelight:vegetable_noodles"
     experience: 1.0
     cook_time: 200
@@ -260,6 +277,7 @@ recipes:
       - ["minecraft:carrot"]
       - ["minecraft:potato"]
       - ["minecraft:beetroot"]
+      - ["farmersdelight:cabbage", "farmersdelight:cabbage_leaf"]
     result: "farmersdelight:vegetable_soup"
     experience: 1.0
     cook_time: 200

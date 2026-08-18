@@ -391,19 +391,19 @@ blocks:
           range: 0~3
       appearances:
         app0:
-          auto_state: weeping_vines
+          auto_state: weeping_vine
           model:
             path: "farmersdelight:block/brown_mushroom_colony_stage0"
         app1:
-          auto_state: weeping_vines
+          auto_state: weeping_vine
           model:
             path: "farmersdelight:block/brown_mushroom_colony_stage1"
         app2:
-          auto_state: weeping_vines
+          auto_state: weeping_vine
           model:
             path: "farmersdelight:block/brown_mushroom_colony_stage2"
         app3:
-          auto_state: weeping_vines
+          auto_state: weeping_vine
           model:
             path: "farmersdelight:block/brown_mushroom_colony_stage3"
       variants:
@@ -434,19 +434,19 @@ blocks:
           range: 0~4
       appearances:
         app0:
-          auto_state: twisting_vines
+          auto_state: twisting_vine
           model:
             path: "farmersdelight:block/budding_tomatoes_stage0"
         app1:
-          auto_state: twisting_vines
+          auto_state: twisting_vine
           model:
             path: "farmersdelight:block/budding_tomatoes_stage1"
         app2:
-          auto_state: twisting_vines
+          auto_state: twisting_vine
           model:
             path: "farmersdelight:block/budding_tomatoes_stage2"
         app3:
-          auto_state: twisting_vines
+          auto_state: twisting_vine
           model:
             path: "farmersdelight:block/budding_tomatoes_stage3"
       variants:
@@ -500,35 +500,35 @@ blocks:
           range: 0~7
       appearances:
         app0:
-          auto_state: cave_vines
+          auto_state: cave_vine
           model:
             path: "farmersdelight:block/cabbages_stage0"
         app1:
-          auto_state: cave_vines
+          auto_state: cave_vine
           model:
             path: "farmersdelight:block/cabbages_stage1"
         app2:
-          auto_state: cave_vines
+          auto_state: cave_vine
           model:
             path: "farmersdelight:block/cabbages_stage2"
         app3:
-          auto_state: cave_vines
+          auto_state: cave_vine
           model:
             path: "farmersdelight:block/cabbages_stage3"
         app4:
-          auto_state: cave_vines
+          auto_state: cave_vine
           model:
             path: "farmersdelight:block/cabbages_stage4"
         app5:
-          auto_state: cave_vines
+          auto_state: cave_vine
           model:
             path: "farmersdelight:block/cabbages_stage5"
         app6:
-          auto_state: cave_vines
+          auto_state: cave_vine
           model:
             path: "farmersdelight:block/cabbages_stage6"
         app7:
-          auto_state: cave_vines
+          auto_state: cave_vine
           model:
             path: "farmersdelight:block/cabbages_stage7"
       variants:
@@ -1283,19 +1283,19 @@ blocks:
           range: 0~3
       appearances:
         app0:
-          auto_state: weeping_vines
+          auto_state: weeping_vine
           model:
             path: "farmersdelight:block/red_mushroom_colony_stage0"
         app1:
-          auto_state: weeping_vines
+          auto_state: weeping_vine
           model:
             path: "farmersdelight:block/red_mushroom_colony_stage1"
         app2:
-          auto_state: weeping_vines
+          auto_state: weeping_vine
           model:
             path: "farmersdelight:block/red_mushroom_colony_stage2"
         app3:
-          auto_state: weeping_vines
+          auto_state: weeping_vine
           model:
             path: "farmersdelight:block/red_mushroom_colony_stage3"
       variants:
@@ -1580,7 +1580,7 @@ blocks:
 
   "farmersdelight:sandy_shrub":
     state:
-      auto_state: weeping_vines
+      auto_state: weeping_vine
       model:
         path: "farmersdelight:block/sandy_shrub"
     settings:
@@ -1966,35 +1966,35 @@ blocks:
           default: false
       appearances:
         app0:
-          auto_state: twisting_vines
+          auto_state: twisting_vine
           model:
             path: "farmersdelight:block/tomatoes_stage0"
         app1:
-          auto_state: twisting_vines
+          auto_state: twisting_vine
           model:
             path: "farmersdelight:block/tomatoes_stage1"
         app2:
-          auto_state: twisting_vines
+          auto_state: twisting_vine
           model:
             path: "farmersdelight:block/tomatoes_stage2"
         app3:
-          auto_state: twisting_vines
+          auto_state: twisting_vine
           model:
             path: "farmersdelight:block/tomatoes_stage3"
         app4:
-          auto_state: twisting_vines
+          auto_state: twisting_vine
           model:
             path: "farmersdelight:block/tomatoes_vine_stage0"
         app5:
-          auto_state: twisting_vines
+          auto_state: twisting_vine
           model:
             path: "farmersdelight:block/tomatoes_vine_stage1"
         app6:
-          auto_state: twisting_vines
+          auto_state: twisting_vine
           model:
             path: "farmersdelight:block/tomatoes_vine_stage2"
         app7:
-          auto_state: twisting_vines
+          auto_state: twisting_vine
           model:
             path: "farmersdelight:block/tomatoes_vine_stage3"
       variants:
@@ -2107,7 +2107,7 @@ blocks:
 
   "farmersdelight:wild_beetroots":
     state:
-      auto_state: weeping_vines
+      auto_state: weeping_vine
       model:
         path: "farmersdelight:block/wild_beetroots"
     settings:
@@ -2122,7 +2122,7 @@ blocks:
 
   "farmersdelight:wild_cabbages":
     state:
-      auto_state: weeping_vines
+      auto_state: weeping_vine
       model:
         path: "farmersdelight:block/wild_cabbages"
     settings:
@@ -2137,7 +2137,7 @@ blocks:
 
   "farmersdelight:wild_carrots":
     state:
-      auto_state: weeping_vines
+      auto_state: weeping_vine
       model:
         path: "farmersdelight:block/wild_carrots"
     settings:
@@ -2152,7 +2152,7 @@ blocks:
 
   "farmersdelight:wild_onions":
     state:
-      auto_state: weeping_vines
+      auto_state: weeping_vine
       model:
         path: "farmersdelight:block/wild_onions"
     settings:
@@ -2167,7 +2167,7 @@ blocks:
 
   "farmersdelight:wild_potatoes":
     state:
-      auto_state: weeping_vines
+      auto_state: weeping_vine
       model:
         path: "farmersdelight:block/wild_potatoes"
     settings:
@@ -2189,11 +2189,11 @@ blocks:
           values: [upper, lower]
       appearances:
         app0:
-          auto_state: cave_vines
+          auto_state: cave_vine
           model:
             path: "farmersdelight:block/wild_rice_top"
         app1:
-          auto_state: cave_vines
+          auto_state: cave_vine
           model:
             path: "farmersdelight:block/wild_rice_bottom"
       variants:
@@ -2213,7 +2213,7 @@ blocks:
 
   "farmersdelight:wild_tomatoes":
     state:
-      auto_state: weeping_vines
+      auto_state: weeping_vine
       model:
         path: "farmersdelight:block/wild_tomatoes"
     settings:

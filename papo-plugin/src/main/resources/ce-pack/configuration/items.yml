@@ -78,6 +78,8 @@ items:
       path: "farmersdelight:item/wild_cabbages"
     data:
       item_name: "<!i><lang:item.farmersdelight.wild_cabbages>"
+    settings:
+      tags: ["farmersdelight:wild_crops"]
     behavior:
       type: block_item
       block: "farmersdelight:wild_cabbages"
@@ -89,6 +91,8 @@ items:
       path: "farmersdelight:item/wild_onions"
     data:
       item_name: "<!i><lang:item.farmersdelight.wild_onions>"
+    settings:
+      tags: ["farmersdelight:wild_crops"]
     behavior:
       type: block_item
       block: "farmersdelight:wild_onions"
@@ -100,6 +104,8 @@ items:
       path: "farmersdelight:item/wild_tomatoes"
     data:
       item_name: "<!i><lang:item.farmersdelight.wild_tomatoes>"
+    settings:
+      tags: ["farmersdelight:wild_crops"]
     behavior:
       type: block_item
       block: "farmersdelight:wild_tomatoes"
@@ -111,6 +117,8 @@ items:
       path: "farmersdelight:item/wild_carrots"
     data:
       item_name: "<!i><lang:item.farmersdelight.wild_carrots>"
+    settings:
+      tags: ["farmersdelight:wild_crops"]
     behavior:
       type: block_item
       block: "farmersdelight:wild_carrots"
@@ -122,6 +130,8 @@ items:
       path: "farmersdelight:item/wild_potatoes"
     data:
       item_name: "<!i><lang:item.farmersdelight.wild_potatoes>"
+    settings:
+      tags: ["farmersdelight:wild_crops"]
     behavior:
       type: block_item
       block: "farmersdelight:wild_potatoes"
@@ -133,6 +143,8 @@ items:
       path: "farmersdelight:item/wild_beetroots"
     data:
       item_name: "<!i><lang:item.farmersdelight.wild_beetroots>"
+    settings:
+      tags: ["farmersdelight:wild_crops"]
     behavior:
       type: block_item
       block: "farmersdelight:wild_beetroots"
@@ -144,6 +156,8 @@ items:
       path: "farmersdelight:item/wild_rice"
     data:
       item_name: "<!i><lang:item.farmersdelight.wild_rice>"
+    settings:
+      tags: ["farmersdelight:wild_crops"]
     behavior:
       type: block_item
       block: "farmersdelight:wild_rice"
@@ -304,6 +318,7 @@ items:
       item_name: "<!i><lang:item.farmersdelight.oak_cabinet>"
     settings:
       fuel_time: 300
+      tags: ["farmersdelight:cabinets/wooden"]
     behavior:
       type: block_item
       block: "farmersdelight:oak_cabinet"
@@ -317,6 +332,7 @@ items:
       item_name: "<!i><lang:item.farmersdelight.birch_cabinet>"
     settings:
       fuel_time: 300
+      tags: ["farmersdelight:cabinets/wooden"]
     behavior:
       type: block_item
       block: "farmersdelight:birch_cabinet"
@@ -330,6 +346,7 @@ items:
       item_name: "<!i><lang:item.farmersdelight.spruce_cabinet>"
     settings:
       fuel_time: 300
+      tags: ["farmersdelight:cabinets/wooden"]
     behavior:
       type: block_item
       block: "farmersdelight:spruce_cabinet"
@@ -343,6 +360,7 @@ items:
       item_name: "<!i><lang:item.farmersdelight.jungle_cabinet>"
     settings:
       fuel_time: 300
+      tags: ["farmersdelight:cabinets/wooden"]
     behavior:
       type: block_item
       block: "farmersdelight:jungle_cabinet"
@@ -356,6 +374,7 @@ items:
       item_name: "<!i><lang:item.farmersdelight.acacia_cabinet>"
     settings:
       fuel_time: 300
+      tags: ["farmersdelight:cabinets/wooden"]
     behavior:
       type: block_item
       block: "farmersdelight:acacia_cabinet"
@@ -369,6 +388,7 @@ items:
       item_name: "<!i><lang:item.farmersdelight.dark_oak_cabinet>"
     settings:
       fuel_time: 300
+      tags: ["farmersdelight:cabinets/wooden"]
     behavior:
       type: block_item
       block: "farmersdelight:dark_oak_cabinet"
@@ -393,6 +413,8 @@ items:
       path: "farmersdelight:item/crimson_cabinet"
     data:
       item_name: "<!i><lang:item.farmersdelight.crimson_cabinet>"
+    settings:
+      tags: ["farmersdelight:cabinets/wooden"]
     behavior:
       type: block_item
       block: "farmersdelight:crimson_cabinet"
@@ -404,6 +426,8 @@ items:
       path: "farmersdelight:item/warped_cabinet"
     data:
       item_name: "<!i><lang:item.farmersdelight.warped_cabinet>"
+    settings:
+      tags: ["farmersdelight:cabinets/wooden"]
     behavior:
       type: block_item
       block: "farmersdelight:warped_cabinet"
@@ -467,6 +491,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:item.farmersdelight.canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
 
   "farmersdelight:white_canvas_sign":
     material: minecraft:paper
@@ -475,6 +501,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.white_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:white_canvas_sign"
@@ -486,6 +514,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.orange_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:orange_canvas_sign"
@@ -497,6 +527,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.magenta_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:magenta_canvas_sign"
@@ -508,6 +540,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.light_blue_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:light_blue_canvas_sign"
@@ -519,6 +553,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.yellow_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:yellow_canvas_sign"
@@ -530,6 +566,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.lime_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:lime_canvas_sign"
@@ -541,6 +579,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.pink_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:pink_canvas_sign"
@@ -552,6 +592,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.gray_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:gray_canvas_sign"
@@ -563,6 +605,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.light_gray_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:light_gray_canvas_sign"
@@ -574,6 +618,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.cyan_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:cyan_canvas_sign"
@@ -585,6 +631,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.purple_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:purple_canvas_sign"
@@ -596,6 +644,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.blue_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:blue_canvas_sign"
@@ -607,6 +657,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.brown_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:brown_canvas_sign"
@@ -618,6 +670,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.green_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:green_canvas_sign"
@@ -629,6 +683,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.red_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:red_canvas_sign"
@@ -640,6 +696,8 @@ items:
       path: "farmersdelight:item/canvas_sign"
     data:
       item_name: "<!i><lang:block.farmersdelight.black_canvas_sign>"
+    settings:
+      tags: ["farmersdelight:canvas_signs"]
     behavior:
       type: furniture_item
       furniture: "farmersdelight:black_canvas_sign"
@@ -778,6 +836,8 @@ items:
       attribute_modifiers:
         - {type: attack_damage, amount: 1.5, operation: add_value, slot: mainhand}
         - {type: attack_speed, amount: -1.8, operation: add_value, slot: mainhand}
+    settings:
+      tags: ["c:tools/knives"]
 
   "farmersdelight:iron_knife":
     material: minecraft:iron_nugget
@@ -792,6 +852,8 @@ items:
       attribute_modifiers:
         - {type: attack_damage, amount: 2.5, operation: add_value, slot: mainhand}
         - {type: attack_speed, amount: -1.8, operation: add_value, slot: mainhand}
+    settings:
+      tags: ["c:tools/knives"]
 
   "farmersdelight:golden_knife":
     material: minecraft:gold_nugget
@@ -806,6 +868,8 @@ items:
       attribute_modifiers:
         - {type: attack_damage, amount: 1.5, operation: add_value, slot: mainhand}
         - {type: attack_speed, amount: -1.8, operation: add_value, slot: mainhand}
+    settings:
+      tags: ["c:tools/knives"]
 
   "farmersdelight:diamond_knife":
     material: minecraft:diamond
@@ -820,6 +884,8 @@ items:
       attribute_modifiers:
         - {type: attack_damage, amount: 3.5, operation: add_value, slot: mainhand}
         - {type: attack_speed, amount: -1.8, operation: add_value, slot: mainhand}
+    settings:
+      tags: ["c:tools/knives"]
 
   "farmersdelight:netherite_knife":
     material: minecraft:netherite_scrap
@@ -834,6 +900,8 @@ items:
       attribute_modifiers:
         - {type: attack_damage, amount: 4.5, operation: add_value, slot: mainhand}
         - {type: attack_speed, amount: -1.8, operation: add_value, slot: mainhand}
+    settings:
+      tags: ["c:tools/knives"]
 
   "farmersdelight:straw":
     material: minecraft:paper
@@ -881,6 +949,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:crops/cabbage", "c:salad_ingredients/cabbage"]
 
   "farmersdelight:cabbage_seeds":
     material: minecraft:paper
@@ -889,6 +959,8 @@ items:
       path: "farmersdelight:item/cabbage_seeds"
     data:
       item_name: "<!i><lang:item.farmersdelight.cabbage_seeds>"
+    settings:
+      tags: ["c:seeds/cabbage"]
     behavior:
       type: block_item
       block: "farmersdelight:cabbages"
@@ -909,6 +981,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:crops/tomato", "c:vegetables/tomato"]
 
   "farmersdelight:tomato_seeds":
     material: minecraft:paper
@@ -917,6 +991,8 @@ items:
       path: "farmersdelight:item/tomato_seeds"
     data:
       item_name: "<!i><lang:item.farmersdelight.tomato_seeds>"
+    settings:
+      tags: ["c:seeds/tomato"]
     behavior:
       type: block_item
       block: "farmersdelight:budding_tomatoes"
@@ -937,6 +1013,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:crops/onion", "c:vegetables/onion"]
     behavior:
       type: block_item
       block: "farmersdelight:onions"
@@ -956,6 +1034,8 @@ items:
       path: "farmersdelight:item/rice"
     data:
       item_name: "<!i><lang:item.farmersdelight.rice>"
+    settings:
+      tags: ["c:crops/rice", "c:grain/rice", "c:seeds/rice"]
     behavior:
       type: block_item
       block: "farmersdelight:rice"
@@ -984,6 +1064,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:cooked_eggs"]
 
   "farmersdelight:milk_bottle":
     material: minecraft:paper
@@ -992,6 +1074,8 @@ items:
       path: "farmersdelight:item/milk_bottle"
     data:
       item_name: "<!i><lang:item.farmersdelight.milk_bottle>"
+    settings:
+      tags: ["c:milk/milk_bottle"]
 
   "farmersdelight:hot_cocoa":
     material: minecraft:paper
@@ -1062,6 +1146,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:dough"]
 
   "farmersdelight:raw_pasta":
     material: minecraft:bread
@@ -1079,6 +1165,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:pasta/raw_pasta"]
 
   "farmersdelight:pumpkin_slice":
     material: minecraft:bread
@@ -1113,6 +1201,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:crops/cabbage", "c:salad_ingredients/cabbage"]
 
   "farmersdelight:minced_beef":
     material: minecraft:bread
@@ -1130,6 +1220,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:raw_beef"]
 
   "farmersdelight:beef_patty":
     material: minecraft:bread
@@ -1147,6 +1239,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:cooked_beef"]
 
   "farmersdelight:chicken_cuts":
     material: minecraft:bread
@@ -1164,6 +1258,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:raw_chicken"]
 
   "farmersdelight:cooked_chicken_cuts":
     material: minecraft:bread
@@ -1181,6 +1277,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:cooked_chicken"]
 
   "farmersdelight:bacon":
     material: minecraft:bread
@@ -1198,6 +1296,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:raw_bacon", "c:raw_pork"]
 
   "farmersdelight:cooked_bacon":
     material: minecraft:bread
@@ -1215,6 +1315,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:cooked_bacon", "c:cooked_pork"]
 
   "farmersdelight:cod_slice":
     material: minecraft:bread
@@ -1232,6 +1334,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:raw_fishes/cod"]
 
   "farmersdelight:cooked_cod_slice":
     material: minecraft:bread
@@ -1249,6 +1353,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:cooked_fishes/cod"]
 
   "farmersdelight:salmon_slice":
     material: minecraft:bread
@@ -1266,6 +1372,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:raw_fishes/salmon"]
 
   "farmersdelight:cooked_salmon_slice":
     material: minecraft:bread
@@ -1283,6 +1391,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:cooked_fishes/salmon"]
 
   "farmersdelight:mutton_chops":
     material: minecraft:bread
@@ -1300,6 +1410,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:raw_mutton"]
 
   "farmersdelight:cooked_mutton_chops":
     material: minecraft:bread
@@ -1317,6 +1429,8 @@ items:
         sound: minecraft:entity.generic.eat
         has_consume_particles: true
       minecraft:max_stack_size: 64
+    settings:
+      tags: ["c:cooked_mutton"]
 
   "farmersdelight:ham":
     material: minecraft:bread
@@ -2212,3 +2326,11 @@ items:
       path: "farmersdelight:item/dog_food"
     data:
       item_name: "<!i><lang:item.farmersdelight.dog_food>"
+
+  "farmersdelight:horse_feed":
+    material: minecraft:paper
+    model:
+      type: minecraft:model
+      path: "farmersdelight:item/horse_feed"
+    data:
+      item_name: "<!i><lang:item.farmersdelight.horse_feed>"

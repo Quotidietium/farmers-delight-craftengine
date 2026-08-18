@@ -32,14 +32,14 @@ PLANT_BLOCKS = {
 # distribute plant appearances across several no-collision auto_state groups
 # (capacities: kelp 26, twisting_vines 26, weeping_vines 26, cave_vines 52)
 PLANT_GROUP = {
-    "rice": "kelp", "rice_panicle": "kelp", "cabbages": "cave_vines", "onions": "kelp",
-    "tomatoes": "twisting_vines", "budding_tomatoes": "twisting_vines",
-    "wild_rice": "cave_vines",
-    "wild_cabbages": "weeping_vines", "wild_onions": "weeping_vines",
-    "wild_tomatoes": "weeping_vines", "wild_carrots": "weeping_vines",
-    "wild_potatoes": "weeping_vines", "wild_beetroots": "weeping_vines",
-    "sandy_shrub": "weeping_vines",
-    "brown_mushroom_colony": "weeping_vines", "red_mushroom_colony": "weeping_vines",
+    "rice": "kelp", "rice_panicle": "kelp", "cabbages": "cave_vine", "onions": "kelp",
+    "tomatoes": "twisting_vine", "budding_tomatoes": "twisting_vine",
+    "wild_rice": "cave_vine",
+    "wild_cabbages": "weeping_vine", "wild_onions": "weeping_vine",
+    "wild_tomatoes": "weeping_vine", "wild_carrots": "weeping_vine",
+    "wild_potatoes": "weeping_vine", "wild_beetroots": "weeping_vine",
+    "sandy_shrub": "weeping_vine",
+    "brown_mushroom_colony": "weeping_vine", "red_mushroom_colony": "weeping_vine",
 }
 
 # blocks whose drops are fully plugin-controlled (no CE loot)

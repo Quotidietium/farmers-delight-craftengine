@@ -58,14 +58,14 @@ recipes:
     type: shapeless
     ingredients:
       - "minecraft:baked_potato"
-      - "#c:milk"
+      - ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
       - "minecraft:baked_potato"
-      - "#c:cooked_mutton"
-      - "#c:cooked_mutton"
-      - "#c:cooked_mutton"
-      - "#c:crops/onion"
+      - ["minecraft:cooked_mutton", "farmersdelight:cooked_mutton_chops"]
+      - ["minecraft:cooked_mutton", "farmersdelight:cooked_mutton_chops"]
+      - ["minecraft:cooked_mutton", "farmersdelight:cooked_mutton_chops"]
+      - ["farmersdelight:onion"]
       - "minecraft:bowl"
-      - "#c:crops/onion"
+      - ["farmersdelight:onion"]
     result:
       id: farmersdelight:shepherds_pie_block
 
@@ -76,7 +76,7 @@ recipes:
       - " ##"
       - "/  "
     ingredients:
-      #: "#c:iron_ingots"
+      #: ["minecraft:iron_ingot"]
       /: "minecraft:brick"
     result:
       id: farmersdelight:skillet
@@ -106,7 +106,7 @@ recipes:
       - "minecraft:baked_potato"
       - "minecraft:cooked_beef"
       - "minecraft:bowl"
-      - "#c:crops/onion"
+      - ["farmersdelight:onion"]
       - "farmersdelight:cooked_rice"
     result:
       id: farmersdelight:steak_and_potatoes
@@ -120,7 +120,7 @@ recipes:
     ingredients:
       B: "minecraft:bricks"
       C: "minecraft:campfire"
-      i: "#c:iron_ingots"
+      i: ["minecraft:iron_ingot"]
     result:
       id: farmersdelight:stove
 
@@ -147,8 +147,8 @@ recipes:
     type: shapeless
     ingredients:
       - "minecraft:baked_potato"
-      - "#c:cooked_beef"
-      - "#c:milk"
+      - ["minecraft:cooked_beef", "farmersdelight:beef_patty"]
+      - ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
     result:
       id: farmersdelight:stuffed_potato
 
@@ -160,7 +160,7 @@ recipes:
       - "mOm"
     ingredients:
       O: "farmersdelight:pie_crust"
-      m: "#c:milk"
+      m: ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
       s: "minecraft:sweet_berries"
     result:
       id: farmersdelight:sweet_berry_cheesecake
@@ -258,7 +258,7 @@ recipes:
   "farmersdelight:wheat_dough_from_eggs":
     type: shapeless
     ingredients:
-      - "#c:eggs"
+      - ["minecraft:egg"]
       - "minecraft:wheat"
       - "minecraft:wheat"
       - "minecraft:wheat"
@@ -282,7 +282,7 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:white_dyes"
+      - ["minecraft:white_dye"]
     result:
       id: farmersdelight:white_canvas_sign
 
@@ -291,6 +291,6 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:yellow_dyes"
+      - ["minecraft:yellow_dye"]
     result:
       id: farmersdelight:yellow_canvas_sign

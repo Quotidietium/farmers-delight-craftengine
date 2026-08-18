@@ -7,8 +7,8 @@ recipes:
       - "minecraft:apple"
       - "minecraft:melon_slice"
       - "minecraft:melon_slice"
-      - "#c:berries"
-      - "#c:berries"
+      - ["minecraft:sweet_berries", "minecraft:glow_berries"]
+      - ["minecraft:sweet_berries", "minecraft:glow_berries"]
       - "farmersdelight:pumpkin_slice"
       - "minecraft:bowl"
     result:
@@ -62,7 +62,7 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:gray_dyes"
+      - ["minecraft:gray_dye"]
     result:
       id: farmersdelight:gray_canvas_sign
 
@@ -71,18 +71,18 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:green_dyes"
+      - ["minecraft:green_dye"]
     result:
       id: farmersdelight:green_canvas_sign
 
   "farmersdelight:grilled_salmon":
     type: shapeless
     ingredients:
-      - "#c:cooked_fishes/salmon"
+      - ["minecraft:cooked_salmon", "farmersdelight:cooked_salmon_slice"]
       - "minecraft:sweet_berries"
       - "minecraft:bowl"
-      - "#c:crops/cabbage"
-      - "#c:crops/onion"
+      - ["farmersdelight:cabbage", "farmersdelight:cabbage_leaf"]
+      - ["farmersdelight:onion"]
     result:
       id: farmersdelight:grilled_salmon
 
@@ -97,11 +97,11 @@ recipes:
   "farmersdelight:hamburger":
     type: shapeless
     ingredients:
-      - "#c:bread"
+      - ["minecraft:bread"]
       - "farmersdelight:beef_patty"
-      - "#c:salad_ingredients"
-      - "#c:crops/tomato"
-      - "#c:crops/onion"
+      - ["farmersdelight:cabbage", "farmersdelight:cabbage_leaf"]
+      - ["farmersdelight:tomato"]
+      - ["farmersdelight:onion"]
     result:
       id: farmersdelight:hamburger
 
@@ -207,7 +207,7 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:light_blue_dyes"
+      - ["minecraft:light_blue_dye"]
     result:
       id: farmersdelight:light_blue_canvas_sign
 
@@ -216,7 +216,7 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:light_gray_dyes"
+      - ["minecraft:light_gray_dye"]
     result:
       id: farmersdelight:light_gray_canvas_sign
 
@@ -225,7 +225,7 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:lime_dyes"
+      - ["minecraft:lime_dye"]
     result:
       id: farmersdelight:lime_canvas_sign
 
@@ -234,7 +234,7 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:magenta_dyes"
+      - ["minecraft:magenta_dye"]
     result:
       id: farmersdelight:magenta_canvas_sign
 
@@ -301,8 +301,8 @@ recipes:
   "farmersdelight:mixed_salad":
     type: shapeless
     ingredients:
-      - "#c:salad_ingredients"
-      - "#c:crops/tomato"
+      - ["farmersdelight:cabbage", "farmersdelight:cabbage_leaf"]
+      - ["farmersdelight:tomato"]
       - "minecraft:beetroot"
       - "minecraft:bowl"
     result:
@@ -311,10 +311,10 @@ recipes:
   "farmersdelight:mutton_wrap":
     type: shapeless
     ingredients:
-      - "#c:bread"
-      - "#c:cooked_mutton"
-      - "#c:salad_ingredients"
-      - "#c:crops/onion"
+      - ["minecraft:bread"]
+      - ["minecraft:cooked_mutton", "farmersdelight:cooked_mutton_chops"]
+      - ["farmersdelight:cabbage", "farmersdelight:cabbage_leaf"]
+      - ["farmersdelight:onion"]
     result:
       id: farmersdelight:mutton_wrap
 
@@ -371,7 +371,7 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:orange_dyes"
+      - ["minecraft:orange_dye"]
     result:
       id: farmersdelight:orange_canvas_sign
 
@@ -442,7 +442,7 @@ recipes:
       - "wMw"
       - " w "
     ingredients:
-      M: "#c:milk"
+      M: ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
       w: "minecraft:wheat"
     result:
       id: farmersdelight:pie_crust
@@ -452,7 +452,7 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:pink_dyes"
+      - ["minecraft:pink_dye"]
     result:
       id: farmersdelight:pink_canvas_sign
 
@@ -497,14 +497,14 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:purple_dyes"
+      - ["minecraft:purple_dye"]
     result:
       id: farmersdelight:purple_canvas_sign
 
   "farmersdelight:raw_pasta_from_eggs":
     type: shapeless
     ingredients:
-      - "#c:eggs"
+      - ["minecraft:egg"]
       - "minecraft:wheat"
       - "minecraft:wheat"
     result:
@@ -527,7 +527,7 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:red_dyes"
+      - ["minecraft:red_dye"]
     result:
       id: farmersdelight:red_canvas_sign
 
@@ -594,8 +594,8 @@ recipes:
   "farmersdelight:roast_chicken_block":
     type: shapeless
     ingredients:
-      - "#c:crops/onion"
-      - "#c:eggs"
+      - ["farmersdelight:onion"]
+      - ["minecraft:egg"]
       - "minecraft:bread"
       - "minecraft:carrot"
       - "minecraft:cooked_chicken"
@@ -613,6 +613,6 @@ recipes:
       - "minecraft:beetroot"
       - "minecraft:bowl"
       - "farmersdelight:cooked_rice"
-      - "#c:crops/tomato"
+      - ["farmersdelight:tomato"]
     result:
       id: farmersdelight:roasted_mutton_chops

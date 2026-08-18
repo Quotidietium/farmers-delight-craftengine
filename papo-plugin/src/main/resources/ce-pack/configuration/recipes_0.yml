@@ -43,26 +43,26 @@ recipes:
       - "farmersdelight:cooked_bacon"
       - "farmersdelight:cooked_bacon"
       - "minecraft:bowl"
-      - "#c:cooked_eggs"
-      - "#c:cooked_eggs"
+      - ["farmersdelight:fried_egg"]
+      - ["farmersdelight:fried_egg"]
     result:
       id: farmersdelight:bacon_and_eggs
 
   "farmersdelight:bacon_sandwich":
     type: shapeless
     ingredients:
-      - "#c:bread"
-      - "#c:cooked_bacon"
-      - "#c:salad_ingredients"
-      - "#c:crops/tomato"
+      - ["minecraft:bread"]
+      - ["farmersdelight:cooked_bacon"]
+      - ["farmersdelight:cabbage", "farmersdelight:cabbage_leaf"]
+      - ["farmersdelight:tomato"]
     result:
       id: farmersdelight:bacon_sandwich
 
   "farmersdelight:barbecue_stick":
     type: shapeless
     ingredients:
-      - "#c:crops/tomato"
-      - "#c:crops/onion"
+      - ["farmersdelight:tomato"]
+      - ["farmersdelight:onion"]
       - "minecraft:air"
       - "minecraft:stick"
     result:
@@ -139,7 +139,7 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:black_dyes"
+      - ["minecraft:black_dye"]
     result:
       id: farmersdelight:black_canvas_sign
 
@@ -148,7 +148,7 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:blue_dyes"
+      - ["minecraft:blue_dye"]
     result:
       id: farmersdelight:blue_canvas_sign
 
@@ -183,7 +183,7 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:brown_dyes"
+      - ["minecraft:brown_dye"]
     result:
       id: farmersdelight:brown_canvas_sign
 
@@ -221,8 +221,8 @@ recipes:
       - "ses"
       - "www"
     ingredients:
-      e: "#c:eggs"
-      m: "#c:milk"
+      e: ["minecraft:egg"]
+      m: ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
       s: "minecraft:sugar"
       w: "minecraft:wheat"
     result:
@@ -303,9 +303,9 @@ recipes:
   "farmersdelight:chicken_sandwich":
     type: shapeless
     ingredients:
-      - "#c:bread"
-      - "#c:cooked_chicken"
-      - "#c:salad_ingredients"
+      - ["minecraft:bread"]
+      - ["minecraft:cooked_chicken", "farmersdelight:cooked_chicken_cuts"]
+      - ["farmersdelight:cabbage", "farmersdelight:cabbage_leaf"]
       - "minecraft:carrot"
     result:
       id: farmersdelight:chicken_sandwich
@@ -319,7 +319,7 @@ recipes:
     ingredients:
       O: "farmersdelight:pie_crust"
       c: "minecraft:cocoa_beans"
-      m: "#c:milk"
+      m: ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
       x: "minecraft:sugar"
     result:
       id: farmersdelight:chocolate_pie
@@ -469,7 +469,7 @@ recipes:
       S: "minecraft:wooden_shovel"
       W: "minecraft:water_bucket"
       b: "minecraft:brick"
-      i: "#c:iron_ingots"
+      i: ["minecraft:iron_ingot"]
     result:
       id: farmersdelight:cooking_pot
 
@@ -501,7 +501,7 @@ recipes:
     group: canvas_sign
     ingredients:
       - "#farmersdelight:canvas_signs"
-      - "#c:cyan_dyes"
+      - ["minecraft:cyan_dye"]
     result:
       id: farmersdelight:cyan_canvas_sign
 
@@ -531,9 +531,9 @@ recipes:
   "farmersdelight:egg_sandwich":
     type: shapeless
     ingredients:
-      - "#c:bread"
-      - "#c:cooked_eggs"
-      - "#c:cooked_eggs"
+      - ["minecraft:bread"]
+      - ["farmersdelight:fried_egg"]
+      - ["farmersdelight:fried_egg"]
     result:
       id: farmersdelight:egg_sandwich
 

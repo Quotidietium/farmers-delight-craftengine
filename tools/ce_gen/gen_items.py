@@ -2,6 +2,12 @@
 from .common import NS, yaml_str
 from .parse_registry import item_foods_ref, item_container_ref
 
+try:
+    from .gen_recipes import tags_on_items
+    _TAGS_ON_ITEMS = tags_on_items()
+except Exception:
+    _TAGS_ON_ITEMS = {}
+
 # base materials for knives per tier: (material, durability, damage, speed_modifier, enchantability)
 KNIFE_BASE = {
     "flint_knife": ("minecraft:flint", 131, 1.5, -1.8, 5),
@@ -127,8 +133,16 @@ def emit_item(item: dict, foods: dict) -> str | None:
         lines.extend(f"      {d}" for d in data)
 
     # ---------------- settings section
+    settings = []
     if item.get("burn_time"):
-        lines += ["    settings:", f"      fuel_time: {item['burn_time']}"]
+        settings.append(f"fuel_time: {item['burn_time']}")
+    tags = sorted(_TAGS_ON_ITEMS.get(iid, []))
+    if tags:
+        settings.append("tags: [" + ", ".join(yaml_str(t) for t in tags) + "]")
+    if settings:
+        lines += ["    settings:"]
+        for s in settings:
+            lines.append(f"      {s}")
 
     # ---------------- behavior section
     if iid in FURNITURE_BLOCKS or is_sign_item(iid):

@@ -23,10 +23,13 @@ def load_item_tags() -> dict[str, list[str]]:
             data = load_json(f)
             members = []
             for v in data.get("values", []):
-                if isinstance(v, str) and not v.startswith("#"):
+                if isinstance(v, str):
                     members.append(v)
-                elif isinstance(v, dict) and "id" in v and not str(v["id"]).startswith("#"):
+                elif isinstance(v, dict) and "id" in v:
                     members.append(v["id"])
+                if isinstance(v, dict) and v.get("required", True) is False and "id" in v:
+                    # optional entries are dropped from expansion (conservative)
+                    pass
             tags[tag_id] = members
     return tags
 
@@ -44,23 +47,47 @@ def tags_on_items() -> dict[str, list[str]]:
     return out
 
 
-def expand_tag(tag_id: str) -> list[str]:
+def expand_tag(tag_id: str, seen: frozenset = frozenset()) -> list[str]:
+    if tag_id in seen or len(seen) > 8:
+        return []
     if tag_id.startswith("minecraft:"):
         return [tag_id]
-    return TAGS.get(tag_id, [])
+    members: list[str] = TAGS.get(tag_id)
+    if members is None:
+        # the mod relies on the external "c:" convention for dyes; resolve locally
+        if tag_id.startswith("c:") and tag_id.endswith("_dyes"):
+            color = tag_id[len("c:"):-len("_dyes")]
+            return [f"minecraft:{color}_dye"]
+        return []
+    out: list[str] = []
+    resolved: list[str] = []
+    for v in members:
+        if v.startswith("#"):
+            resolved.extend(expand_tag(v[1:], seen | {tag_id}))
+        else:
+            resolved.append(v)
+    for m in resolved:
+        if m not in out:
+            out.append(m)
+    return out
 
 
 # ------------------------------------------------------------------ ingredient mapping
 
-def ce_ingredient(ing) -> str | list[str]:
-    """Ingredient JSON -> CE recipe ingredient string."""
+def ce_ingredient(ing):
+    """Ingredient JSON -> CE recipe ingredient string or list (c: tags get expanded)."""
     if "item" in ing:
         return ing["item"]
     if "tag" in ing:
         tag = ing["tag"]
         if tag.startswith("minecraft:"):
             return f"#{tag}"
-        # FD / c tags are declared as CE tags on our items
+        if tag.startswith(f"{NS}:"):
+            return f"#{tag}"  # declared on items via settings.tags
+        # c: and other tags -> expand to explicit member list
+        members = expand_tag(tag)
+        if members:
+            return members
         return f"#{tag}"
     return "minecraft:air"
 

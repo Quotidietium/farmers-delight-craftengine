@@ -113,7 +113,7 @@ def parse_items() -> list[dict]:
     body = text[text.index("public enum ItemsRegistry"):]
     body = body.split("private final")[0]
     items = []
-    entry_re = re.compile(r'^\s*([A-Z0-9_]+)\("([^"]+)",\s*(.+?),?(?:,\s*(\d+))?\),?$', re.M)
+    entry_re = re.compile(r'^\s*([A-Z0-9_]+)\("([^"]+)",\s*(.+?),?(?:,\s*(\d+))?\),?;?$', re.M)
     for m in entry_re.finditer(body):
         name, path, supplier, burn = m.group(1), m.group(2), m.group(3).strip(), m.group(4)
         items.append(dict(
