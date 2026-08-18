@@ -34,7 +34,7 @@ PLANT_BLOCKS = {
 PLANT_GROUP = {
     "rice": "kelp", "rice_panicle": "kelp", "cabbages": "kelp", "onions": "kelp",
     "tomatoes": "twisting_vines", "budding_tomatoes": "twisting_vines",
-    "wild_rice": "kelp",
+    "wild_rice": "cave_vines",
     "wild_cabbages": "weeping_vines", "wild_onions": "weeping_vines",
     "wild_tomatoes": "weeping_vines", "wild_carrots": "weeping_vines",
     "wild_potatoes": "weeping_vines", "wild_beetroots": "weeping_vines",

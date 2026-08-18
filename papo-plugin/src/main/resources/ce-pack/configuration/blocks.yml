@@ -2189,11 +2189,11 @@ blocks:
           values: [upper, lower]
       appearances:
         app0:
-          auto_state: kelp
+          auto_state: cave_vines
           model:
             path: "farmersdelight:block/wild_rice_top"
         app1:
-          auto_state: kelp
+          auto_state: cave_vines
           model:
             path: "farmersdelight:block/wild_rice_bottom"
       variants:
