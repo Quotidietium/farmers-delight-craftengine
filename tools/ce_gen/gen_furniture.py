@@ -49,8 +49,40 @@ def emit_internal_items() -> str:
         lines.append(f"    material: minecraft:paper")
         lines.append(f"    model:")
         lines.append(f"      type: minecraft:model")
-        lines.append(f"      path: {yaml_str(f'{NS}:block/{base}')}")
+        lines.append(f"      path: {yaml_str(f'{NS}:item/internal/{base}')}")
+        write_selfcontained_model(base)
     return "\n".join(lines)
+
+
+def write_selfcontained_model(base: str):
+    """Copy the mod block model into a parent-free item model (no parent chain)."""
+    import json as _json
+    src = MOD_ASSETS / "models" / "block" / f"{base}.json"
+    if not src.exists():
+        # generated models (canvas signs) live in the pack's own block folder
+        src = CE_RP / "models" / "block" / f"{base}.json"
+    if not src.exists():
+        return
+    data = _json.loads(src.read_text(encoding="utf-8"))
+    data.pop("parent", None)
+    data.pop("credit", None)
+    data.pop("__comment", None)
+    out = CE_RP / "models" / "item" / "internal" / f"{base}.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(_json.dumps(data, indent=1), encoding="utf-8")
+
+
+
+# variants rendered via the furniture's own item (proven CE bench pattern)
+OWN_ITEM_DEFAULT_VARIANTS = {
+    "cutting_board": "ground", "rope": "ground", "safety_net": "ground",
+    "canvas_rug": "ground", "half_tatami_mat": "ground",
+    "tatami": "ground", "full_tatami_mat": "foot",
+    "skillet": "ground", "cooking_pot": "ground",
+    "roast_chicken_block": "s4", "stuffed_pumpkin_block": "s4",
+    "honey_glazed_ham_block": "s4", "shepherds_pie_block": "s4",
+    "rice_roll_medley_block": "s8",
+}
 
 
 def _furniture_head(fid: str, hit_times: int = 3) -> list[str]:
@@ -73,11 +105,14 @@ def _furniture_head(fid: str, hit_times: int = 3) -> list[str]:
     return lines
 
 
-def _variant(lines: list[str], name: str, model_basename: str, hitbox, extra_height: str = "0"):
+def _variant(lines: list[str], name: str, model_basename: str, hitbox, extra_height: str = "0",
+             fid: str = ""):
     pos, width, height, blocks = hitbox
+    own = OWN_ITEM_DEFAULT_VARIANTS.get(fid) == name and fid
+    display_item = f"{NS}:{fid}" if own else internal_item_for(model_basename)
     lines.append(f"      {name}:")
     lines.append("        elements:")
-    lines.append(f"          - item: {yaml_str(internal_item_for(model_basename))}")
+    lines.append(f"          - item: {yaml_str(display_item)}")
     lines.append("            display_transform: none")
     lines.append("            billboard: fixed")
     lines.append("            position: 0.5,0,0.5")
@@ -114,34 +149,34 @@ def generate_furniture() -> str:
 
     # ---------------- cooking pot: variants none/tray/handle
     lines = _furniture_head("cooking_pot")
-    _variant(lines, "ground", "cooking_pot", ("0.125,0,0.125", 0.75, 0.625, True))
-    _variant(lines, "tray", "cooking_pot_tray", ("0.0625,0,0.0625", 0.875, 0.625, True))
-    _variant(lines, "handle", "cooking_pot_handle", ("0.25,0,0.25", 0.5, 0.625, True))
+    _variant(lines, "ground", "cooking_pot", ("0.125,0,0.125", 0.75, 0.625, True), fid="cooking_pot")
+    _variant(lines, "tray", "cooking_pot_tray", ("0.0625,0,0.0625", 0.875, 0.625, True), fid="cooking_pot")
+    _variant(lines, "handle", "cooking_pot_handle", ("0.25,0,0.25", 0.5, 0.625, True), fid="cooking_pot")
     chunks.append("\n".join(lines))
 
     # ---------------- skillet: ground + tray
     lines = _furniture_head("skillet")
-    _variant(lines, "ground", "skillet", ("0.15625,0,0.15625", 0.6875, 0.125, True))
-    _variant(lines, "tray", "skillet_tray", ("0.09375,0,0.09375", 0.8125, 0.125, True))
+    _variant(lines, "ground", "skillet", ("0.15625,0,0.15625", 0.6875, 0.125, True), fid="skillet")
+    _variant(lines, "tray", "skillet_tray", ("0.09375,0,0.09375", 0.8125, 0.125, True), fid="skillet")
     chunks.append("\n".join(lines))
 
     # ---------------- simple furniture
     for fid, variants in SIMPLE_FURNITURE.items():
         lines = _furniture_head(fid)
         for vname, model, hitbox in variants:
-            _variant(lines, vname, model, hitbox)
+            _variant(lines, vname, model, hitbox, fid=fid)
         chunks.append("\n".join(lines))
 
     # ---------------- tatami (unpaired half / paired full)
     lines = _furniture_head("tatami")
-    _variant(lines, "ground", "tatami_half", ("0,0,0", 1.0, 0.5, True))
-    _variant(lines, "paired", "tatami_even", ("0,0,0", 1.0, 0.5, True))
+    _variant(lines, "ground", "tatami_half", ("0,0,0", 1.0, 0.5, True), fid="tatami")
+    _variant(lines, "paired", "tatami_even", ("0,0,0", 1.0, 0.5, True), fid="tatami")
     chunks.append("\n".join(lines))
 
     # ---------------- full tatami mat: foot + head parts (plugin pairs them)
     lines = _furniture_head("full_tatami_mat")
-    _variant(lines, "foot", "tatami_mat_foot", ("0,0,0", 1.0, 0.0625, True))
-    _variant(lines, "head", "tatami_mat_head", ("0,0,0", 1.0, 0.0625, True))
+    _variant(lines, "foot", "tatami_mat_foot", ("0,0,0", 1.0, 0.0625, True), fid="full_tatami_mat")
+    _variant(lines, "head", "tatami_mat_head", ("0,0,0", 1.0, 0.0625, True), fid="full_tatami_mat")
     chunks.append("\n".join(lines))
 
     # ---------------- feasts: one variant per servings value
@@ -153,7 +188,7 @@ def generate_furniture() -> str:
             model = models[servings]
             base = model.split("/")[-1]
             n = int(servings.split("=")[-1]) if "=" in servings else 0
-            _variant(lines, f"s{n}", base, hitbox)
+            _variant(lines, f"s{n}", base, hitbox, fid=fid)
         chunks.append("\n".join(lines))
 
     # ---------------- canvas signs
