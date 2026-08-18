@@ -54,6 +54,20 @@ public final class FurnitureListener implements Listener {
         String facing = facingOf(furniture);
         GameTicker.data(furniture).set(GameTicker.fdKey("facing"),
                 PersistentDataType.STRING, facing);
+        // plain tatami halves pair up visually with neighbours
+        if (furniture.id().equals(FD.TATAMI)) {
+            var dir = dirOf(facing);
+            for (org.bukkit.util.Vector offset : new org.bukkit.util.Vector[]{
+                    dir, dir.clone().multiply(-1)}) {
+                Location neighbourLoc = furniture.location().clone().add(offset);
+                var neighbour = plugin.furnitureTracker().at(neighbourLoc.add(0.5, 0, 0.5), FD.TATAMI);
+                if (neighbour != null) {
+                    furniture.setVariant("paired", false);
+                    neighbour.furniture().setVariant("paired", false);
+                    break;
+                }
+            }
+        }
         // full tatami mats occupy two blocks: place the linked partner part
         if (furniture.id().equals(FD.FULL_TATAMI_MAT)) {
             var dir = dirOf(facing);
@@ -97,6 +111,21 @@ public final class FurnitureListener implements Listener {
             ticker().setDisplayChild(furniture, "itemEntity", null, 0.5, 0.4, 0.5, 0.3f);
         } else if (id.toString().endsWith("_canvas_sign") || id.toString().endsWith("_canvas_wall_sign")) {
             removeSignText(furniture);
+        } else if (id.equals(FD.TATAMI)) {
+            // unpair visual neighbours
+            for (var entry : plugin.furnitureTracker().tracked().values()) {
+                if (entry.furnitureId().equals(FD.TATAMI)
+                        && "paired".equals(entry.furniture().currentVariant() == null
+                        ? "ground" : entry.furniture().currentVariant().name())) {
+                    Location other = entry.furniture().location();
+                    Location self = furniture.location();
+                    if (Math.abs(other.getBlockX() - self.getBlockX())
+                            + Math.abs(other.getBlockZ() - self.getBlockZ()) == 1
+                            && other.getBlockY() == self.getBlockY()) {
+                        entry.furniture().setVariant("ground", false);
+                    }
+                }
+            }
         } else if (id.equals(FD.FULL_TATAMI_MAT)) {
             // remove the linked partner half as well
             String partnerId = GameTicker.data(furniture).get(

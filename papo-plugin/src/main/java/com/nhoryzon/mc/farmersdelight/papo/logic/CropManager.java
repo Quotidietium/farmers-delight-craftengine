@@ -194,6 +194,10 @@ public final class CropManager {
     }
 
     public boolean tryHarvest(Block crop, org.bukkit.entity.Player player) {
+        return tryHarvest(crop, player, null);
+    }
+
+    public boolean tryHarvest(Block crop, org.bukkit.entity.Player player, org.bukkit.inventory.ItemStack held) {
         var state = CraftEngineHook.customBlockState(crop);
         if (state == null) return false;
         Key id = state.owner().value().id();
@@ -247,7 +251,7 @@ public final class CropManager {
                 }
             }
             case "farmersdelight:brown_mushroom_colony" -> {
-                if (age > 0) {
+                if (age > 0 && held != null && held.getType() == org.bukkit.Material.SHEARS) {
                     drop(crop, Key.minecraft("brown_mushroom"), 1);
                     ticker().setBlockProperty(crop, "age", age - 1);
                     crop.getWorld().playSound(loc, "minecraft:entity.mooshroom.shear",
@@ -256,7 +260,7 @@ public final class CropManager {
                 }
             }
             case "farmersdelight:red_mushroom_colony" -> {
-                if (age > 0) {
+                if (age > 0 && held != null && held.getType() == org.bukkit.Material.SHEARS) {
                     drop(crop, Key.minecraft("red_mushroom"), 1);
                     ticker().setBlockProperty(crop, "age", age - 1);
                     crop.getWorld().playSound(loc, "minecraft:entity.mooshroom.shear",

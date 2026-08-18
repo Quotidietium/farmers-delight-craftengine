@@ -37,10 +37,28 @@ def is_sign_item(iid: str) -> bool:
     return iid.endswith("_canvas_sign") or iid.endswith("_canvas_wall_sign")
 
 
-def item_name_key(item_id: str) -> str:
-    if item_id in FURNITURE_BLOCKS or is_sign_item(item_id) or item_id in _BLOCK_ITEM_LANG_KEYS:
-        return f"block.{NS}.{item_id}"
-    return f"item.{NS}.{item_id}"
+def _mod_lang_keys() -> set[str]:
+    import json
+    from .common import MOD_ASSETS
+    data = json.load(open(MOD_ASSETS / "lang" / "en_us.json", encoding="utf-8"))
+    return set(data.keys())
+
+
+_MOD_LANG_KEYS = _mod_lang_keys()
+
+
+def item_name_key(item_id: str, supplier: str = "") -> str:
+    # resolve against the mod's own lang keys (ground truth)
+    block_key = f"block.{NS}.{item_id}"
+    item_key = f"item.{NS}.{item_id}"
+    if block_key in _MOD_LANG_KEYS and item_key not in _MOD_LANG_KEYS:
+        return block_key
+    if item_key in _MOD_LANG_KEYS:
+        return item_key
+    # fallback: bound block items use the block key
+    if item_id in FURNITURE_BLOCKS or is_sign_item(item_id) or "BlocksRegistry." in supplier:
+        return block_key
+    return item_key
 
 
 def item_stack_size(item: dict, container: str | None) -> int:
@@ -94,7 +112,7 @@ def emit_item(item: dict, foods: dict) -> str | None:
 
     # ---------------- data section
     data: list[str] = []
-    data.append(f"item_name: {yaml_str(f'<!i><lang:{item_name_key(iid)}>')}")
+    data.append(f"item_name: {yaml_str(f'<!i><lang:{item_name_key(iid, item["supplier"])}>')}")
 
     if food is not None:
         data.append("minecraft:food:")
@@ -121,6 +139,8 @@ def emit_item(item: dict, foods: dict) -> str | None:
     if iid in KNIFE_BASE:
         data.append("minecraft:enchantable:")
         data.append(f"  value: {ench}")
+        if iid == "netherite_knife":
+            data.append("minecraft:fire_resistant: {}")
 
     # weapon attributes
     if iid in KNIFE_BASE or kind == "skillet":

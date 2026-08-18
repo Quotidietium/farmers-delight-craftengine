@@ -74,6 +74,11 @@ def main():
         gen_recipes.generate_misc_content(), encoding="utf-8")
     print("plugin configs written:", list(p.name for p in PLUGIN_RECIPES.glob("*.yml")))
 
+    # -------- categories
+    from ce_gen.gen_categories import generate_categories
+    cat_total = generate_categories()
+    print(f"categories: 7 groups covering {cat_total}/158 items")
+
     # -------- advancements datapack + trigger config
     from ce_gen.gen_advancements import generate_advancements
     adv_count = generate_advancements()

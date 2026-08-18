@@ -49,10 +49,33 @@ def generate_lang() -> tuple[str, int]:
         "en_us": {
             "farmersdelight.enchantment.backstabbing": "Backstabbing",
             "farmersdelight.sign.edit": "Enter sign text (or 'cancel'):",
+            "category.farmersdelight.tools": "Tools & Knives",
+            "category.farmersdelight.farming": "Crops & Seeds",
+            "category.farmersdelight.cooking": "Cooking Stations",
+            "category.farmersdelight.foods": "Foods & Ingredients",
+            "category.farmersdelight.meals": "Meals & Drinks",
+            "category.farmersdelight.materials": "Materials",
+            "category.farmersdelight.furniture": "Furniture & Decor",
         },
         "zh_cn": {
             "farmersdelight.enchantment.backstabbing": "背刺",
             "farmersdelight.sign.edit": "请输入告示牌文本（输入 cancel 取消）：",
+            "category.farmersdelight.tools": "工具与刀具",
+            "category.farmersdelight.farming": "作物与种子",
+            "category.farmersdelight.cooking": "烹饪设施",
+            "category.farmersdelight.foods": "食物与食材",
+            "category.farmersdelight.meals": "餐食与饮品",
+            "category.farmersdelight.materials": "材料",
+            "category.farmersdelight.furniture": "家具与装饰",
+        },
+        "zh_tw": {
+            "category.farmersdelight.tools": "工具與刀具",
+            "category.farmersdelight.farming": "作物與種子",
+            "category.farmersdelight.cooking": "烹飪設施",
+            "category.farmersdelight.foods": "食物與食材",
+            "category.farmersdelight.meals": "餐食與飲品",
+            "category.farmersdelight.materials": "材料",
+            "category.farmersdelight.furniture": "家具與裝飾",
         },
     }.items():
         for k, v in extra.items():
@@ -63,4 +86,10 @@ def generate_lang() -> tuple[str, int]:
         lines.append(f"  {locale}:")
         for k in sorted(locales[locale]):
             lines.append(f"    {yaml_str(k)}: {yaml_str(locales[locale][k])}")
+        # block_name: shortcut so CE-placed blocks resolve localized names
+        for k in sorted(locales[locale]):
+            if k.startswith(f"block.{NS}."):
+                block_id = k[len(f"block.{NS}."):]
+                block_key = f"block_name:{NS}:{block_id}"
+                lines.append(f"    {yaml_str(block_key)}: {yaml_str(locales[locale][k])}")
     return "\n".join(lines), len(locales)

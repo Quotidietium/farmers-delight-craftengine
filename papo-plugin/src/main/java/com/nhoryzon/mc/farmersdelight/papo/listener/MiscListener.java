@@ -81,7 +81,8 @@ public final class MiscListener implements Listener {
     public void onLootGenerate(LootGenerateEvent event) {
         LootTable table = event.getLootTable();
         if (table == null) return;
-        String key = table.getKey().toString();
+        String rawKey = table.getKey().toString();
+        String key = rawKey.startsWith("minecraft:") ? rawKey : "minecraft:" + rawKey;
         List<Map<String, Object>> injects = plugin.lootInjects().get(key);
         if (injects == null) return;
         for (Map<String, Object> inject : injects) {

@@ -7,7 +7,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/stove"
     data:
-      item_name: "<!i><lang:item.farmersdelight.stove>"
+      item_name: "<!i><lang:block.farmersdelight.stove>"
     behavior:
       type: block_item
       block: "farmersdelight:stove"
@@ -44,7 +44,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/basket"
     data:
-      item_name: "<!i><lang:item.farmersdelight.basket>"
+      item_name: "<!i><lang:block.farmersdelight.basket>"
     behavior:
       type: block_item
       block: "farmersdelight:basket"
@@ -66,7 +66,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/sandy_shrub"
     data:
-      item_name: "<!i><lang:item.farmersdelight.sandy_shrub>"
+      item_name: "<!i><lang:block.farmersdelight.sandy_shrub>"
     behavior:
       type: block_item
       block: "farmersdelight:sandy_shrub"
@@ -77,7 +77,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/wild_cabbages"
     data:
-      item_name: "<!i><lang:item.farmersdelight.wild_cabbages>"
+      item_name: "<!i><lang:block.farmersdelight.wild_cabbages>"
     settings:
       tags: ["farmersdelight:wild_crops"]
     behavior:
@@ -90,7 +90,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/wild_onions"
     data:
-      item_name: "<!i><lang:item.farmersdelight.wild_onions>"
+      item_name: "<!i><lang:block.farmersdelight.wild_onions>"
     settings:
       tags: ["farmersdelight:wild_crops"]
     behavior:
@@ -103,7 +103,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/wild_tomatoes"
     data:
-      item_name: "<!i><lang:item.farmersdelight.wild_tomatoes>"
+      item_name: "<!i><lang:block.farmersdelight.wild_tomatoes>"
     settings:
       tags: ["farmersdelight:wild_crops"]
     behavior:
@@ -116,7 +116,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/wild_carrots"
     data:
-      item_name: "<!i><lang:item.farmersdelight.wild_carrots>"
+      item_name: "<!i><lang:block.farmersdelight.wild_carrots>"
     settings:
       tags: ["farmersdelight:wild_crops"]
     behavior:
@@ -129,7 +129,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/wild_potatoes"
     data:
-      item_name: "<!i><lang:item.farmersdelight.wild_potatoes>"
+      item_name: "<!i><lang:block.farmersdelight.wild_potatoes>"
     settings:
       tags: ["farmersdelight:wild_crops"]
     behavior:
@@ -142,7 +142,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/wild_beetroots"
     data:
-      item_name: "<!i><lang:item.farmersdelight.wild_beetroots>"
+      item_name: "<!i><lang:block.farmersdelight.wild_beetroots>"
     settings:
       tags: ["farmersdelight:wild_crops"]
     behavior:
@@ -155,7 +155,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/wild_rice"
     data:
-      item_name: "<!i><lang:item.farmersdelight.wild_rice>"
+      item_name: "<!i><lang:block.farmersdelight.wild_rice>"
     settings:
       tags: ["farmersdelight:wild_crops"]
     behavior:
@@ -168,7 +168,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/brown_mushroom_colony"
     data:
-      item_name: "<!i><lang:item.farmersdelight.brown_mushroom_colony>"
+      item_name: "<!i><lang:block.farmersdelight.brown_mushroom_colony>"
     behavior:
       type: block_item
       block: "farmersdelight:brown_mushroom_colony"
@@ -179,7 +179,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/red_mushroom_colony"
     data:
-      item_name: "<!i><lang:item.farmersdelight.red_mushroom_colony>"
+      item_name: "<!i><lang:block.farmersdelight.red_mushroom_colony>"
     behavior:
       type: block_item
       block: "farmersdelight:red_mushroom_colony"
@@ -190,7 +190,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/carrot_crate"
     data:
-      item_name: "<!i><lang:item.farmersdelight.carrot_crate>"
+      item_name: "<!i><lang:block.farmersdelight.carrot_crate>"
     behavior:
       type: block_item
       block: "farmersdelight:carrot_crate"
@@ -201,7 +201,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/potato_crate"
     data:
-      item_name: "<!i><lang:item.farmersdelight.potato_crate>"
+      item_name: "<!i><lang:block.farmersdelight.potato_crate>"
     behavior:
       type: block_item
       block: "farmersdelight:potato_crate"
@@ -212,7 +212,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/beetroot_crate"
     data:
-      item_name: "<!i><lang:item.farmersdelight.beetroot_crate>"
+      item_name: "<!i><lang:block.farmersdelight.beetroot_crate>"
     behavior:
       type: block_item
       block: "farmersdelight:beetroot_crate"
@@ -223,7 +223,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/cabbage_crate"
     data:
-      item_name: "<!i><lang:item.farmersdelight.cabbage_crate>"
+      item_name: "<!i><lang:block.farmersdelight.cabbage_crate>"
     behavior:
       type: block_item
       block: "farmersdelight:cabbage_crate"
@@ -234,7 +234,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/tomato_crate"
     data:
-      item_name: "<!i><lang:item.farmersdelight.tomato_crate>"
+      item_name: "<!i><lang:block.farmersdelight.tomato_crate>"
     behavior:
       type: block_item
       block: "farmersdelight:tomato_crate"
@@ -245,7 +245,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/onion_crate"
     data:
-      item_name: "<!i><lang:item.farmersdelight.onion_crate>"
+      item_name: "<!i><lang:block.farmersdelight.onion_crate>"
     behavior:
       type: block_item
       block: "farmersdelight:onion_crate"
@@ -256,7 +256,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/rice_bale"
     data:
-      item_name: "<!i><lang:item.farmersdelight.rice_bale>"
+      item_name: "<!i><lang:block.farmersdelight.rice_bale>"
     behavior:
       type: block_item
       block: "farmersdelight:rice_bale"
@@ -267,7 +267,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/rice_bag"
     data:
-      item_name: "<!i><lang:item.farmersdelight.rice_bag>"
+      item_name: "<!i><lang:block.farmersdelight.rice_bag>"
     behavior:
       type: block_item
       block: "farmersdelight:rice_bag"
@@ -278,7 +278,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/straw_bale"
     data:
-      item_name: "<!i><lang:item.farmersdelight.straw_bale>"
+      item_name: "<!i><lang:block.farmersdelight.straw_bale>"
     behavior:
       type: block_item
       block: "farmersdelight:straw_bale"
@@ -315,7 +315,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/oak_cabinet"
     data:
-      item_name: "<!i><lang:item.farmersdelight.oak_cabinet>"
+      item_name: "<!i><lang:block.farmersdelight.oak_cabinet>"
     settings:
       fuel_time: 300
       tags: ["farmersdelight:cabinets/wooden"]
@@ -329,7 +329,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/birch_cabinet"
     data:
-      item_name: "<!i><lang:item.farmersdelight.birch_cabinet>"
+      item_name: "<!i><lang:block.farmersdelight.birch_cabinet>"
     settings:
       fuel_time: 300
       tags: ["farmersdelight:cabinets/wooden"]
@@ -343,7 +343,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/spruce_cabinet"
     data:
-      item_name: "<!i><lang:item.farmersdelight.spruce_cabinet>"
+      item_name: "<!i><lang:block.farmersdelight.spruce_cabinet>"
     settings:
       fuel_time: 300
       tags: ["farmersdelight:cabinets/wooden"]
@@ -357,7 +357,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/jungle_cabinet"
     data:
-      item_name: "<!i><lang:item.farmersdelight.jungle_cabinet>"
+      item_name: "<!i><lang:block.farmersdelight.jungle_cabinet>"
     settings:
       fuel_time: 300
       tags: ["farmersdelight:cabinets/wooden"]
@@ -371,7 +371,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/acacia_cabinet"
     data:
-      item_name: "<!i><lang:item.farmersdelight.acacia_cabinet>"
+      item_name: "<!i><lang:block.farmersdelight.acacia_cabinet>"
     settings:
       fuel_time: 300
       tags: ["farmersdelight:cabinets/wooden"]
@@ -385,7 +385,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/dark_oak_cabinet"
     data:
-      item_name: "<!i><lang:item.farmersdelight.dark_oak_cabinet>"
+      item_name: "<!i><lang:block.farmersdelight.dark_oak_cabinet>"
     settings:
       fuel_time: 300
       tags: ["farmersdelight:cabinets/wooden"]
@@ -399,7 +399,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/mangrove_cabinet"
     data:
-      item_name: "<!i><lang:item.farmersdelight.mangrove_cabinet>"
+      item_name: "<!i><lang:block.farmersdelight.mangrove_cabinet>"
     settings:
       fuel_time: 300
     behavior:
@@ -412,7 +412,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/crimson_cabinet"
     data:
-      item_name: "<!i><lang:item.farmersdelight.crimson_cabinet>"
+      item_name: "<!i><lang:block.farmersdelight.crimson_cabinet>"
     settings:
       tags: ["farmersdelight:cabinets/wooden"]
     behavior:
@@ -425,7 +425,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/warped_cabinet"
     data:
-      item_name: "<!i><lang:item.farmersdelight.warped_cabinet>"
+      item_name: "<!i><lang:block.farmersdelight.warped_cabinet>"
     settings:
       tags: ["farmersdelight:cabinets/wooden"]
     behavior:
@@ -490,7 +490,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/canvas_sign"
     data:
-      item_name: "<!i><lang:item.farmersdelight.canvas_sign>"
+      item_name: "<!i><lang:block.farmersdelight.canvas_sign>"
     settings:
       tags: ["farmersdelight:canvas_signs"]
 
@@ -708,7 +708,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/organic_compost"
     data:
-      item_name: "<!i><lang:item.farmersdelight.organic_compost>"
+      item_name: "<!i><lang:block.farmersdelight.organic_compost>"
     behavior:
       type: block_item
       block: "farmersdelight:organic_compost"
@@ -719,7 +719,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/rich_soil"
     data:
-      item_name: "<!i><lang:item.farmersdelight.rich_soil>"
+      item_name: "<!i><lang:block.farmersdelight.rich_soil>"
     behavior:
       type: block_item
       block: "farmersdelight:rich_soil"
@@ -730,7 +730,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/rich_soil_farmland"
     data:
-      item_name: "<!i><lang:item.farmersdelight.rich_soil_farmland>"
+      item_name: "<!i><lang:block.farmersdelight.rich_soil_farmland>"
     behavior:
       type: block_item
       block: "farmersdelight:rich_soil_farmland"
@@ -741,7 +741,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/apple_pie"
     data:
-      item_name: "<!i><lang:item.farmersdelight.apple_pie>"
+      item_name: "<!i><lang:block.farmersdelight.apple_pie>"
     behavior:
       type: block_item
       block: "farmersdelight:apple_pie"
@@ -752,7 +752,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/sweet_berry_cheesecake"
     data:
-      item_name: "<!i><lang:item.farmersdelight.sweet_berry_cheesecake>"
+      item_name: "<!i><lang:block.farmersdelight.sweet_berry_cheesecake>"
     behavior:
       type: block_item
       block: "farmersdelight:sweet_berry_cheesecake"
@@ -763,7 +763,7 @@ items:
       type: minecraft:model
       path: "farmersdelight:item/chocolate_pie"
     data:
-      item_name: "<!i><lang:item.farmersdelight.chocolate_pie>"
+      item_name: "<!i><lang:block.farmersdelight.chocolate_pie>"
     behavior:
       type: block_item
       block: "farmersdelight:chocolate_pie"
@@ -897,6 +897,7 @@ items:
       minecraft:max_damage: 2031
       minecraft:enchantable:
         value: 15
+      minecraft:fire_resistant: {}
       attribute_modifiers:
         - {type: attack_damage, amount: 4.5, operation: add_value, slot: mainhand}
         - {type: attack_speed, amount: -1.8, operation: add_value, slot: mainhand}

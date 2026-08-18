@@ -84,6 +84,10 @@ public final class BlockListener implements Listener {
             }
             ticker().cropIndex.add(block);
             plugin.advancements().onPlant(event.player(), id.toString());
+            // colony items place a mature colony (mod MushroomColonyBlockItem)
+            if (id.toString().endsWith("_mushroom_colony")) {
+                ticker().setBlockProperty(block, "age", 3);
+            }
         }
         if (id.equals(FD.ORGANIC_COMPOST)) {
             plugin.advancements().onCustomPlace(event.player(), "organic_compost");
@@ -186,7 +190,7 @@ public final class BlockListener implements Listener {
                     }
                     return;
                 }
-                event.setCancelled(plugin.cropManager().tryHarvest(block, player));
+                event.setCancelled(plugin.cropManager().tryHarvest(block, player, held));
             }
             case "sandy_shrub" -> {
                 if (held != null && held.getType() == Material.BONE_MEAL) {
