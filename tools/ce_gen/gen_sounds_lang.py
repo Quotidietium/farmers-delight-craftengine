@@ -32,8 +32,7 @@ def generate_sounds() -> str:
 
 def generate_lang() -> tuple[str, int]:
     lang_dir = MOD_ASSETS / "lang"
-    lines = []
-    count = 0
+    locales: dict[str, dict[str, str]] = {}
     for f in sorted(lang_dir.glob("*.json")):
         locale = f.stem
         data = load_json(f)
@@ -43,25 +42,25 @@ def generate_lang() -> tuple[str, int]:
                                                or k.startswith(f"container.{NS}.")
                                                or k.startswith(f"{NS}.")
                                                or "farmersdelight" in k)}
-        if not filtered:
-            continue
-        count += 1
+        if filtered:
+            locales.setdefault(locale, {}).update(filtered)
+    # extra keys needed by the plugin port (merged into their locale section)
+    for locale, extra in {
+        "en_us": {
+            "farmersdelight.enchantment.backstabbing": "Backstabbing",
+            "farmersdelight.sign.edit": "Enter sign text (or 'cancel'):",
+        },
+        "zh_cn": {
+            "farmersdelight.enchantment.backstabbing": "背刺",
+            "farmersdelight.sign.edit": "请输入告示牌文本（输入 cancel 取消）：",
+        },
+    }.items():
+        for k, v in extra.items():
+            locales.setdefault(locale, {}).setdefault(k, v)
+
+    lines = []
+    for locale in sorted(locales):
         lines.append(f"  {locale}:")
-        for k in sorted(filtered):
-            lines.append(f"    {yaml_str(k)}: {yaml_str(filtered[k])}")
-    # extra keys needed by the plugin port
-    lines.append(f"  en_us:")
-    for k, v in {
-        "farmersdelight.enchantment.backstabbing": "Backstabbing",
-        "farmersdelight.container.cooking_pot": "Cooking Pot",
-        "farmersdelight.sign.edit": "Enter sign text (or 'cancel'):",
-    }.items():
-        lines.append(f"    {yaml_str(k)}: {yaml_str(v)}")
-    lines.append(f"  zh_cn:")
-    for k, v in {
-        "farmersdelight.enchantment.backstabbing": "背刺",
-        "farmersdelight.container.cooking_pot": "烹饪锅",
-        "farmersdelight.sign.edit": "请输入告示牌文本（输入 cancel 取消）：",
-    }.items():
-        lines.append(f"    {yaml_str(k)}: {yaml_str(v)}")
-    return "\n".join(lines), count
+        for k in sorted(locales[locale]):
+            lines.append(f"    {yaml_str(k)}: {yaml_str(locales[locale][k])}")
+    return "\n".join(lines), len(locales)

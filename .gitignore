@@ -32,3 +32,6 @@ bin/
 
 run/
 /REF
+
+# smoke test server
+smoke/

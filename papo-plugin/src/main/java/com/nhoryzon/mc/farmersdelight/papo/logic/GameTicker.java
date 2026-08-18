@@ -44,14 +44,19 @@ public final class GameTicker {
     private final FarmersDelightPlugin plugin;
     private final BukkitTask task;
 
-    public final ChunkIndex stoveIndex = new ChunkIndex(plugin(), "stove");
-    public final ChunkIndex basketIndex = new ChunkIndex(plugin(), "basket");
-    public final ChunkIndex compostIndex = new ChunkIndex(plugin(), "compost");
-    public final ChunkIndex cropIndex = new ChunkIndex(plugin(), "crop");
-    public final ChunkIndex soilIndex = new ChunkIndex(plugin(), "soil");
+    public final ChunkIndex stoveIndex;
+    public final ChunkIndex basketIndex;
+    public final ChunkIndex compostIndex;
+    public final ChunkIndex cropIndex;
+    public final ChunkIndex soilIndex;
 
     public GameTicker(FarmersDelightPlugin plugin) {
         this.plugin = plugin;
+        this.stoveIndex = new ChunkIndex(plugin, "stove");
+        this.basketIndex = new ChunkIndex(plugin, "basket");
+        this.compostIndex = new ChunkIndex(plugin, "compost");
+        this.cropIndex = new ChunkIndex(plugin, "crop");
+        this.soilIndex = new ChunkIndex(plugin, "soil");
         this.task = Bukkit.getScheduler().runTaskTimer(plugin, this::tick, 20L, 10L);
     }
 
@@ -549,27 +554,32 @@ public final class GameTicker {
     }
 
     public ItemStack campfireResult(ItemStack input) {
-        // look up a vanilla campfire/smoking recipe result for this ingredient
+        // stove/skillet only cook campfire recipes (mod parity)
+        ItemStack fallback = null;
         var it = Bukkit.recipeIterator();
         while (it.hasNext()) {
             var recipe = it.next();
-            if (recipe instanceof org.bukkit.inventory.CookingRecipe<?> cooking) {
-                if (cooking.getInputChoice().test(input)) {
-                    ItemStack result = cooking.getResult();
-                    return result.clone();
+            if (recipe instanceof org.bukkit.inventory.CampfireRecipe campfire) {
+                if (campfire.getInputChoice().test(input)) {
+                    return campfire.getResult().clone();
+                }
+            } else if (fallback == null
+                    && recipe instanceof org.bukkit.inventory.SmokingRecipe smoking) {
+                if (smoking.getInputChoice().test(input)) {
+                    fallback = smoking.getResult().clone();
                 }
             }
         }
-        return null;
+        return fallback;
     }
 
     public int campfireTime(ItemStack input) {
         var it = Bukkit.recipeIterator();
         while (it.hasNext()) {
             var recipe = it.next();
-            if (recipe instanceof org.bukkit.inventory.CookingRecipe<?> cooking) {
-                if (cooking.getInputChoice().test(input)) {
-                    return cooking.getCookingTime();
+            if (recipe instanceof org.bukkit.inventory.CampfireRecipe campfire) {
+                if (campfire.getInputChoice().test(input)) {
+                    return campfire.getCookingTime();
                 }
             }
         }

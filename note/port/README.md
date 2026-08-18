@@ -94,6 +94,28 @@ papo-plugin/
 2. 首次启动：插件自动解包 ce-pack 到 `plugins/CraftEngine/resources/farmersdelight/` 并触发 CE reload；玩家进服会收到 CE 生成的资源包
 3. 验证命令：`/ce item give @s farmersdelight:iron_knife`（或创造模式背包 CE 浏览器）
 
+### 运行时冒烟测试结果（2026-08-18，实机验证）
+
+环境：Papo 1.21.11-0.32.1（`REF/Papo/paper-server/build/libs`）+ 本地构建的
+craft-engine-paper-plugin-26.7.4.jar（`REF/craft-engine` `:bukkit:paper-loader:shadowJar`）+ 本插件 jar。
+
+| 验证项 | 结果 |
+|---|---|
+| 插件启用 | ✅ `Enabling FarmersDelight v1.0.0`，27 烹饪 + 106 切割 + 35 堆肥配置加载 |
+| CE 包安装 | ✅ 自动解包到 `resources/farmersdelight/`，CE 识别为独立 pack |
+| CE 内容计数 | ✅ items 343（=CE默认109 + FD 158 + 内部展示76）、furniture 54（=6+48）、blocks 82（=40+42）、recipes 193（=45+148）、lang 7402、sounds 13 —— 全部精确对账 |
+| 方块状态分配 | ✅ `cache/custom_block_states.json` 为 FD 分配 225 个状态 ID |
+| 资源包生成 | ✅ `ce upload` 成功（所有贴图/模型引用有效） |
+| 错误/警告 | ✅ 0 ERROR、0 与 FD 相关的 WARN |
+
+冒烟测试过程中发现并修复的 6 个真实缺陷：
+1. GameTicker 字段初始化器在构造器赋值前调用 `plugin()` → NPE（`Plugin cannot be null`）
+2. variants 多属性键含空格（`facing=north, open=false`）→ CE 无法解析（144 个警告）
+3. lang 手工附加键与 mod 语言键重复定义 → CE 重复段警告
+4. `reloadPlugin` 第三参数（reloadRecipes）误传 false → 148 条配方未随包加载
+5. 有序配方键 `#:` 被 YAML 当作注释 → 22 个配方损坏（含嵌套 OR 组未展开 → air 原料）
+6. smithing 配方字段名应为 `template_type` 而非 `template`
+
 ## 5. 再生成资源包
 
 ```

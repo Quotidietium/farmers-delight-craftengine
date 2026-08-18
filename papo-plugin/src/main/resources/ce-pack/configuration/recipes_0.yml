@@ -8,8 +8,8 @@ recipes:
       - "D D"
       - "___"
     ingredients:
-      D: "minecraft:acacia_trapdoor"
-      _: "minecraft:acacia_slab"
+      "D": "minecraft:acacia_trapdoor"
+      "_": "minecraft:acacia_slab"
     result:
       id: farmersdelight:acacia_cabinet
 
@@ -20,10 +20,10 @@ recipes:
       - "aaa"
       - "xOx"
     ingredients:
-      #: "minecraft:wheat"
-      O: "farmersdelight:pie_crust"
-      a: "minecraft:apple"
-      x: "minecraft:sugar"
+      "#": "minecraft:wheat"
+      "O": "farmersdelight:pie_crust"
+      "a": "minecraft:apple"
+      "x": "minecraft:sugar"
     result:
       id: farmersdelight:apple_pie
 
@@ -33,7 +33,7 @@ recipes:
       - "##"
       - "##"
     ingredients:
-      #: "farmersdelight:apple_pie_slice"
+      "#": "farmersdelight:apple_pie_slice"
     result:
       id: farmersdelight:apple_pie
 
@@ -63,7 +63,7 @@ recipes:
     ingredients:
       - ["farmersdelight:tomato"]
       - ["farmersdelight:onion"]
-      - "minecraft:air"
+      - ["minecraft:cooked_beef", "farmersdelight:beef_patty", "minecraft:cooked_porkchop", "farmersdelight:cooked_bacon", "minecraft:cooked_chicken", "farmersdelight:cooked_chicken_cuts", "minecraft:cooked_mutton", "farmersdelight:cooked_mutton_chops", "minecraft:cooked_cod", "farmersdelight:cooked_cod_slice", "minecraft:cooked_salmon", "farmersdelight:cooked_salmon_slice", "minecraft:cooked_rabbit"]
       - "minecraft:stick"
     result:
       id: farmersdelight:barbecue_stick
@@ -75,8 +75,8 @@ recipes:
       - "# #"
       - "b#b"
     ingredients:
-      #: "farmersdelight:canvas"
-      b: "minecraft:bamboo"
+      "#": "farmersdelight:canvas"
+      "b": "minecraft:bamboo"
     result:
       id: farmersdelight:basket
 
@@ -110,7 +110,7 @@ recipes:
       - "###"
       - "###"
     ingredients:
-      #: "minecraft:beetroot"
+      "#": "minecraft:beetroot"
     result:
       id: farmersdelight:beetroot_crate
 
@@ -129,8 +129,8 @@ recipes:
       - "D D"
       - "___"
     ingredients:
-      D: "minecraft:birch_trapdoor"
-      _: "minecraft:birch_slab"
+      "D": "minecraft:birch_trapdoor"
+      "_": "minecraft:birch_slab"
     result:
       id: farmersdelight:birch_cabinet
 
@@ -202,7 +202,7 @@ recipes:
       - "###"
       - "###"
     ingredients:
-      #: "farmersdelight:cabbage"
+      "#": "farmersdelight:cabbage"
     result:
       id: farmersdelight:cabbage_crate
 
@@ -221,10 +221,10 @@ recipes:
       - "ses"
       - "www"
     ingredients:
-      e: ["minecraft:egg"]
-      m: ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
-      s: "minecraft:sugar"
-      w: "minecraft:wheat"
+      "e": ["minecraft:egg"]
+      "m": ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
+      "s": "minecraft:sugar"
+      "w": "minecraft:wheat"
     result:
       id: minecraft:cake
 
@@ -247,7 +247,7 @@ recipes:
       - "##"
       - "##"
     ingredients:
-      #: "farmersdelight:straw"
+      "#": "farmersdelight:straw"
     result:
       id: farmersdelight:canvas
 
@@ -274,9 +274,9 @@ recipes:
       - "w#w"
       - " / "
     ingredients:
-      #: "farmersdelight:canvas"
-      /: "minecraft:stick"
-      w: "#minecraft:planks"
+      "#": "farmersdelight:canvas"
+      "/": "minecraft:stick"
+      "w": "#minecraft:planks"
     result:
       id: farmersdelight:canvas_sign
       count: 3
@@ -288,7 +288,7 @@ recipes:
       - "###"
       - "###"
     ingredients:
-      #: "minecraft:carrot"
+      "#": "minecraft:carrot"
     result:
       id: farmersdelight:carrot_crate
 
@@ -317,10 +317,10 @@ recipes:
       - "mmm"
       - "xOx"
     ingredients:
-      O: "farmersdelight:pie_crust"
-      c: "minecraft:cocoa_beans"
-      m: ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
-      x: "minecraft:sugar"
+      "O": "farmersdelight:pie_crust"
+      "c": "minecraft:cocoa_beans"
+      "m": ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
+      "x": "minecraft:sugar"
     result:
       id: farmersdelight:chocolate_pie
 
@@ -330,7 +330,7 @@ recipes:
       - "##"
       - "##"
     ingredients:
-      #: "farmersdelight:chocolate_pie_slice"
+      "#": "farmersdelight:chocolate_pie_slice"
     result:
       id: farmersdelight:chocolate_pie
 
@@ -466,10 +466,10 @@ recipes:
       - "iWi"
       - "iii"
     ingredients:
-      S: "minecraft:wooden_shovel"
-      W: "minecraft:water_bucket"
-      b: "minecraft:brick"
-      i: ["minecraft:iron_ingot"]
+      "S": "minecraft:wooden_shovel"
+      "W": "minecraft:water_bucket"
+      "b": "minecraft:brick"
+      "i": ["minecraft:iron_ingot"]
     result:
       id: farmersdelight:cooking_pot
 
@@ -480,8 +480,8 @@ recipes:
       - "D D"
       - "___"
     ingredients:
-      D: "minecraft:crimson_trapdoor"
-      _: "minecraft:crimson_slab"
+      "D": "minecraft:crimson_trapdoor"
+      "_": "minecraft:crimson_slab"
     result:
       id: farmersdelight:crimson_cabinet
 
@@ -491,8 +491,8 @@ recipes:
       - "/##"
       - "/##"
     ingredients:
-      #: "#minecraft:planks"
-      /: "minecraft:stick"
+      "#": "#minecraft:planks"
+      "/": "minecraft:stick"
     result:
       id: farmersdelight:cutting_board
 
@@ -512,8 +512,8 @@ recipes:
       - "D D"
       - "___"
     ingredients:
-      D: "minecraft:dark_oak_trapdoor"
-      _: "minecraft:dark_oak_slab"
+      "D": "minecraft:dark_oak_trapdoor"
+      "_": "minecraft:dark_oak_slab"
     result:
       id: farmersdelight:dark_oak_cabinet
 
@@ -523,8 +523,8 @@ recipes:
       - "m"
       - "s"
     ingredients:
-      m: "minecraft:diamond"
-      s: "minecraft:stick"
+      "m": "minecraft:diamond"
+      "s": "minecraft:stick"
     result:
       id: farmersdelight:diamond_knife
 
@@ -543,8 +543,8 @@ recipes:
       - "m"
       - "s"
     ingredients:
-      m: "minecraft:flint"
-      s: "minecraft:stick"
+      "m": "minecraft:flint"
+      "s": "minecraft:stick"
     result:
       id: farmersdelight:flint_knife
 

@@ -318,6 +318,8 @@ public final class PlayerListener implements Listener {
         if (player.isFlying() || player.getGameMode() == GameMode.SPECTATOR) return;
         var to = event.getTo();
         if (to == null) return;
+        // cheap pre-filter: rope furniture only occupies otherwise-air blocks
+        if (!to.getBlock().getType().isAir()) return;
         var entry = plugin.furnitureTracker().at(
                 to.getBlock().getLocation().add(0.5, 0, 0.5), FD.ROPE);
         if (entry == null) return;

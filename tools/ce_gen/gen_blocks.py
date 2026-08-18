@@ -109,7 +109,7 @@ def generate_blocks() -> tuple[str, list[str]]:
                     continue
                 conds = [f"{k}={c['states'][k]}" for k in sorted(c["states"])]
                 app = appear_map[(c["model"], c["x"], c["y"])]
-                lines.append(f"        {', '.join(conds)}:")
+                lines.append(f"        {','.join(conds)}:")
                 lines.append(f"          appearance: {app}")
             # variant-level settings overrides
             if bid == "stove":

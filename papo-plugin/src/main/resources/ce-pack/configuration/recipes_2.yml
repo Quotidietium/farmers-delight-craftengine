@@ -8,7 +8,7 @@ recipes:
       - "s"
       - "s"
     ingredients:
-      s: "farmersdelight:straw"
+      "s": "farmersdelight:straw"
     result:
       id: farmersdelight:rope
       count: 3
@@ -27,7 +27,7 @@ recipes:
       - "rr"
       - "rr"
     ingredients:
-      r: "farmersdelight:rope"
+      "r": "farmersdelight:rope"
     result:
       id: farmersdelight:safety_net
 
@@ -48,8 +48,8 @@ recipes:
       - "b b"
       - "b b"
     ingredients:
-      #: "farmersdelight:canvas"
-      b: "minecraft:bamboo"
+      "#": "farmersdelight:canvas"
+      "b": "minecraft:bamboo"
     result:
       id: minecraft:scaffolding
       count: 6
@@ -76,8 +76,8 @@ recipes:
       - " ##"
       - "/  "
     ingredients:
-      #: ["minecraft:iron_ingot"]
-      /: "minecraft:brick"
+      "#": ["minecraft:iron_ingot"]
+      "/": "minecraft:brick"
     result:
       id: farmersdelight:skillet
 
@@ -95,8 +95,8 @@ recipes:
       - "D D"
       - "___"
     ingredients:
-      D: "minecraft:spruce_trapdoor"
-      _: "minecraft:spruce_slab"
+      "D": "minecraft:spruce_trapdoor"
+      "_": "minecraft:spruce_slab"
     result:
       id: farmersdelight:spruce_cabinet
 
@@ -118,9 +118,9 @@ recipes:
       - "B B"
       - "BCB"
     ingredients:
-      B: "minecraft:bricks"
-      C: "minecraft:campfire"
-      i: ["minecraft:iron_ingot"]
+      "B": "minecraft:bricks"
+      "C": "minecraft:campfire"
+      "i": ["minecraft:iron_ingot"]
     result:
       id: farmersdelight:stove
 
@@ -139,7 +139,7 @@ recipes:
       - "###"
       - "###"
     ingredients:
-      #: "farmersdelight:straw"
+      "#": "farmersdelight:straw"
     result:
       id: farmersdelight:straw_bale
 
@@ -159,9 +159,9 @@ recipes:
       - "sss"
       - "mOm"
     ingredients:
-      O: "farmersdelight:pie_crust"
-      m: ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
-      s: "minecraft:sweet_berries"
+      "O": "farmersdelight:pie_crust"
+      "m": ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
+      "s": "minecraft:sweet_berries"
     result:
       id: farmersdelight:sweet_berry_cheesecake
 
@@ -171,7 +171,7 @@ recipes:
       - "##"
       - "##"
     ingredients:
-      #: "farmersdelight:sweet_berry_cheesecake_slice"
+      "#": "farmersdelight:sweet_berry_cheesecake_slice"
     result:
       id: farmersdelight:sweet_berry_cheesecake
 
@@ -191,8 +191,8 @@ recipes:
       - "cs"
       - "sc"
     ingredients:
-      c: "farmersdelight:canvas"
-      s: "farmersdelight:straw"
+      "c": "farmersdelight:canvas"
+      "s": "farmersdelight:straw"
     result:
       id: farmersdelight:tatami
       count: 2
@@ -220,14 +220,14 @@ recipes:
       - "###"
       - "###"
     ingredients:
-      #: "farmersdelight:tomato"
+      "#": "farmersdelight:tomato"
     result:
       id: farmersdelight:tomato_crate
 
   "farmersdelight:tomato_seeds":
     type: shapeless
     ingredients:
-      - "minecraft:air"
+      - ["farmersdelight:tomato", "farmersdelight:rotten_tomato"]
     result:
       id: farmersdelight:tomato_seeds
 
@@ -238,8 +238,8 @@ recipes:
       - "D D"
       - "___"
     ingredients:
-      D: "minecraft:warped_trapdoor"
-      _: "minecraft:warped_slab"
+      "D": "minecraft:warped_trapdoor"
+      "_": "minecraft:warped_slab"
     result:
       id: farmersdelight:warped_cabinet
 
@@ -249,8 +249,8 @@ recipes:
       - "www"
       - " b "
     ingredients:
-      w: "minecraft:wheat"
-      b: "minecraft:water_bucket"
+      "w": "minecraft:wheat"
+      "b": "minecraft:water_bucket"
     result:
       id: farmersdelight:wheat_dough
       count: 3

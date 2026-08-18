@@ -52,8 +52,8 @@ recipes:
       - "m"
       - "s"
     ingredients:
-      m: "minecraft:gold_ingot"
-      s: "minecraft:stick"
+      "m": "minecraft:gold_ingot"
+      "s": "minecraft:stick"
     result:
       id: farmersdelight:golden_knife
 
@@ -133,7 +133,7 @@ recipes:
   "farmersdelight:horse_feed":
     type: shapeless
     ingredients:
-      - "minecraft:air"
+      - ["minecraft:hay_block", "farmersdelight:rice_bale"]
       - "minecraft:apple"
       - "minecraft:apple"
       - "minecraft:golden_carrot"
@@ -146,8 +146,8 @@ recipes:
       - "m"
       - "s"
     ingredients:
-      m: "minecraft:iron_ingot"
-      s: "minecraft:stick"
+      "m": "minecraft:iron_ingot"
+      "s": "minecraft:stick"
     result:
       id: farmersdelight:iron_knife
 
@@ -174,8 +174,8 @@ recipes:
       - "D D"
       - "___"
     ingredients:
-      D: "minecraft:jungle_trapdoor"
-      _: "minecraft:jungle_slab"
+      "D": "minecraft:jungle_trapdoor"
+      "_": "minecraft:jungle_slab"
     result:
       id: farmersdelight:jungle_cabinet
 
@@ -185,9 +185,9 @@ recipes:
       - "RXR"
       - "###"
     ingredients:
-      #: "minecraft:dried_kelp"
-      R: "farmersdelight:cooked_rice"
-      X: "minecraft:carrot"
+      "#": "minecraft:dried_kelp"
+      "R": "farmersdelight:cooked_rice"
+      "X": "minecraft:carrot"
     result:
       id: farmersdelight:kelp_roll
 
@@ -198,7 +198,7 @@ recipes:
       - "rr "
       - "  r"
     ingredients:
-      r: "farmersdelight:rope"
+      "r": "farmersdelight:rope"
     result:
       id: minecraft:lead
 
@@ -245,8 +245,8 @@ recipes:
       - "D D"
       - "___"
     ingredients:
-      D: "minecraft:mangrove_trapdoor"
-      _: "minecraft:mangrove_slab"
+      "D": "minecraft:mangrove_trapdoor"
+      "_": "minecraft:mangrove_slab"
     result:
       id: farmersdelight:mangrove_cabinet
 
@@ -269,9 +269,9 @@ recipes:
       - "imm"
       - "-i "
     ingredients:
-      -: "minecraft:stick"
-      i: "minecraft:ice"
-      m: "minecraft:melon_slice"
+      "-": "minecraft:stick"
+      "i": "minecraft:ice"
+      "m": "minecraft:melon_slice"
     result:
       id: farmersdelight:melon_popsicle
 
@@ -329,7 +329,7 @@ recipes:
 
   "farmersdelight:netherite_knife_smithing":
     type: smithing_transform
-    template: minecraft:netherite_upgrade_smithing_template
+    template_type: minecraft:netherite_upgrade_smithing_template
     base: farmersdelight:diamond_knife
     addition: minecraft:netherite_ingot
     result:
@@ -342,8 +342,8 @@ recipes:
       - "D D"
       - "___"
     ingredients:
-      D: "minecraft:oak_trapdoor"
-      _: "minecraft:oak_slab"
+      "D": "minecraft:oak_trapdoor"
+      "_": "minecraft:oak_slab"
     result:
       id: farmersdelight:oak_cabinet
 
@@ -362,7 +362,7 @@ recipes:
       - "###"
       - "###"
     ingredients:
-      #: "farmersdelight:onion"
+      "#": "farmersdelight:onion"
     result:
       id: farmersdelight:onion_crate
 
@@ -422,8 +422,8 @@ recipes:
       - "scs"
       - "sss"
     ingredients:
-      c: "farmersdelight:canvas"
-      s: "minecraft:stick"
+      "c": "farmersdelight:canvas"
+      "s": "minecraft:stick"
     result:
       id: minecraft:painting
 
@@ -442,8 +442,8 @@ recipes:
       - "wMw"
       - " w "
     ingredients:
-      M: ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
-      w: "minecraft:wheat"
+      "M": ["minecraft:milk_bucket", "farmersdelight:milk_bottle"]
+      "w": "minecraft:wheat"
     result:
       id: farmersdelight:pie_crust
 
@@ -463,7 +463,7 @@ recipes:
       - "###"
       - "###"
     ingredients:
-      #: "minecraft:potato"
+      "#": "minecraft:potato"
     result:
       id: farmersdelight:potato_crate
 
@@ -481,7 +481,7 @@ recipes:
       - "##"
       - "##"
     ingredients:
-      #: "farmersdelight:pumpkin_slice"
+      "#": "farmersdelight:pumpkin_slice"
     result:
       id: minecraft:pumpkin
 
@@ -545,7 +545,7 @@ recipes:
       - "###"
       - "###"
     ingredients:
-      #: "farmersdelight:rice"
+      "#": "farmersdelight:rice"
     result:
       id: farmersdelight:rice_bag
 
@@ -556,7 +556,7 @@ recipes:
       - "###"
       - "###"
     ingredients:
-      #: "farmersdelight:rice_panicle"
+      "#": "farmersdelight:rice_panicle"
     result:
       id: farmersdelight:rice_bale
 

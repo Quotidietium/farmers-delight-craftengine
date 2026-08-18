@@ -50,21 +50,21 @@ blocks:
             path: "farmersdelight:block/acacia_cabinet_open"
             y: 90
       variants:
-        facing=north, open=false:
+        facing=north,open=false:
           appearance: app0
-        facing=south, open=false:
+        facing=south,open=false:
           appearance: app1
-        facing=west, open=false:
+        facing=west,open=false:
           appearance: app2
-        facing=east, open=false:
+        facing=east,open=false:
           appearance: app3
-        facing=north, open=true:
+        facing=north,open=true:
           appearance: app4
-        facing=south, open=true:
+        facing=south,open=true:
           appearance: app5
-        facing=west, open=true:
+        facing=west,open=true:
           appearance: app6
-        facing=east, open=true:
+        facing=east,open=true:
           appearance: app7
     settings:
       hardness: 2.0
@@ -170,37 +170,37 @@ blocks:
             path: "farmersdelight:block/apple_pie_slice3"
             y: 90
       variants:
-        bites=0, facing=north:
+        bites=0,facing=north:
           appearance: app0
-        bites=1, facing=north:
+        bites=1,facing=north:
           appearance: app1
-        bites=2, facing=north:
+        bites=2,facing=north:
           appearance: app2
-        bites=3, facing=north:
+        bites=3,facing=north:
           appearance: app3
-        bites=0, facing=south:
+        bites=0,facing=south:
           appearance: app4
-        bites=1, facing=south:
+        bites=1,facing=south:
           appearance: app5
-        bites=2, facing=south:
+        bites=2,facing=south:
           appearance: app6
-        bites=3, facing=south:
+        bites=3,facing=south:
           appearance: app7
-        bites=0, facing=west:
+        bites=0,facing=west:
           appearance: app8
-        bites=1, facing=west:
+        bites=1,facing=west:
           appearance: app9
-        bites=2, facing=west:
+        bites=2,facing=west:
           appearance: app10
-        bites=3, facing=west:
+        bites=3,facing=west:
           appearance: app11
-        bites=0, facing=east:
+        bites=0,facing=east:
           appearance: app12
-        bites=1, facing=east:
+        bites=1,facing=east:
           appearance: app13
-        bites=2, facing=east:
+        bites=2,facing=east:
           appearance: app14
-        bites=3, facing=east:
+        bites=3,facing=east:
           appearance: app15
     settings:
       hardness: 0.0
@@ -350,21 +350,21 @@ blocks:
             path: "farmersdelight:block/birch_cabinet_open"
             y: 90
       variants:
-        facing=north, open=false:
+        facing=north,open=false:
           appearance: app0
-        facing=south, open=false:
+        facing=south,open=false:
           appearance: app1
-        facing=west, open=false:
+        facing=west,open=false:
           appearance: app2
-        facing=east, open=false:
+        facing=east,open=false:
           appearance: app3
-        facing=north, open=true:
+        facing=north,open=true:
           appearance: app4
-        facing=south, open=true:
+        facing=south,open=true:
           appearance: app5
-        facing=west, open=true:
+        facing=west,open=true:
           appearance: app6
-        facing=east, open=true:
+        facing=east,open=true:
           appearance: app7
     settings:
       hardness: 2.0
@@ -667,37 +667,37 @@ blocks:
             path: "farmersdelight:block/chocolate_pie_slice3"
             y: 90
       variants:
-        bites=0, facing=north:
+        bites=0,facing=north:
           appearance: app0
-        bites=1, facing=north:
+        bites=1,facing=north:
           appearance: app1
-        bites=2, facing=north:
+        bites=2,facing=north:
           appearance: app2
-        bites=3, facing=north:
+        bites=3,facing=north:
           appearance: app3
-        bites=0, facing=south:
+        bites=0,facing=south:
           appearance: app4
-        bites=1, facing=south:
+        bites=1,facing=south:
           appearance: app5
-        bites=2, facing=south:
+        bites=2,facing=south:
           appearance: app6
-        bites=3, facing=south:
+        bites=3,facing=south:
           appearance: app7
-        bites=0, facing=west:
+        bites=0,facing=west:
           appearance: app8
-        bites=1, facing=west:
+        bites=1,facing=west:
           appearance: app9
-        bites=2, facing=west:
+        bites=2,facing=west:
           appearance: app10
-        bites=3, facing=west:
+        bites=3,facing=west:
           appearance: app11
-        bites=0, facing=east:
+        bites=0,facing=east:
           appearance: app12
-        bites=1, facing=east:
+        bites=1,facing=east:
           appearance: app13
-        bites=2, facing=east:
+        bites=2,facing=east:
           appearance: app14
-        bites=3, facing=east:
+        bites=3,facing=east:
           appearance: app15
     settings:
       hardness: 0.0
@@ -758,21 +758,21 @@ blocks:
             path: "farmersdelight:block/crimson_cabinet_open"
             y: 90
       variants:
-        facing=north, open=false:
+        facing=north,open=false:
           appearance: app0
-        facing=south, open=false:
+        facing=south,open=false:
           appearance: app1
-        facing=west, open=false:
+        facing=west,open=false:
           appearance: app2
-        facing=east, open=false:
+        facing=east,open=false:
           appearance: app3
-        facing=north, open=true:
+        facing=north,open=true:
           appearance: app4
-        facing=south, open=true:
+        facing=south,open=true:
           appearance: app5
-        facing=west, open=true:
+        facing=west,open=true:
           appearance: app6
-        facing=east, open=true:
+        facing=east,open=true:
           appearance: app7
     settings:
       hardness: 2.0
@@ -839,21 +839,21 @@ blocks:
             path: "farmersdelight:block/dark_oak_cabinet_open"
             y: 90
       variants:
-        facing=north, open=false:
+        facing=north,open=false:
           appearance: app0
-        facing=south, open=false:
+        facing=south,open=false:
           appearance: app1
-        facing=west, open=false:
+        facing=west,open=false:
           appearance: app2
-        facing=east, open=false:
+        facing=east,open=false:
           appearance: app3
-        facing=north, open=true:
+        facing=north,open=true:
           appearance: app4
-        facing=south, open=true:
+        facing=south,open=true:
           appearance: app5
-        facing=west, open=true:
+        facing=west,open=true:
           appearance: app6
-        facing=east, open=true:
+        facing=east,open=true:
           appearance: app7
     settings:
       hardness: 2.0
@@ -920,21 +920,21 @@ blocks:
             path: "farmersdelight:block/jungle_cabinet_open"
             y: 90
       variants:
-        facing=north, open=false:
+        facing=north,open=false:
           appearance: app0
-        facing=south, open=false:
+        facing=south,open=false:
           appearance: app1
-        facing=west, open=false:
+        facing=west,open=false:
           appearance: app2
-        facing=east, open=false:
+        facing=east,open=false:
           appearance: app3
-        facing=north, open=true:
+        facing=north,open=true:
           appearance: app4
-        facing=south, open=true:
+        facing=south,open=true:
           appearance: app5
-        facing=west, open=true:
+        facing=west,open=true:
           appearance: app6
-        facing=east, open=true:
+        facing=east,open=true:
           appearance: app7
     settings:
       hardness: 2.0
@@ -1001,21 +1001,21 @@ blocks:
             path: "farmersdelight:block/mangrove_cabinet_open"
             y: 270
       variants:
-        facing=east, open=false:
+        facing=east,open=false:
           appearance: app0
-        facing=east, open=true:
+        facing=east,open=true:
           appearance: app1
-        facing=north, open=false:
+        facing=north,open=false:
           appearance: app2
-        facing=north, open=true:
+        facing=north,open=true:
           appearance: app3
-        facing=south, open=false:
+        facing=south,open=false:
           appearance: app4
-        facing=south, open=true:
+        facing=south,open=true:
           appearance: app5
-        facing=west, open=false:
+        facing=west,open=false:
           appearance: app6
-        facing=west, open=true:
+        facing=west,open=true:
           appearance: app7
     settings:
       hardness: 2.0
@@ -1082,21 +1082,21 @@ blocks:
             path: "farmersdelight:block/oak_cabinet_open"
             y: 90
       variants:
-        facing=north, open=false:
+        facing=north,open=false:
           appearance: app0
-        facing=south, open=false:
+        facing=south,open=false:
           appearance: app1
-        facing=west, open=false:
+        facing=west,open=false:
           appearance: app2
-        facing=east, open=false:
+        facing=east,open=false:
           appearance: app3
-        facing=north, open=true:
+        facing=north,open=true:
           appearance: app4
-        facing=south, open=true:
+        facing=south,open=true:
           appearance: app5
-        facing=west, open=true:
+        facing=west,open=true:
           appearance: app6
-        facing=east, open=true:
+        facing=east,open=true:
           appearance: app7
     settings:
       hardness: 2.0
@@ -1349,21 +1349,21 @@ blocks:
           model:
             path: "farmersdelight:block/rice_supporting"
       variants:
-        age=0, supporting=false:
+        age=0,supporting=false:
           appearance: app0
-        age=1, supporting=false:
+        age=1,supporting=false:
           appearance: app1
-        age=2, supporting=false:
+        age=2,supporting=false:
           appearance: app2
-        age=3, supporting=false:
+        age=3,supporting=false:
           appearance: app3
-        age=0, supporting=true:
+        age=0,supporting=true:
           appearance: app0
-        age=1, supporting=true:
+        age=1,supporting=true:
           appearance: app1
-        age=2, supporting=true:
+        age=2,supporting=true:
           appearance: app2
-        age=3, supporting=true:
+        age=3,supporting=true:
           appearance: app4
     settings:
       hardness: 0.0
@@ -1642,21 +1642,21 @@ blocks:
             path: "farmersdelight:block/spruce_cabinet_open"
             y: 90
       variants:
-        facing=north, open=false:
+        facing=north,open=false:
           appearance: app0
-        facing=south, open=false:
+        facing=south,open=false:
           appearance: app1
-        facing=west, open=false:
+        facing=west,open=false:
           appearance: app2
-        facing=east, open=false:
+        facing=east,open=false:
           appearance: app3
-        facing=north, open=true:
+        facing=north,open=true:
           appearance: app4
-        facing=south, open=true:
+        facing=south,open=true:
           appearance: app5
-        facing=west, open=true:
+        facing=west,open=true:
           appearance: app6
-        facing=east, open=true:
+        facing=east,open=true:
           appearance: app7
     settings:
       hardness: 2.0
@@ -1723,21 +1723,21 @@ blocks:
             path: "farmersdelight:block/stove_on"
             y: 90
       variants:
-        facing=north, lit=false:
+        facing=north,lit=false:
           appearance: app0
-        facing=south, lit=false:
+        facing=south,lit=false:
           appearance: app1
-        facing=west, lit=false:
+        facing=west,lit=false:
           appearance: app2
-        facing=east, lit=false:
+        facing=east,lit=false:
           appearance: app3
-        facing=north, lit=true:
+        facing=north,lit=true:
           appearance: app4
-        facing=south, lit=true:
+        facing=south,lit=true:
           appearance: app5
-        facing=west, lit=true:
+        facing=west,lit=true:
           appearance: app6
-        facing=east, lit=true:
+        facing=east,lit=true:
           appearance: app7
         lit=true:
           settings:
@@ -1891,37 +1891,37 @@ blocks:
             path: "farmersdelight:block/sweet_berry_cheesecake_slice3"
             y: 90
       variants:
-        bites=0, facing=north:
+        bites=0,facing=north:
           appearance: app0
-        bites=1, facing=north:
+        bites=1,facing=north:
           appearance: app1
-        bites=2, facing=north:
+        bites=2,facing=north:
           appearance: app2
-        bites=3, facing=north:
+        bites=3,facing=north:
           appearance: app3
-        bites=0, facing=south:
+        bites=0,facing=south:
           appearance: app4
-        bites=1, facing=south:
+        bites=1,facing=south:
           appearance: app5
-        bites=2, facing=south:
+        bites=2,facing=south:
           appearance: app6
-        bites=3, facing=south:
+        bites=3,facing=south:
           appearance: app7
-        bites=0, facing=west:
+        bites=0,facing=west:
           appearance: app8
-        bites=1, facing=west:
+        bites=1,facing=west:
           appearance: app9
-        bites=2, facing=west:
+        bites=2,facing=west:
           appearance: app10
-        bites=3, facing=west:
+        bites=3,facing=west:
           appearance: app11
-        bites=0, facing=east:
+        bites=0,facing=east:
           appearance: app12
-        bites=1, facing=east:
+        bites=1,facing=east:
           appearance: app13
-        bites=2, facing=east:
+        bites=2,facing=east:
           appearance: app14
-        bites=3, facing=east:
+        bites=3,facing=east:
           appearance: app15
     settings:
       hardness: 0.0
@@ -1998,21 +1998,21 @@ blocks:
           model:
             path: "farmersdelight:block/tomatoes_vine_stage3"
       variants:
-        age=0, ropelogged=false:
+        age=0,ropelogged=false:
           appearance: app0
-        age=1, ropelogged=false:
+        age=1,ropelogged=false:
           appearance: app1
-        age=2, ropelogged=false:
+        age=2,ropelogged=false:
           appearance: app2
-        age=3, ropelogged=false:
+        age=3,ropelogged=false:
           appearance: app3
-        age=0, ropelogged=true:
+        age=0,ropelogged=true:
           appearance: app4
-        age=1, ropelogged=true:
+        age=1,ropelogged=true:
           appearance: app5
-        age=2, ropelogged=true:
+        age=2,ropelogged=true:
           appearance: app6
-        age=3, ropelogged=true:
+        age=3,ropelogged=true:
           appearance: app7
     settings:
       hardness: 0.0
@@ -2073,21 +2073,21 @@ blocks:
             path: "farmersdelight:block/warped_cabinet_open"
             y: 90
       variants:
-        facing=north, open=false:
+        facing=north,open=false:
           appearance: app0
-        facing=south, open=false:
+        facing=south,open=false:
           appearance: app1
-        facing=west, open=false:
+        facing=west,open=false:
           appearance: app2
-        facing=east, open=false:
+        facing=east,open=false:
           appearance: app3
-        facing=north, open=true:
+        facing=north,open=true:
           appearance: app4
-        facing=south, open=true:
+        facing=south,open=true:
           appearance: app5
-        facing=west, open=true:
+        facing=west,open=true:
           appearance: app6
-        facing=east, open=true:
+        facing=east,open=true:
           appearance: app7
     settings:
       hardness: 2.0

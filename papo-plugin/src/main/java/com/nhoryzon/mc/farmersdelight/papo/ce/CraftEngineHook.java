@@ -154,6 +154,6 @@ public final class CraftEngineHook implements Listener {
     public static void reloadContent() {
         BukkitCraftEngine ce = plugin();
         ce.reloadPlugin(task -> Bukkit.getScheduler().runTaskAsynchronously(ce.javaPlugin(), task),
-                task -> Bukkit.getScheduler().runTask(ce.javaPlugin(), task), false);
+                task -> Bukkit.getScheduler().runTask(ce.javaPlugin(), task), true);
     }
 }

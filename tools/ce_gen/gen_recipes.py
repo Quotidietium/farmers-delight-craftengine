@@ -122,7 +122,7 @@ def generate_ce_recipes() -> tuple[list[str], list[str]]:
                 lines.append(f"      - {yaml_str(row)}")
             lines.append("    ingredients:")
             for key, ing in data["key"].items():
-                lines.append(f"      {key}: {ing_str(ce_ingredient(ing))}")
+                lines.append(f"      {yaml_str(key)}: {ing_str(ce_ingredient(ing))}")
             lines.append("    result:")
             res = data["result"]
             lines.append(f"      id: {res['item']}")
@@ -134,7 +134,14 @@ def generate_ce_recipes() -> tuple[list[str], list[str]]:
                 lines.append(f"    group: {data['group']}")
             lines.append("    ingredients:")
             for ing in data["ingredients"]:
-                lines.append(f"      - {ing_str(ce_ingredient(ing))}")
+                if isinstance(ing, list):  # nested OR group
+                    group = []
+                    for sub in ing:
+                        v = ce_ingredient(sub)
+                        group.extend(v if isinstance(v, list) else [v])
+                    lines.append(f"      - {ing_str(group)}")
+                else:
+                    lines.append(f"      - {ing_str(ce_ingredient(ing))}")
             lines.append("    result:")
             res = data["result"]
             lines.append(f"      id: {res['item']}")
@@ -161,7 +168,7 @@ def generate_ce_recipes() -> tuple[list[str], list[str]]:
                 lines.append(f"      count: {res['count']}")
         elif rtype == "minecraft:smithing_transform":
             lines.append("    type: smithing_transform")
-            lines.append(f"    template: {data['template']['item']}")
+            lines.append(f"    template_type: {data['template']['item']}")
             lines.append(f"    base: {data['base']['item']}")
             lines.append(f"    addition: {data['addition']['item']}")
             lines.append("    result:")
