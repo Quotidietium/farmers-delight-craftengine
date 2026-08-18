@@ -91,7 +91,8 @@ def emit_item(item: dict, foods: dict) -> str | None:
     if iid in KNIFE_BASE:
         material, durability, dmg, speed, ench = KNIFE_BASE[iid]
     elif kind == "skillet":
-        material, durability, dmg, speed, ench = "minecraft:iron_hoe", 250, 6.0, -3.1, 14
+        # inert base (iron_hoe would till dirt on right-click - vanilla behavior leak)
+        material, durability, dmg, speed, ench = "minecraft:iron_ingot", 250, 6.0, -3.1, 14
     elif kind == "rotten_tomato":
         material, durability = "minecraft:snowball", None
     elif food is not None and container == "minecraft:bowl":
@@ -136,7 +137,7 @@ def emit_item(item: dict, foods: dict) -> str | None:
     if durability:
         data.append(f"minecraft:max_damage: {durability}")
 
-    if iid in KNIFE_BASE:
+    if iid in KNIFE_BASE or kind == "skillet":
         data.append("minecraft:enchantable:")
         data.append(f"  value: {ench}")
         if iid == "netherite_knife":
