@@ -405,7 +405,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0.5,0
+            translation: 0,0.125,0.375
             scale: 1
         hitboxes:
           - type: interaction
@@ -422,7 +422,7 @@ furniture:
             display_transform: none
             billboard: fixed
             position: 0.5,0,0.5
-            translation: 0,0.5,0
+            translation: 0,-0.375,0.34375
             scale: 1
         hitboxes:
           - type: interaction

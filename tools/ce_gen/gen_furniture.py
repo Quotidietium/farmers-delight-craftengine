@@ -106,7 +106,7 @@ def _furniture_head(fid: str, hit_times: int = 3) -> list[str]:
 
 
 def _variant(lines: list[str], name: str, model_basename: str, hitbox, extra_height: str = "0",
-             fid: str = ""):
+             fid: str = "", translation: str = "0,0.5,0"):
     pos, width, height, blocks = hitbox
     own = OWN_ITEM_DEFAULT_VARIANTS.get(fid) == name and fid
     display_item = f"{NS}:{fid}" if own else internal_item_for(model_basename)
@@ -116,7 +116,7 @@ def _variant(lines: list[str], name: str, model_basename: str, hitbox, extra_hei
     lines.append("            display_transform: none")
     lines.append("            billboard: fixed")
     lines.append("            position: 0.5,0,0.5")
-    lines.append("            translation: 0,0.5,0")
+    lines.append(f"            translation: {translation}")
     lines.append("            scale: 1")
     lines.append("        hitboxes:")
     lines.append("          - type: interaction")
@@ -161,8 +161,8 @@ def generate_furniture() -> str:
 
     # ---------------- skillet: ground + tray
     lines = _furniture_head("skillet")
-    _variant(lines, "ground", "skillet", ("0.125,0,0.125", 0.75, 0.25, True), fid="skillet")
-    _variant(lines, "tray", "skillet_tray", ("0.0625,0,0.0625", 0.875, 0.25, True), fid="skillet")
+    _variant(lines, "ground", "skillet", ("0.125,0,0.125", 0.75, 0.25, True), fid="skillet", translation="0,0.125,0.375")
+    _variant(lines, "tray", "skillet_tray", ("0.0625,0,0.0625", 0.875, 0.25, True), fid="skillet", translation="0,-0.375,0.34375")
     chunks.append("\n".join(lines))
 
     # ---------------- simple furniture
