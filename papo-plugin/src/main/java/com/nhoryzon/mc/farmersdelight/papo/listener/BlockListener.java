@@ -67,6 +67,10 @@ public final class BlockListener implements Listener {
         }
         if (id.equals(FD.BASKET)) {
             ticker().basketIndex.add(block);
+            var dirProp = state.<String>getProperty("direction");
+            if (dirProp != null) {
+                plugin.blockStore().setString(block, "facing", state.getNullable(dirProp));
+            }
             return;
         }
         if (id.equals(FD.ORGANIC_COMPOST)) {

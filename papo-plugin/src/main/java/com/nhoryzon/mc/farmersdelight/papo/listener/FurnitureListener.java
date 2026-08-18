@@ -54,6 +54,23 @@ public final class FurnitureListener implements Listener {
         String facing = facingOf(furniture);
         GameTicker.data(furniture).set(GameTicker.fdKey("facing"),
                 PersistentDataType.STRING, facing);
+        // full tatami mats occupy two blocks: place the linked partner part
+        if (furniture.id().equals(FD.FULL_TATAMI_MAT)) {
+            var dir = dirOf(facing);
+            Location partnerLoc = furniture.location().clone().add(dir);
+            BukkitFurniture partner = CraftEngineHook.placeFurniture(partnerLoc, FD.FULL_TATAMI_MAT);
+            if (partner != null) {
+                plugin.furnitureTracker().track(partner.baseEntity());
+                GameTicker.data(partner).set(GameTicker.fdKey("facing"),
+                        PersistentDataType.STRING, facing);
+                GameTicker.data(partner).set(GameTicker.fdKey("partner"),
+                        PersistentDataType.STRING, furniture.baseEntity().getUniqueId().toString());
+                GameTicker.data(furniture).set(GameTicker.fdKey("partner"),
+                        PersistentDataType.STRING, partner.baseEntity().getUniqueId().toString());
+                partner.setVariant("head", false);
+                furniture.setVariant("foot", false);
+            }
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -78,6 +95,21 @@ public final class FurnitureListener implements Listener {
             ticker().setDisplayChild(furniture, "itemEntity", null, 0.5, 0.4, 0.5, 0.3f);
         } else if (id.toString().endsWith("_canvas_sign") || id.toString().endsWith("_canvas_wall_sign")) {
             removeSignText(furniture);
+        } else if (id.equals(FD.FULL_TATAMI_MAT)) {
+            // remove the linked partner half as well
+            String partnerId = GameTicker.data(furniture).get(
+                    GameTicker.fdKey("partner"), PersistentDataType.STRING);
+            if (partnerId != null) {
+                try {
+                    var partner = org.bukkit.Bukkit.getEntity(java.util.UUID.fromString(partnerId));
+                    var entry = partner == null ? null : plugin.furnitureTracker().tracked().get(partner.getUniqueId());
+                    if (entry != null) {
+                        CraftEngineHook.removeFurniture(entry.furniture(), false, false);
+                        plugin.furnitureTracker().untrack(partner);
+                    }
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
         }
     }
 

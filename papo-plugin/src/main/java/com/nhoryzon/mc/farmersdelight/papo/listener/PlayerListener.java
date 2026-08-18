@@ -310,6 +310,26 @@ public final class PlayerListener implements Listener {
         at.getWorld().dropItemNaturally(at.getLocation().add(0.5, 0.4, 0.5), slice);
     }
 
+    /* ===================== rope climbing ===================== */
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onMove(org.bukkit.event.player.PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        if (player.isFlying() || player.getGameMode() == GameMode.SPECTATOR) return;
+        var to = event.getTo();
+        if (to == null) return;
+        var entry = plugin.furnitureTracker().at(
+                to.getBlock().getLocation().add(0.5, 0, 0.5), FD.ROPE);
+        if (entry == null) return;
+        player.setFallDistance(0);
+        Vector velocity = player.getVelocity();
+        if (player.isSneaking()) {
+            player.setVelocity(new Vector(velocity.getX() * 0.3, 0.0, velocity.getZ() * 0.3));
+        } else if (velocity.getY() < 0.05) {
+            player.setVelocity(new Vector(velocity.getX(), 0.13, velocity.getZ()));
+        }
+    }
+
     /* ===================== handheld skillet ===================== */
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
