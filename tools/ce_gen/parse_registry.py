@@ -38,6 +38,10 @@ def parse_foods() -> dict:
         meat = fast = always = False
         if len(args) == 3:
             meat = args[2] == "true"
+        elif len(args) == 4:
+            # (hunger, saturation, effect, chance)
+            effect = parse_effect(args[2]) if args[2] != "null" else None
+            chance = float(args[3].rstrip("fF"))
         elif len(args) >= 5:
             effect = parse_effect(args[2]) if args[2] != "null" else None
             chance = float(args[3].rstrip("fF"))

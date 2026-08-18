@@ -260,17 +260,18 @@ def generate_food_effects(foods: dict, items: list[dict]) -> str:
         if not food or not food.get("effect"):
             continue
         eff = food["effect"]
-        lines.append(f"{yaml_str(item['id'])}:")
+        item_key = item['id'] if item['id'].startswith('minecraft:') else f"{NS}:{item['id']}"
+        lines.append(f"{yaml_str(item_key)}:")
         lines.append(f"  - effect: {yaml_str(eff['key'])}")
         lines.append(f"    duration: {eff['duration']}")
         lines.append(f"    amplifier: {eff['amplifier']}")
         lines.append(f"    chance: {food.get('chance', 0)}")
     # special plugin-handled items
-    lines.append(f"{yaml_str('milk_bottle')}:")
+    lines.append(f"{yaml_str(NS + ':milk_bottle')}:")
     lines.append(f"  - effect: {yaml_str('farmersdelight:remove_random_effect')}")
-    lines.append(f"{yaml_str('hot_cocoa')}:")
+    lines.append(f"{yaml_str(NS + ':hot_cocoa')}:")
     lines.append(f"  - effect: {yaml_str('farmersdelight:remove_random_bad_effect')}")
-    lines.append(f"{yaml_str('melon_juice')}:")
+    lines.append(f"{yaml_str(NS + ':melon_juice')}:")
     lines.append(f"  - effect: {yaml_str('farmersdelight:heal_2')}")
     # vanilla soup comfort & rabbit stew jump (mod mixin behavior)
     for vid in ("minecraft:mushroom_stew", "minecraft:beetroot_soup"):

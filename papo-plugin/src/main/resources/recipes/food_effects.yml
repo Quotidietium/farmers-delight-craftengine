@@ -1,39 +1,189 @@
 # food item -> applied effects on consume (plugin side)
-"apple_cider":
+"farmersdelight:apple_cider":
   - effect: "minecraft:absorption"
     duration: 1200
     amplifier: 0
     chance: 1.0
-"chicken_cuts":
+"farmersdelight:wheat_dough":
   - effect: "minecraft:hunger"
     duration: 600
     amplifier: 0
     chance: 0.3
-"cake_slice":
+"farmersdelight:raw_pasta":
+  - effect: "minecraft:hunger"
+    duration: 600
+    amplifier: 0
+    chance: 0.3
+"farmersdelight:chicken_cuts":
+  - effect: "minecraft:hunger"
+    duration: 600
+    amplifier: 0
+    chance: 0.3
+"farmersdelight:cake_slice":
   - effect: "minecraft:speed"
     duration: 400
     amplifier: 0
     chance: 1.0
-"apple_pie_slice":
+"farmersdelight:apple_pie_slice":
   - effect: "minecraft:speed"
     duration: 600
     amplifier: 0
     chance: 1.0
-"sweet_berry_cheesecake_slice":
+"farmersdelight:sweet_berry_cheesecake_slice":
   - effect: "minecraft:speed"
     duration: 600
     amplifier: 0
     chance: 1.0
-"chocolate_pie_slice":
+"farmersdelight:chocolate_pie_slice":
   - effect: "minecraft:speed"
     duration: 600
     amplifier: 0
     chance: 1.0
-"milk_bottle":
+"farmersdelight:glow_berry_custard":
+  - effect: "minecraft:glowing"
+    duration: 100
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:fruit_salad":
+  - effect: "minecraft:regeneration"
+    duration: 100
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:mixed_salad":
+  - effect: "minecraft:regeneration"
+    duration: 100
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:nether_salad":
+  - effect: "minecraft:nausea"
+    duration: 240
+    amplifier: 0
+    chance: 0.3
+"farmersdelight:cooked_rice":
+  - effect: "farmersdelight:comfort"
+    duration: 600
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:bone_broth":
+  - effect: "farmersdelight:comfort"
+    duration: 1200
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:beef_stew":
+  - effect: "farmersdelight:comfort"
+    duration: 3600
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:chicken_soup":
+  - effect: "farmersdelight:comfort"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:vegetable_soup":
+  - effect: "farmersdelight:comfort"
+    duration: 3600
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:fish_stew":
+  - effect: "farmersdelight:comfort"
+    duration: 3600
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:fried_rice":
+  - effect: "farmersdelight:nourishment"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:pumpkin_soup":
+  - effect: "farmersdelight:comfort"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:baked_cod_stew":
+  - effect: "farmersdelight:comfort"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:noodle_soup":
+  - effect: "farmersdelight:comfort"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:bacon_and_eggs":
+  - effect: "farmersdelight:nourishment"
+    duration: 1200
+    amplifier: 0
+    chance: 12.0
+"farmersdelight:pasta_with_meatballs":
+  - effect: "farmersdelight:nourishment"
+    duration: 3600
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:pasta_with_mutton_chop":
+  - effect: "farmersdelight:nourishment"
+    duration: 3600
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:mushroom_rice":
+  - effect: "farmersdelight:nourishment"
+    duration: 3600
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:roasted_mutton_chops":
+  - effect: "farmersdelight:nourishment"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:vegetable_noodles":
+  - effect: "farmersdelight:nourishment"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:steak_and_potatoes":
+  - effect: "farmersdelight:nourishment"
+    duration: 3600
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:ratatouille":
+  - effect: "farmersdelight:nourishment"
+    duration: 1200
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:squid_ink_pasta":
+  - effect: "farmersdelight:nourishment"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:grilled_salmon":
+  - effect: "farmersdelight:nourishment"
+    duration: 3600
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:roast_chicken":
+  - effect: "farmersdelight:nourishment"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:stuffed_pumpkin":
+  - effect: "farmersdelight:nourishment"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:honey_glazed_ham":
+  - effect: "farmersdelight:nourishment"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:shepherds_pie":
+  - effect: "farmersdelight:nourishment"
+    duration: 6000
+    amplifier: 0
+    chance: 1.0
+"farmersdelight:milk_bottle":
   - effect: "farmersdelight:remove_random_effect"
-"hot_cocoa":
+"farmersdelight:hot_cocoa":
   - effect: "farmersdelight:remove_random_bad_effect"
-"melon_juice":
+"farmersdelight:melon_juice":
   - effect: "farmersdelight:heal_2"
 "minecraft:mushroom_stew":
   - effect: "farmersdelight:comfort"
