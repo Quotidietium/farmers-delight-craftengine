@@ -161,8 +161,8 @@ def generate_furniture() -> str:
 
     # ---------------- skillet: ground + tray
     lines = _furniture_head("skillet")
-    _variant(lines, "ground", "skillet", ("0.125,0,0.125", 0.75, 0.25, True), fid="skillet")
-    _variant(lines, "tray", "skillet_tray", ("0.0625,0,0.0625", 0.875, 0.25, True), fid="skillet")
+    _variant(lines, "ground", "skillet", ("0.125,0,0.125", 0.75, 0.25, True), fid="skillet", translation="0,0.5,0.375")
+    _variant(lines, "tray", "skillet_tray", ("0.0625,0,0.0625", 0.875, 0.25, True), fid="skillet", translation="0,0.5,0.375")
     chunks.append("\n".join(lines))
 
     # ---------------- simple furniture
