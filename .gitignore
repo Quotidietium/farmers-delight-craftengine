@@ -35,3 +35,5 @@ run/
 
 # smoke test server
 smoke/
+tools/fd-probe/build/
+tools/fd-probe/.gradle/

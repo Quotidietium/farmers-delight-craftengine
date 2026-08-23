@@ -1,0 +1,12 @@
+name: FdProbe
+main: dev.zurker.fdprobe.FdProbePlugin
+version: 0.1.0
+api-version: '1.21'
+description: FD audit probe - JVM-level capture of PapersDelight method flows
+commands:
+  fdprobe:
+    description: probe control
+    permission: fdprobe.use
+permissions:
+  fdprobe.use:
+    default: op
