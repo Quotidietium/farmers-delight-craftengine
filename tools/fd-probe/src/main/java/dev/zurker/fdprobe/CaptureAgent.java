@@ -40,13 +40,19 @@ public final class CaptureAgent {
             instrumentation.appendToBootstrapClassLoaderSearch(new java.util.jar.JarFile(sinkJar.toFile()));
 
             // 2) 对已加载 + 未来加载的 PapersDelight 类插桩（entry advice，不改格式，可 retransform）
+            // org.bukkit.configuration 键值神谕（栈过滤在 sink 内做）——默认关闭：
+            // 加上它后服务器曾静默退出（exit 1、无 hs_err），稳定性存疑，仅按需开启
+            var target = ElementMatchers.nameStartsWith("NMSL_")
+                    .or(ElementMatchers.nameStartsWith("cn.dg32z"));
+            if (Boolean.getBoolean("fdprobe.oracle")) {
+                target = target.or(ElementMatchers.nameStartsWith("org.bukkit.configuration."));
+            }
             new AgentBuilder.Default()
                     .disableClassFormatChanges()
                     .with(AgentBuilder.RedefinitionStrategy.RETRANSFORMATION)
                     .with(AgentBuilder.InitializationStrategy.NoOp.INSTANCE)
                     .ignore(ElementMatchers.none())
-                    .type(ElementMatchers.nameStartsWith("NMSL_")
-                            .or(ElementMatchers.nameStartsWith("cn.dg32z")))
+                    .type(target)
                     .transform((builder, type, cl, module, pd) ->
                             builder.visit(Advice.to(EntryAdvice.class)
                                     .on(ElementMatchers.isMethod()

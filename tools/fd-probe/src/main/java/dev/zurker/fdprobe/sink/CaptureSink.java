@@ -42,6 +42,18 @@ public final class CaptureSink {
     public static void enter(String sig, Object[] args) {
         if (!ARMED) return;
         try {
+            // Bukkit 配置类的调用必须来自 PapersDelight（栈内含 NMSL_ 帧）才记录
+            if (sig.startsWith("org.bukkit.configuration")) {
+                StackTraceElement[] st = Thread.currentThread().getStackTrace();
+                boolean from = false;
+                for (int i = 2; i < st.length && i < 26; i++) {
+                    String cn = st[i].getClassName();
+                    if (cn.startsWith("NMSL_") || cn.startsWith("cn.dg32z")) { from = true; break; }
+                    // CE/其它插件的配置读取一旦越层就不再继续(它们的调用栈不含 NMSL_)
+                    if (cn.startsWith("net.momirealms")) return;
+                }
+                if (!from) return;
+            }
             StringBuilder sb = new StringBuilder(192);
             sb.append('[').append(Thread.currentThread().getId()).append(']')
               .append('[').append(System.nanoTime()).append("] ")
