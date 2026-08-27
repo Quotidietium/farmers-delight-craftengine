@@ -348,7 +348,7 @@ public final class BlockListener implements Listener {
 
         if (CROP_IDS.contains(s)) {
             event.setDropItems(false);
-            plugin.cropManager().breakDrops(block);
+            plugin.cropManager().breakDrops(block, event.getPlayer().getInventory().getItemInMainHand());
             ticker().cropIndex.remove(block);
             if (s.contains("rice_panicle") || s.endsWith("rice")) {
                 // adjacent rice blocks handled by CropManager

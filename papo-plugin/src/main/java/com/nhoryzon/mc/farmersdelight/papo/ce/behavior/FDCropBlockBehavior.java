@@ -139,19 +139,15 @@ public final class FDCropBlockBehavior extends BukkitBlockBehavior implements Ra
         return f;
     }
 
-    /** Farmland family fertility: moisture &gt; 0 gives 3, otherwise 1; everything else gives 0. */
+    /**
+     * Vanilla CropBlock#getGrowthSpeed fertility: only true vanilla farmland counts
+     * (moisture &gt; 0 ? 3 : 1). Rich soil farmland deliberately contributes nothing -
+     * in the mod its benefit is the 20% auto-bonemeal, not growth speed.
+     */
     private float farmlandFertility(Block ground) {
-        if (ground.getType() == Material.FARMLAND) {
-            return ground.getBlockData() instanceof org.bukkit.block.data.type.Farmland farmland
-                    && farmland.getMoisture() > 0 ? 3.0f : 1.0f;
-        }
-        var ceState = CraftEngineHook.customBlockState(ground);
-        if (ceState != null && ceState.owner().value().id().value().equals("rich_soil_farmland")) {
-            Property<Integer> moisture = ceState.getProperty("moisture");
-            Integer value = moisture == null ? null : ceState.get(moisture);
-            return value != null && value > 0 ? 3.0f : 1.0f;
-        }
-        return 0.0f;
+        if (ground.getType() != Material.FARMLAND) return 0.0f;
+        return ground.getBlockData() instanceof org.bukkit.block.data.type.Farmland farmland
+                && farmland.getMoisture() > 0 ? 3.0f : 1.0f;
     }
 
     private boolean isSameCrop(Block neighbor) {

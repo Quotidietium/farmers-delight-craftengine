@@ -43,67 +43,79 @@ public final class CropManager {
         Integer age = ticker().getInt(state, "age");
         if (age == null) return;
 
-        // random-tick equivalent probability (about 3% per call)
-        if (ThreadLocalRandom.current().nextDouble() >= 0.03) return;
+        // vanilla random-tick cadence: 3 picks out of 4096 blocks per game tick, 10-tick pulse
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
+        if (rand.nextDouble() >= (3.0 / 4096.0) * 10) return;
 
         switch (id.toString()) {
             case "farmersdelight:cabbages", "farmersdelight:onions" -> {
-                if (!canGrow(crop)) return;
-                int max = 7;
-                if (age < max && ThreadLocalRandom.current().nextDouble() < 0.35) {
+                // mod CropBlock subclasses: vanilla growth math (max age 7)
+                if (age < 7 && crop.getLightLevel() >= 9 && rollVanillaGrowth(crop, id, rand)) {
                     ticker().setBlockProperty(crop, "age", age + 1);
                 }
             }
             case "farmersdelight:budding_tomatoes" -> {
-                if (age < 4 && ThreadLocalRandom.current().nextDouble() < 0.3) {
-                    ticker().setBlockProperty(crop, "age", age + 1);
-                } else if (age >= 4) {
-                    // transform into a tomato vine
-                    ticker().cropIndex.remove(crop);
-                    CraftEngineHook.removeBlock(crop, false);
-                    CraftEngineHook.placeBlock(crop.getLocation(), FD.TOMATO_CROP, false);
-                    Block vine = crop;
-                    if (ticker().cropIndex.contains(vine)) return;
-                    ticker().cropIndex.add(vine);
+                // mod BuddingBushBlock: vanilla fertility math on farmland, age 0-3,
+                // then growPastMaxAge turns the mature bush into a vine
+                if (crop.getLightLevel() >= 9 && rollVanillaGrowth(crop, id, rand)) {
+                    if (age < 3) {
+                        ticker().setBlockProperty(crop, "age", age + 1);
+                    } else if (age == 3) {
+                        ticker().cropIndex.remove(crop);
+                        CraftEngineHook.removeBlock(crop, false);
+                        CraftEngineHook.placeBlock(crop.getLocation(), FD.TOMATO_CROP, false);
+                        if (!ticker().cropIndex.contains(crop)) {
+                            ticker().cropIndex.add(crop);
+                        }
+                    }
                 }
             }
             case "farmersdelight:tomatoes" -> {
-                if (age < 7 && ThreadLocalRandom.current().nextDouble() < 0.3) {
-                    ticker().setBlockProperty(crop, "age", age + 1);
-                }
-                // rope climb: if a rope sits above, sometimes grow a vine on top of it
-                if (age >= 4 && ThreadLocalRandom.current().nextDouble() < 0.3) {
-                    Block above = crop.getRelative(BlockFace.UP);
-                    var ropeEntry = plugin.furnitureTracker().at(above.getLocation().add(0.5, 0, 0.5), FD.ROPE);
-                    if (ropeEntry != null && CraftEngineHook.customBlockState(above) == null) {
-                        CraftEngineHook.placeBlock(above.getLocation(), FD.TOMATO_CROP, false);
-                        ticker().cropIndex.add(above);
-                        Block vineAbove = above;
-                        var st = CraftEngineHook.customBlockState(vineAbove);
-                        if (st != null) {
-                            ticker().setBlockProperty(crop, "ropelogged", true);
+                // mod TomatoVineBlock (max age 3): vanilla math, then a 30% rope climb check
+                if (crop.getLightLevel() >= 9) {
+                    if (age < 3 && rollVanillaGrowth(crop, id, rand)) {
+                        ticker().setBlockProperty(crop, "age", age + 1);
+                    }
+                    if (rand.nextFloat() < 0.3f) {
+                        Block above = crop.getRelative(BlockFace.UP);
+                        var ropeEntry = plugin.furnitureTracker().at(
+                                above.getLocation().add(0.5, 0, 0.5), FD.ROPE);
+                        if (ropeEntry != null && CraftEngineHook.customBlockState(above) == null) {
+                            // mod: the vine replaces the rope with a ropelogged vine (max height 3)
+                            int vineHeight = 1;
+                            while (isBlock(crop.getRelative(BlockFace.UP, vineHeight), FD.TOMATO_CROP)) {
+                                vineHeight++;
+                            }
+                            if (vineHeight < 3) {
+                                CraftEngineHook.placeBlock(above.getLocation(), FD.TOMATO_CROP, false);
+                                ticker().cropIndex.add(above);
+                                ticker().setBlockProperty(crop, "ropelogged", true);
+                            }
                         }
                     }
                 }
             }
             case "farmersdelight:rice" -> {
-                // rice grows slower; at max age spawns the panicle above
+                // mod RiceCropBlock (PlantBlock, own path only): light above >= 6,
+                // a 1/3 gate, then the (25/10+1)=3 roll; max age spawns the panicle
                 Block above = crop.getRelative(BlockFace.UP);
                 boolean panicleAbove = isBlock(above, FD.RICE_PANICLE);
-                if (age < 3 && !panicleAbove
-                        && ThreadLocalRandom.current().nextDouble() < 0.25) {
-                    ticker().setBlockProperty(crop, "age", age + 1);
-                } else if (age >= 3 && !panicleAbove
-                        && CraftEngineHook.customBlockState(above) == null
-                        && above.getType() == Material.AIR) {
-                    CraftEngineHook.placeBlock(above.getLocation(), FD.RICE_PANICLE, false);
-                    ticker().cropIndex.add(above);
-                    ticker().setBlockProperty(crop, "supporting", true);
+                if (above.getLightLevel() >= 6 && !panicleAbove && age <= 3
+                        && rand.nextInt(3) == 0 && rand.nextInt(3) == 0) {
+                    if (age < 3) {
+                        ticker().setBlockProperty(crop, "age", age + 1);
+                    } else if (CraftEngineHook.customBlockState(above) == null
+                            && above.getType() == Material.AIR) {
+                        CraftEngineHook.placeBlock(above.getLocation(), FD.RICE_PANICLE, false);
+                        ticker().cropIndex.add(above);
+                        ticker().setBlockProperty(crop, "supporting", true);
+                    }
                 }
             }
             case "farmersdelight:rice_panicle" -> {
-                // panicle grows at 1/3 speed
-                if (age < 3 && ThreadLocalRandom.current().nextDouble() < 0.25 / 3) {
+                // mod RiceUpperCropBlock (CropBlock): vanilla math, no farmland below
+                // the panicle so the speed stays at the f=1 baseline (threshold 26)
+                if (age < 3 && crop.getLightLevel() >= 9 && rollVanillaGrowth(crop, id, rand)) {
                     ticker().setBlockProperty(crop, "age", age + 1);
                 }
             }
@@ -112,12 +124,46 @@ public final class CropManager {
         }
     }
 
-    private boolean canGrow(Block crop) {
-        if (crop.getLightLevel() < 9) return false;
-        Block below = crop.getRelative(BlockFace.DOWN);
-        return isBlock(below, FD.RICH_SOIL_FARMLAND)
-                || isBlock(below, Key.minecraft("farmland"))
-                || below.getType() == Material.FARMLAND;
+    /**
+     * Vanilla CropBlock#getGrowthSpeed + roll: f starts at 1, each of the nine cells
+     * below adds farmland fertility (moisture &gt; 0 ? 3 : 1, ring cells quartered),
+     * same-crop cross pair or any same-crop diagonal halves it, and the crop grows
+     * one age when random &lt; 1/(floor(25/f)+1). Rich soil farmland contributes no
+     * fertility (its perk is the 20% auto-bonemeal), exactly like the mod.
+     */
+    private boolean rollVanillaGrowth(Block crop, Key cropId, ThreadLocalRandom rand) {
+        int x = crop.getX();
+        int y = crop.getY();
+        int z = crop.getZ();
+        float f = 1.0f;
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                float fertility = 0.0f;
+                Block ground = crop.getWorld().getBlockAt(x + i, y - 1, z + j);
+                if (ground.getType() == Material.FARMLAND) {
+                    fertility = ground.getBlockData() instanceof org.bukkit.block.data.type.Farmland farmland
+                            && farmland.getMoisture() > 0 ? 3.0f : 1.0f;
+                }
+                if (i != 0 || j != 0) {
+                    fertility /= 4.0f;
+                }
+                f += fertility;
+            }
+        }
+        boolean eastWest = isBlock(crop.getRelative(BlockFace.WEST), cropId)
+                || isBlock(crop.getRelative(BlockFace.EAST), cropId);
+        boolean northSouth = isBlock(crop.getRelative(BlockFace.NORTH), cropId)
+                || isBlock(crop.getRelative(BlockFace.SOUTH), cropId);
+        if (eastWest && northSouth) {
+            f /= 2.0f;
+        } else if (isBlock(crop.getRelative(-1, 0, -1), cropId)
+                || isBlock(crop.getRelative(1, 0, -1), cropId)
+                || isBlock(crop.getRelative(1, 0, 1), cropId)
+                || isBlock(crop.getRelative(-1, 0, 1), cropId)) {
+            f /= 2.0f;
+        }
+        int threshold = (int) Math.floor(25.0f / f) + 1;
+        return rand.nextDouble() < 1.0 / threshold;
     }
 
     public boolean isBlock(Block block, Key id) {
@@ -128,12 +174,16 @@ public final class CropManager {
     /* ===================== rich soil boost ===================== */
 
     public void soilTick(Block soil) {
-        boolean farmland = isBlock(soil, FD.RICH_SOIL_FARMLAND);
-        if (!farmland && !isBlock(soil, FD.RICH_SOIL)) {
+        // rich soil FARMLAND ticks through its CE behavior (moisture + boost);
+        // plain rich soil boosts here at vanilla random-tick cadence (mod scheduledTick)
+        if (isBlock(soil, FD.RICH_SOIL_FARMLAND)) {
+            return;
+        }
+        if (!isBlock(soil, FD.RICH_SOIL)) {
             ticker().soilIndex.remove(soil);
             return;
         }
-        if (ThreadLocalRandom.current().nextDouble() >= 0.2) return;
+        if (ThreadLocalRandom.current().nextDouble() >= (3.0 / 4096.0) * 10) return;
         Block above = soil.getRelative(BlockFace.UP);
         var state = CraftEngineHook.customBlockState(above);
         if (state == null) return;
@@ -165,9 +215,12 @@ public final class CropManager {
         }
         Integer age = ticker().getInt(state, "age");
         if (age == null) return;
+        // mod: rich soil boost = Fertilizable.grow() at 20% per random tick (bonemeal-style +2..5)
+        if (ThreadLocalRandom.current().nextDouble() >= 0.2) return;
         int max = maxAge(id);
         if (age < max) {
-            ticker().setBlockProperty(above, "age", age + 1);
+            ticker().setBlockProperty(above, "age",
+                    Math.min(max, age + ThreadLocalRandom.current().nextInt(2, 6)));
             boostParticles(above);
         }
     }
@@ -207,30 +260,18 @@ public final class CropManager {
         ThreadLocalRandom rand = ThreadLocalRandom.current();
 
         switch (id.toString()) {
-            case "farmersdelight:cabbages" -> {
-                if (age >= 7) {
-                    drop(crop, FD.CABBAGE, 1);
-                    drop(crop, FD.CABBAGE_SEEDS, rand.nextInt(1, 3));
-                    ticker().setBlockProperty(crop, "age", 2);
-                    return true;
-                }
-            }
-            case "farmersdelight:onions" -> {
-                if (age >= 7) {
-                    drop(crop, FD.ONION, rand.nextInt(1, 3));
-                    ticker().setBlockProperty(crop, "age", 0);
-                    return true;
-                }
-            }
+            // mod 1.4.3: cabbage/onion have NO right-click harvest - they are broken
+            // like vanilla crops (drops handled in breakDrops from the loot tables)
             case "farmersdelight:tomatoes" -> {
-                if (age >= 7) {
-                    drop(crop, FD.TOMATO, rand.nextInt(1, 3));
+                // mod TomatoVineBlock.onUse: mature vine drops 1-2 tomatoes (+5% rotten)
+                // and resets to age 0, playing the bush-pick sound
+                if (age >= 3) {
+                    drop(crop, FD.TOMATO, 1 + rand.nextInt(2));
                     if (rand.nextDouble() < 0.05) drop(crop, FD.ROTTEN_TOMATO, 1);
-                    ticker().setBlockProperty(crop, "age", 5);
-                    if (player != null && ticker().getBool(crop, "ropelogged") != null
-                            && java.lang.Boolean.TRUE.equals(ticker().getBool(crop, "ropelogged"))) {
-                        plugin.advancements().onHarvestRopeloggedTomato(player);
-                    } else if (player != null) {
+                    ticker().setBlockProperty(crop, "age", 0);
+                    crop.getWorld().playSound(loc, FD.SND_TOMATO_PICK,
+                            SoundCategory.BLOCKS, 1.0f, 0.8f + rand.nextFloat() * 0.4f);
+                    if (player != null && java.lang.Boolean.TRUE.equals(ticker().getBool(crop, "ropelogged"))) {
                         plugin.advancements().onHarvestRopeloggedTomato(player);
                     }
                     return true;
@@ -284,23 +325,47 @@ public final class CropManager {
         if (age == null) return false;
         ThreadLocalRandom rand = ThreadLocalRandom.current();
         switch (id.toString()) {
-            case "farmersdelight:cabbages", "farmersdelight:onions", "farmersdelight:tomatoes" -> {
+            case "farmersdelight:cabbages", "farmersdelight:onions" -> {
+                // mod: vanilla CropBlock bonemeal = +2..5 ages (max 7)
                 if (age < 7) {
-                    ticker().setBlockProperty(crop, "age", Math.min(7, age + rand.nextInt(2, 4)));
+                    ticker().setBlockProperty(crop, "age", Math.min(7, age + rand.nextInt(2, 6)));
+                    boostParticles(crop);
+                    return true;
+                }
+            }
+            case "farmersdelight:tomatoes" -> {
+                // mod TomatoVineBlock.getGrowthAmount = super/2 -> +1..2 ages (max 3)
+                if (age < 3) {
+                    ticker().setBlockProperty(crop, "age", Math.min(3, age + rand.nextInt(1, 3)));
                     boostParticles(crop);
                     return true;
                 }
             }
             case "farmersdelight:budding_tomatoes" -> {
-                if (age < 4) {
-                    ticker().setBlockProperty(crop, "age", Math.min(4, age + rand.nextInt(1, 3)));
+                // mod BuddingTomatoBlock.grow: +1..4, overflow turns the bush into a vine
+                int grown = age + rand.nextInt(1, 5);
+                if (grown <= 3) {
+                    ticker().setBlockProperty(crop, "age", grown);
                     boostParticles(crop);
                     return true;
                 }
+                ticker().cropIndex.remove(crop);
+                CraftEngineHook.removeBlock(crop, false);
+                CraftEngineHook.placeBlock(crop.getLocation(), FD.TOMATO_CROP, false);
+                var vineState = CraftEngineHook.customBlockState(crop);
+                if (vineState != null) {
+                    ticker().setBlockProperty(crop, "age", Math.min(3, grown - 4));
+                }
+                if (!ticker().cropIndex.contains(crop)) {
+                    ticker().cropIndex.add(crop);
+                }
+                boostParticles(crop);
+                return true;
             }
             case "farmersdelight:rice" -> {
+                // mod RiceCropBlock.grow: +1..4, overflow transfers into a panicle above
                 if (age < 3) {
-                    ticker().setBlockProperty(crop, "age", 3);
+                    ticker().setBlockProperty(crop, "age", Math.min(3, age + rand.nextInt(1, 5)));
                     boostParticles(crop);
                     return true;
                 }
@@ -309,7 +374,7 @@ public final class CropManager {
                     var ps = CraftEngineHook.customBlockState(above);
                     Integer pa = ps == null ? null : ticker().getInt(ps, "age");
                     if (pa != null && pa < 3) {
-                        ticker().setBlockProperty(above, "age", 3);
+                        ticker().setBlockProperty(above, "age", Math.min(3, pa + rand.nextInt(1, 5)));
                         boostParticles(crop);
                         return true;
                     }
@@ -335,24 +400,38 @@ public final class CropManager {
         return false;
     }
 
-    /** Crop break drops (called from the block break listener). */
+    /** Crop break drops (called from the block break listener), mirroring the mod loot tables. */
     public void breakDrops(Block crop) {
+        breakDrops(crop, null);
+    }
+
+    public void breakDrops(Block crop, ItemStack tool) {
         var state = CraftEngineHook.customBlockState(crop);
         if (state == null) return;
         Key id = state.owner().value().id();
         Integer age = ticker().getInt(state, "age");
         int a = age == null ? 0 : age;
         ThreadLocalRandom rand = ThreadLocalRandom.current();
+        int fortune = tool == null ? 0 : tool.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.FORTUNE);
         switch (id.toString()) {
+            // mod loot tables: mature cabbage drops 1 cabbage + binomial(3+fortune, 4/7) seeds,
+            // immature drops a single seed; onions always drop 1 plus a mature bonus roll
             case "farmersdelight:cabbages" -> {
-                drop(crop, FD.CABBAGE_SEEDS, 1);
-                if (a >= 7) drop(crop, FD.CABBAGE, 1);
+                if (a >= 7) {
+                    drop(crop, FD.CABBAGE, 1);
+                    drop(crop, FD.CABBAGE_SEEDS, binomial(3 + fortune, rand));
+                } else {
+                    drop(crop, FD.CABBAGE_SEEDS, 1);
+                }
             }
-            case "farmersdelight:onions" -> drop(crop, FD.ONION, 1);
+            case "farmersdelight:onions" -> {
+                drop(crop, FD.ONION, 1);
+                if (a >= 7) drop(crop, FD.ONION, binomial(3 + fortune, rand));
+            }
             case "farmersdelight:budding_tomatoes" -> drop(crop, FD.TOMATO_SEEDS, 1);
             case "farmersdelight:tomatoes" -> {
                 drop(crop, FD.TOMATO_SEEDS, 1);
-                if (a >= 7) drop(crop, FD.TOMATO, 1);
+                if (a >= 3) drop(crop, FD.TOMATO, 1);
             }
             case "farmersdelight:rice" -> {
                 drop(crop, FD.RICE_SEEDS, 1);

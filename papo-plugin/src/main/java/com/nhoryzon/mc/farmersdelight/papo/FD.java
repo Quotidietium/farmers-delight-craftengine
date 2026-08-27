@@ -88,6 +88,7 @@ public final class FD {
     public static final String SND_STOVE_CRACKLE = MOD_ID + ":block.stove.crackle";
     public static final String SND_RT_THROW = MOD_ID + ":entity.rotten_tomato.throw";
     public static final String SND_RT_HIT = MOD_ID + ":entity.rotten_tomato.hit";
+    public static final String SND_TOMATO_PICK = MOD_ID + ":block.tomato_bush.pick_tomatoes";
 
     /* vanilla blocks considered heat sources for cooking (mirrors mod heat_sources tag) */
     public static final Set<org.bukkit.Material> HEAT_SOURCES = Set.of(
