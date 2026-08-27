@@ -63,6 +63,16 @@ public final class FurnitureListener implements Listener {
                 furniture.setVariant("tray", false);
             }
         }
+        // the placed skillet keeps its fire-aspect enchantment for faster cooking (mod stores the item in the BE)
+        if (placedId.equals("skillet")) {
+            org.bukkit.inventory.ItemStack placedItem = event.player().getInventory().getItem(
+                    event.hand() == net.momirealms.craftengine.core.entity.player.InteractionHand.MAIN_HAND
+                            ? org.bukkit.inventory.EquipmentSlot.HAND : org.bukkit.inventory.EquipmentSlot.OFF_HAND);
+            int fireAspect = placedItem == null ? 0 : placedItem.getEnchantmentLevel(Enchantment.FIRE_ASPECT);
+            if (fireAspect > 0) {
+                GameTicker.data(furniture).set(GameTicker.fdKey("fa"), PersistentDataType.INTEGER, fireAspect);
+            }
+        }
         // feasts are placed fully stocked (highest servings variant)
         if (placedId.endsWith("_block") && (isFeast(furniture.id()))) {
             int max = placedId.equals("rice_roll_medley_block") ? 8 : 4;
@@ -282,9 +292,15 @@ public final class FurnitureListener implements Listener {
             return;
         }
 
-        int fortune = held.getEnchantmentLevel(Enchantment.LOOTING);
+        int fortune = held.getEnchantmentLevel(Enchantment.FORTUNE);
         ThreadLocalRandom rand = ThreadLocalRandom.current();
-        Vector eject = dirOf(facingOf(board)).clone().multiply(-1).multiply(0.35).setY(0.25);
+        // mod: results pop out on the LEFT of the board facing (FACING.rotateYCounterclockwise),
+        // spawned 0.2 blocks towards that side at y+0.2, flying off with 0.2 horizontal speed
+        Vector facing = dirOf(facingOf(board));
+        Vector left = new Vector(facing.getZ(), 0, -facing.getX());
+        Location dropLoc = board.location().clone()
+                .add(0.5 + left.getX() * 0.2, 0.2, 0.5 + left.getZ() * 0.2);
+        Vector eject = left.clone().multiply(0.2);
         for (FDRecipes.CuttingResult result : recipe.results()) {
             float chance = result.chance() + 0.1f * fortune;
             int count = 0;
@@ -295,7 +311,7 @@ public final class FurnitureListener implements Listener {
             ItemStack out = CraftEngineHook.buildItem(Key.of(result.item()));
             if (out == null) continue;
             out.setAmount(count);
-            Item dropped = loc.getWorld().dropItem(loc, out);
+            Item dropped = loc.getWorld().dropItem(dropLoc, out);
             dropped.setVelocity(eject);
         }
         // durability + sound + particles
@@ -307,8 +323,10 @@ public final class FurnitureListener implements Listener {
                 break;
             }
         }
+        // mod playProcessingSound priority: recipe sound > shears > knife > wood fallback
         String sound = recipe.sound() != null ? recipe.sound()
-                : (FDRecipes.isKnife(held) ? FD.SND_CB_KNIFE : "minecraft:block.wood.hit");
+                : held.getType() == Material.SHEARS ? "minecraft:entity.sheep.shear"
+                : (FDRecipes.isKnife(held) ? FD.SND_CB_KNIFE : "minecraft:block.wood.break");
         loc.getWorld().playSound(loc, sound, SoundCategory.BLOCKS, 1.0f, 1.0f);
         spawnCuttingParticles(loc, stored, 5);
         ticker().setDisplayChild(board, "itemEntity", null, 0.5, 0.12, 0.5, 0.45f);
@@ -387,23 +405,35 @@ public final class FurnitureListener implements Listener {
 
     private void interactSkillet(BukkitFurniture skillet, Player player, ItemStack held) {
         ItemStack current = ticker().skilletItem(skillet);
-        if (current != null && !current.getType().isAir()) return;
         if (held == null || held.getType().isAir()) return;
         ItemStack cooked = ticker().campfireResult(held);
         if (cooked == null) return;
-        ItemStack one = held.clone();
-        one.setAmount(1);
-        ticker().setSkilletItem(skillet, one);
-        consumeHeld(player, held);
-        int fireAspect = held.getEnchantmentLevel(Enchantment.FIRE_ASPECT);
+        // mod addItemToCook: the whole held stack goes into the single skillet slot
+        // (merging with a same-type stack already cooking; different types are rejected)
+        boolean wasEmpty = current == null || current.getType().isAir();
+        int capacity = wasEmpty ? 64 : (current.isSimilar(held) ? 64 - current.getAmount() : 0);
+        int amount = Math.min(held.getAmount(), capacity);
+        if (amount <= 0) return;
+        ItemStack stack = held.clone();
+        stack.setAmount((wasEmpty ? 0 : current.getAmount()) + amount);
+        ticker().setSkilletItem(skillet, stack);
+        if (player.getGameMode() != GameMode.CREATIVE) {
+            held.setAmount(held.getAmount() - amount);
+        }
+        // fire-aspect acceleration comes from the SKILLET item itself (stored at placement)
+        Integer skilletFa = GameTicker.data(skillet).get(GameTicker.fdKey("fa"), PersistentDataType.INTEGER);
+        int fireAspect = skilletFa == null ? 0 : skilletFa;
         int base = ticker().campfireTime(held);
         int total = skilletCookTime(base, fireAspect);
         GameTicker.data(skillet).set(GameTicker.fdKey("cooktotal"), PersistentDataType.INTEGER, total);
         GameTicker.data(skillet).set(GameTicker.fdKey("cook"), PersistentDataType.INTEGER, 0);
         GameTicker.data(skillet).set(GameTicker.fdKey("result"), PersistentDataType.STRING,
                 GameTicker.idOf(cooked));
-        skillet.location().getWorld().playSound(skillet.location().clone().add(0.5, 0.4, 0.5),
-                FD.SND_SKILLET_ADD_FOOD, SoundCategory.BLOCKS, 0.8f, 1.0f);
+        // mod: the add-food sound only plays when the skillet was empty AND already heated
+        if (wasEmpty && ticker().isHeated(skillet.location())) {
+            skillet.location().getWorld().playSound(skillet.location().clone().add(0.5, 0.5, 0.5),
+                    FD.SND_SKILLET_ADD_FOOD, SoundCategory.BLOCKS, 0.8f, 1.0f);
+        }
     }
 
     private int skilletCookTime(int base, int fireAspect) {

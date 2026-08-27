@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Central background task driving every ticking mechanic: cooking pots, stoves,
@@ -311,32 +312,56 @@ public final class GameTicker {
     private void tickSkillet(BukkitFurniture skillet) {
         Block block = skillet.location().getBlock();
         PersistentDataContainer pdc = data(skillet);
-        ItemStack item = skilletItem(skillet);
-        if (item == null) return;
-        if (!isHeated(block.getLocation())) return;
+        ItemStack stack = skilletItem(skillet);
+        // mod SkilletBlockEntity.serverTick: no stored stack -> cookTime resets to 0
+        if (stack == null) {
+            pdc.set(key("cook"), PersistentDataType.INTEGER, 0);
+            return;
+        }
         int cook = pdc.get(key("cook"), PersistentDataType.INTEGER) == null ? 0
                 : pdc.get(key("cook"), PersistentDataType.INTEGER);
-        cook += 10;
-        pdc.set(key("cook"), PersistentDataType.INTEGER, cook);
         int total = pdc.get(key("cooktotal"), PersistentDataType.INTEGER) == null ? 100
                 : pdc.get(key("cooktotal"), PersistentDataType.INTEGER);
-        if (cook % 40 == 0) {
-            block.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE,
-                    block.getLocation().add(0.5, 0.5, 0.5), 1, 0.05, 0.05, 0.05, 0.005);
+        if (!isHeated(block.getLocation())) {
+            // mod: unheated skillets cool down 2 ticks per game tick (never below 0)
+            pdc.set(key("cook"), PersistentDataType.INTEGER, Math.max(0, cook - 20));
+            return;
         }
-        if (cook >= total) {
-            pdc.set(key("cook"), PersistentDataType.INTEGER, 0);
-            String resultId = pdc.get(key("result"), PersistentDataType.STRING);
+        cook += 10;
+        pdc.set(key("cook"), PersistentDataType.INTEGER, cook);
+        // mod animationTick: 20%/tick steam puffs + fire-aspect sparks
+        if (ThreadLocalRandom.current().nextDouble() < 0.9) {
+            block.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE,
+                    block.getLocation().add(0.5, 0.1, 0.5), 1, 0.2, 0.02, 0.2, 0.005);
+        }
+        Integer fa = pdc.get(fdKey("fa"), PersistentDataType.INTEGER);
+        if (fa != null && fa > 0 && ThreadLocalRandom.current().nextDouble() < Math.min(1.0, fa * 0.5)) {
+            block.getWorld().spawnParticle(Particle.ENCHANTED_HIT,
+                    block.getLocation().add(0.5, 0.1, 0.5), 1, 0.2, 0.1, 0.2, 0.3);
+        }
+        if (cook < total) return;
+        // mod cookAndOutputItems: craft ONE result, consume one item, keep the rest cooking
+        pdc.set(key("cook"), PersistentDataType.INTEGER, 0);
+        String resultId = pdc.get(key("result"), PersistentDataType.STRING);
+        if (resultId != null) {
+            ItemStack result = CraftEngineHook.buildItem(Key.of(resultId));
+            if (result != null) {
+                // eject toward FACING.rotateYClockwise (right side), speed 0.08h/0.25y
+                String facing = pdc.get(fdKey("facing"), PersistentDataType.STRING);
+                org.bukkit.util.Vector facingV = dirOf(facing == null ? "north" : facing);
+                org.bukkit.util.Vector right = new org.bukkit.util.Vector(-facingV.getZ(), 0, facingV.getX());
+                org.bukkit.entity.Item dropped = block.getWorld().dropItem(
+                        block.getLocation().add(0.5, 0.3, 0.5), result);
+                dropped.setVelocity(new org.bukkit.util.Vector(right.getX() * 0.08, 0.25, right.getZ() * 0.08));
+            }
+        }
+        int remaining = stack.getAmount() - 1;
+        if (remaining <= 0) {
             setSkilletItem(skillet, null);
             pdc.remove(key("result"));
-            if (resultId != null) {
-                ItemStack result = CraftEngineHook.buildItem(Key.of(resultId));
-                if (result != null) {
-                    ejectToward(block, result, 0.25);
-                }
-            }
-            block.getWorld().playSound(block.getLocation(), FD.SND_SKILLET_ADD_FOOD,
-                    SoundCategory.BLOCKS, 0.7f, 1.0f);
+        } else {
+            stack.setAmount(remaining);
+            setSkilletItem(skillet, stack);
         }
     }
 
@@ -545,21 +570,33 @@ public final class GameTicker {
         }
         Integer level = getInt(state, "composting");
         if (level == null) return;
+        // mod OrganicCompostBlock.scheduledTick: scan the full 3x3x3 neighbourhood,
+        // +0.02 per activator block, sky light >12 gives +0.1 (else +0.05), water +0.1;
+        // the roll happens once per vanilla random tick (3 blocks picked from 4096 per tick)
+        float chance = 0f;
+        boolean water = false;
+        int maxLight = 0;
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    Block b = compost.getRelative(dx, dy, dz);
+                    if (FD.COMPOST_ACTIVATORS.contains(b.getType())) chance += 0.02f;
+                    if (b.getType() == Material.WATER || b.getBlockData()
+                            instanceof org.bukkit.block.data.Waterlogged waterlogged && waterlogged.isWaterlogged()) {
+                        water = true;
+                    }
+                    int light = b.getRelative(org.bukkit.block.BlockFace.UP).getLightFromSky();
+                    if (light > maxLight) maxLight = light;
+                }
+            }
+        }
+        chance += maxLight > 12 ? 0.1f : 0.05f;
+        if (water) chance += 0.1f;
+        // 10-tick pulse must emulate ~3/4096 random-tick picks per game tick
+        if (Math.random() >= chance * (3.0 / 4096.0) * 10) return;
         if (level < 7) {
-            // accumulate slowly when activators/water/light nearby (mirrors mod logic)
-            double chance = 0.0125;
-            boolean water = false;
-            for (Block b : new Block[]{compost.getRelative(0, 0, 1), compost.getRelative(0, 0, -1),
-                    compost.getRelative(1, 0, 0), compost.getRelative(-1, 0, 0)}) {
-                if (FD.COMPOST_ACTIVATORS.contains(b.getType())) chance += 0.0125;
-                if (b.getType() == Material.WATER) water = true;
-            }
-            if (water) chance += 0.0125;
-            if (compost.getLightFromSky() > 10) chance += 0.00625;
-            if (Math.random() < chance * 10) {
-                setBlockProperty(compost, "composting", level + 1);
-            }
-        } else if (Math.random() < 0.02) {
+            setBlockProperty(compost, "composting", level + 1);
+        } else {
             // fully composted -> rich soil
             CraftEngineHook.removeBlock(compost, false);
             CraftEngineHook.placeBlock(compost.getLocation(), FD.RICH_SOIL, false);
