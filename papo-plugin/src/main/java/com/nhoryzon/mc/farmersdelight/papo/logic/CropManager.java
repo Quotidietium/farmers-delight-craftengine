@@ -404,6 +404,64 @@ public final class CropManager {
         }
     }
 
+    /**
+     * Advanced vanilla crops (wheat/carrot/potato/beetroot growing on rich soil farmland)
+     * drop exactly what their vanilla loot tables would (binomial_with_bonus_count with
+     * extra=3, p=4/7), plus straw when harvesting mature wheat with a knife (mod inject).
+     */
+    public void advancedCropDrops(Block block, ImmutableBlockState state,
+                                  org.bukkit.entity.Player player, ItemStack tool) {
+        String id = state.owner().value().id().value();
+        Integer ageValue = ticker().getInt(state, "age");
+        int age = ageValue == null ? 0 : ageValue;
+        ThreadLocalRandom rand = ThreadLocalRandom.current();
+        int fortune = tool == null ? 0 : tool.getEnchantmentLevel(org.bukkit.enchantments.Enchantment.FORTUNE);
+        int bonus = binomial(3 + fortune, rand);
+
+        switch (id) {
+            case "advanced_wheat" -> {
+                if (age >= 7) {
+                    drop(block, Key.minecraft("wheat"), 1);
+                    if (bonus > 0) drop(block, Key.minecraft("wheat_seeds"), bonus);
+                    if (com.nhoryzon.mc.farmersdelight.papo.recipe.FDRecipes.isKnife(tool)) {
+                        drop(block, FD.STRAW, 1);
+                        if (player != null) plugin.advancements().onHarvestStraw(player);
+                    }
+                } else {
+                    drop(block, Key.minecraft("wheat_seeds"), 1);
+                }
+            }
+            case "advanced_carrots" -> {
+                drop(block, Key.minecraft("carrot"), 1);
+                if (age >= 7 && bonus > 0) drop(block, Key.minecraft("carrot"), bonus);
+            }
+            case "advanced_potatoes" -> {
+                drop(block, Key.minecraft("potato"), 1);
+                if (age >= 7) {
+                    if (bonus > 0) drop(block, Key.minecraft("potato"), bonus);
+                    if (rand.nextDouble() < 0.02) drop(block, Key.minecraft("poisonous_potato"), 1);
+                }
+            }
+            case "advanced_beetroots" -> {
+                if (age >= 3) {
+                    drop(block, Key.minecraft("beetroot"), 1);
+                    if (bonus > 0) drop(block, Key.minecraft("beetroot_seeds"), bonus);
+                }
+            }
+            default -> {
+            }
+        }
+    }
+
+    /** Vanilla binomial_with_bonus_count: successes over {@code trials} Bernoulli(4/7) rolls. */
+    private static int binomial(int trials, ThreadLocalRandom rand) {
+        int value = 0;
+        for (int i = 0; i < trials; i++) {
+            if (rand.nextDouble() < 0.5714286) value++;
+        }
+        return value;
+    }
+
     private void drop(Block at, Key item, int count) {
         ItemStack stack = CraftEngineHook.buildItem(item);
         if (stack == null || count <= 0) return;

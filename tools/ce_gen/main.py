@@ -69,6 +69,11 @@ def main():
     gui_items = generate_gui_items()
     print(f"gui assets: {gui_models} models, {gui_textures} textures; gui items: {gui_items}")
 
+    # -------- advanced vanilla crops (wheat/carrot/potato/beetroot on rich soil farmland)
+    from ce_gen.gen_crops import generate_advanced_crops
+    crop_items, crop_blocks = generate_advanced_crops()
+    print(f"advanced vanilla crops: {crop_items} seed redirects, {crop_blocks} blocks")
+
     # -------- plugin-side configs
     (PLUGIN_RECIPES / "cooking_recipes.yml").write_text(
         gen_recipes.generate_plugin_cooking(), encoding="utf-8")

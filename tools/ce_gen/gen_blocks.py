@@ -139,14 +139,24 @@ def generate_blocks() -> tuple[str, list[str]]:
             lines.append("        open: minecraft:block.barrel.open")
             lines.append("        close: minecraft:block.barrel.close")
 
+        # custom behaviors provided by the plugin (registered in onLoad)
+        if bid == "rich_soil_farmland":
+            # mod RichSoilFarmlandBlock: moisture 0-7 sim + 20% growth boost (plugin behavior)
+            lines.append("    behavior:")
+            lines.append("      - type: farmersdelight:rich_farmland")
+            lines.append("        boost_chance: 0.2")
+            lines.append("        turn_to: farmersdelight:rich_soil")
+
         # loot
         if bid not in PLUGIN_LOOT_BLOCKS:
+            # mod: broken rich soil farmland drops rich soil, not itself (like farmland -> dirt)
+            loot_item = "rich_soil" if bid == "rich_soil_farmland" else f"{NS}:{bid}"
             lines.append("    loot:")
             lines.append("      pools:")
             lines.append("        - rolls: 1")
             lines.append("          entries:")
             lines.append(f"            - type: item")
-            lines.append(f"              item: {yaml_str(f'{NS}:{bid}')}")
+            lines.append(f"              item: {yaml_str(loot_item)}")
 
         out.append("\n".join(lines))
 

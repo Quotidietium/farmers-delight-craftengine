@@ -52,6 +52,19 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
     }
 
     @Override
+    public void onLoad() {
+        // custom CE block behaviors must exist before CraftEngine parses the pack configs
+        try {
+            com.nhoryzon.mc.farmersdelight.papo.ce.behavior.FDCropBlockBehavior.register();
+            getLogger().info("Registered block behavior: farmersdelight:crop");
+            com.nhoryzon.mc.farmersdelight.papo.ce.behavior.FDRichFarmlandBehavior.register();
+            getLogger().info("Registered block behavior: farmersdelight:rich_farmland");
+        } catch (Throwable t) {
+            getLogger().severe("Failed to register CE block behaviors: " + t);
+        }
+    }
+
+    @Override
     public void onEnable() {
         instance = this;
         this.blockStore = new BlockStore(this);

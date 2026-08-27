@@ -1627,12 +1627,16 @@ blocks:
         hit: minecraft:block.gravel.hit
         fall: minecraft:block.gravel.fall
       item: "farmersdelight:rich_soil_farmland"
+    behavior:
+      - type: farmersdelight:rich_farmland
+        boost_chance: 0.2
+        turn_to: farmersdelight:rich_soil
     loot:
       pools:
         - rolls: 1
           entries:
             - type: item
-              item: "farmersdelight:rich_soil_farmland"
+              item: "rich_soil"
 
   "farmersdelight:sandy_shrub":
     state:

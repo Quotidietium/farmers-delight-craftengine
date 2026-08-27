@@ -353,6 +353,11 @@ public final class BlockListener implements Listener {
             if (s.contains("rice_panicle") || s.endsWith("rice")) {
                 // adjacent rice blocks handled by CropManager
             }
+        } else if (s.startsWith("farmersdelight:advanced_")) {
+            // advanced vanilla crops: vanilla loot-table drops + knife straw (plugin-side)
+            event.setDropItems(false);
+            plugin.cropManager().advancedCropDrops(block, state, event.getPlayer(),
+                    event.getPlayer().getInventory().getItemInMainHand());
         } else if (s.equals("farmersdelight:organic_compost")) {
             event.setDropItems(false);
             ItemStack self = CraftEngineHook.buildItem(FD.ORGANIC_COMPOST);
@@ -380,6 +385,35 @@ public final class BlockListener implements Listener {
             event.setDropItems(false); // pies drop nothing, like cake
         } else if (s.equals("farmersdelight:rich_soil") || s.equals("farmersdelight:rich_soil_farmland")) {
             ticker().soilIndex.remove(block);
+        }
+    }
+
+    /**
+     * Mod straw loot injects on VANILLA blocks: knives harvesting mature wheat always
+     * yield one straw; cutting grass/tall grass has a 20% straw chance (mod loot injects).
+     */
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onVanillaBreak(org.bukkit.event.block.BlockBreakEvent event) {
+        if (event.getPlayer().getGameMode() == GameMode.CREATIVE) return;
+        ItemStack tool = event.getPlayer().getInventory().getItemInMainHand();
+        if (!com.nhoryzon.mc.farmersdelight.papo.recipe.FDRecipes.isKnife(tool)) return;
+        Block block = event.getBlock();
+        java.util.concurrent.ThreadLocalRandom rand = java.util.concurrent.ThreadLocalRandom.current();
+        boolean straw = false;
+        if (block.getType() == Material.WHEAT
+                && block.getBlockData() instanceof org.bukkit.block.data.Ageable ageable
+                && ageable.getAge() == ageable.getMaximumAge()) {
+            straw = true;
+        } else if ((block.getType() == Material.SHORT_GRASS || block.getType() == Material.TALL_GRASS)
+                && rand.nextDouble() < 0.2) {
+            straw = true;
+        }
+        if (straw) {
+            ItemStack strawStack = CraftEngineHook.buildItem(FD.STRAW);
+            if (strawStack != null) {
+                block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.4, 0.5), strawStack);
+                plugin.advancements().onHarvestStraw(event.getPlayer());
+            }
         }
     }
 }
