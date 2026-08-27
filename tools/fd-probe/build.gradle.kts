@@ -9,10 +9,13 @@ description = "FD audit probe: JVM-level capture of PapersDelight method flows +
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.momirealms.net/releases/")
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    compileOnly("net.momirealms:craft-engine-core:26.7")
+    compileOnly("net.momirealms:craft-engine-bukkit:26.7")
     implementation("net.bytebuddy:byte-buddy:1.17.5")
     implementation("net.bytebuddy:byte-buddy-agent:1.17.5")
 }

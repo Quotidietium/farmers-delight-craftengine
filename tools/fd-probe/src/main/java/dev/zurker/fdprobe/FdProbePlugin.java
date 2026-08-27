@@ -1,5 +1,6 @@
 package dev.zurker.fdprobe;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -131,6 +132,36 @@ public final class FdProbePlugin extends JavaPlugin {
             case "mark" -> {
                 mark(String.join(" ", args).substring(4));
                 sender.sendMessage("marker written (only effective while armed)");
+            }
+            // ── 合成交互（毫秒级触发 REF 流程，配合 arm 捕获） ──
+            case "place" -> { // place <ceId> <x> <y> <z>
+                try {
+                    boolean ok = Sim.place(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
+                    sender.sendMessage("place " + args[1] + " -> " + ok);
+                } catch (Exception e) { sender.sendMessage("place err: " + e.getMessage()); }
+            }
+            case "cegive" -> { // cegive <player> <ceId|vanilla:id> [count]
+                org.bukkit.entity.Player p = Bukkit.getPlayerExact(args[1]);
+                if (p == null) { sender.sendMessage("player offline"); return true; }
+                sender.sendMessage(Sim.give(p, args[2], args.length > 3 ? Integer.parseInt(args[3]) : 1));
+            }
+            case "sethand" -> { // sethand <player> <id|empty> [count]
+                org.bukkit.entity.Player p = Bukkit.getPlayerExact(args[1]);
+                if (p == null) { sender.sendMessage("player offline"); return true; }
+                sender.sendMessage(Sim.setHand(p, args[2], args.length > 3 ? Integer.parseInt(args[3]) : 1));
+            }
+            case "pinteract" -> { // pinteract <player> <x> <y> <z> [face] [sneak|left]
+                org.bukkit.entity.Player p = Bukkit.getPlayerExact(args[1]);
+                if (p == null) { sender.sendMessage("player offline"); return true; }
+                String face = args.length > 5 ? args[5] : "top";
+                boolean sneak = args.length > 6 && args[6].contains("sneak");
+                boolean left = args.length > 6 && args[6].contains("left");
+                sender.sendMessage(Sim.interact(p, Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]), face, sneak, left));
+            }
+            case "puseentity" -> { // puseentity <player> <entityId|nearest>
+                org.bukkit.entity.Player p = Bukkit.getPlayerExact(args[1]);
+                if (p == null) { sender.sendMessage("player offline"); return true; }
+                sender.sendMessage(Sim.useEntity(p, args[2]));
             }
             default -> sender.sendMessage("unknown subcommand");
         }
