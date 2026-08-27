@@ -35,6 +35,7 @@ public final class CookingPotGui implements InventoryHolder {
     public static final int OUTPUT_SLOT = 23;
     public static final int PROGRESS_SLOT = 16;
     public static final int HEAT_SLOT = 17;
+    public static final int RECIPE_BOOK_SLOT = 15;
 
     /** Live progress stages are plain PAPER with custom model data 325001..325022 (gui.yml). */
     private static final int PROGRESS_CMD_BASE = 325001;
@@ -61,6 +62,7 @@ public final class CookingPotGui implements InventoryHolder {
         if (data[GameTicker.SLOT_CONTAINER] != null) inventory.setItem(CONTAINER_SLOT, data[GameTicker.SLOT_CONTAINER]);
         if (data[GameTicker.SLOT_OUTPUT] != null) inventory.setItem(OUTPUT_SLOT, data[GameTicker.SLOT_OUTPUT]);
         paintFillers();
+        paintRecipeBookButton();
         paintProgress();
         paintHeat();
         player.openInventory(inventory);
@@ -83,10 +85,23 @@ public final class CookingPotGui implements InventoryHolder {
         ItemStack filler = filler();
         for (int i = 0; i < 27; i++) {
             if (!INPUT_SLOTS.contains(i) && i != MEAL_SLOT && i != CONTAINER_SLOT && i != OUTPUT_SLOT
-                    && i != PROGRESS_SLOT && i != HEAT_SLOT) {
+                    && i != PROGRESS_SLOT && i != HEAT_SLOT && i != RECIPE_BOOK_SLOT) {
                 inventory.setItem(i, filler);
             }
         }
+    }
+
+    private void paintRecipeBookButton() {
+        ItemStack book = new ItemStack(Material.BOOK);
+        ItemMeta meta = book.getItemMeta();
+        meta.displayName(Component.text("配方书")
+                .color(net.kyori.adventure.text.format.NamedTextColor.YELLOW)
+                .decoration(net.kyori.adventure.text.format.TextDecoration.ITALIC, false));
+        meta.lore(List.of(Component.text("查看所有烹饪锅配方")
+                .color(net.kyori.adventure.text.format.NamedTextColor.GRAY)
+                .decoration(net.kyori.adventure.text.format.TextDecoration.ITALIC, false)));
+        book.setItemMeta(meta);
+        inventory.setItem(RECIPE_BOOK_SLOT, book);
     }
 
     private ItemStack filler() {
@@ -248,6 +263,11 @@ public final class CookingPotGui implements InventoryHolder {
                 }
             }
             ItemStack current = event.getCurrentItem();
+            if (raw == RECIPE_BOOK_SLOT) {
+                event.setCancelled(true);
+                CookingPotRecipeBook.open(plugin, gui.pot, gui.player);
+                return;
+            }
             boolean fillerClick = (current == null || current.getType() == Material.BLACK_STAINED_GLASS_PANE
                     || current.getType() == Material.PAPER || current.getType() == Material.CAMPFIRE)
                     && !INPUT_SLOTS.contains(raw) && raw != CONTAINER_SLOT;
