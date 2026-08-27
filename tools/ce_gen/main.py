@@ -63,6 +63,12 @@ def main():
     write_config("lang.yml", [("lang", lang_body)])
     print(f"sounds + {lang_count} lang locales")
 
+    # -------- GUI helper assets (progress bar / heat indicator / filler)
+    from ce_gen.gen_gui import copy_gui_assets, generate_gui_items
+    gui_models, gui_textures = copy_gui_assets()
+    gui_items = generate_gui_items()
+    print(f"gui assets: {gui_models} models, {gui_textures} textures; gui items: {gui_items}")
+
     # -------- plugin-side configs
     (PLUGIN_RECIPES / "cooking_recipes.yml").write_text(
         gen_recipes.generate_plugin_cooking(), encoding="utf-8")

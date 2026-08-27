@@ -20,6 +20,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Cooking pot GUI mirroring the mod's layout:
@@ -31,6 +33,14 @@ public final class CookingPotGui implements InventoryHolder {
     public static final int MEAL_SLOT = 21;
     public static final int CONTAINER_SLOT = 22;
     public static final int OUTPUT_SLOT = 23;
+    public static final int PROGRESS_SLOT = 16;
+    public static final int HEAT_SLOT = 17;
+
+    /** Live progress stages are plain PAPER with custom model data 325001..325022 (gui.yml). */
+    private static final int PROGRESS_CMD_BASE = 325001;
+
+    /** Open GUIs keyed by the pot's base entity, so the ticker can refresh progress. */
+    private static final Map<UUID, CookingPotGui> OPEN = new java.util.concurrent.ConcurrentHashMap<>();
 
     private final FarmersDelightPlugin plugin;
     private final BukkitFurniture pot;
@@ -51,28 +61,76 @@ public final class CookingPotGui implements InventoryHolder {
         if (data[GameTicker.SLOT_CONTAINER] != null) inventory.setItem(CONTAINER_SLOT, data[GameTicker.SLOT_CONTAINER]);
         if (data[GameTicker.SLOT_OUTPUT] != null) inventory.setItem(OUTPUT_SLOT, data[GameTicker.SLOT_OUTPUT]);
         paintFillers();
+        paintProgress();
+        paintHeat();
         player.openInventory(inventory);
+        OPEN.put(pot.baseEntity().getUniqueId(), this);
     }
 
     public static void open(FarmersDelightPlugin plugin, BukkitFurniture pot, Player player) {
         new CookingPotGui(plugin, pot, player);
     }
 
+    /** Called by the pot ticker each pulse so the progress bar and heat icon stay live. */
+    public static void refreshIfHolding(BukkitFurniture pot) {
+        CookingPotGui gui = OPEN.get(pot.baseEntity().getUniqueId());
+        if (gui != null) {
+            gui.refresh();
+        }
+    }
+
     private void paintFillers() {
         ItemStack filler = filler();
         for (int i = 0; i < 27; i++) {
-            if (!INPUT_SLOTS.contains(i) && i != MEAL_SLOT && i != CONTAINER_SLOT && i != OUTPUT_SLOT) {
+            if (!INPUT_SLOTS.contains(i) && i != MEAL_SLOT && i != CONTAINER_SLOT && i != OUTPUT_SLOT
+                    && i != PROGRESS_SLOT && i != HEAT_SLOT) {
                 inventory.setItem(i, filler);
             }
         }
     }
 
     private ItemStack filler() {
-        ItemStack stack = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        // black pane carrying the mod's empty-slot sprite (farmersdelight:gui_space, CMD 114001)
+        ItemStack stack = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta meta = stack.getItemMeta();
+        meta.setCustomModelData(114001);
         meta.displayName(Component.empty());
         stack.setItemMeta(meta);
         return stack;
+    }
+
+    private void paintProgress() {
+        var pdc = GameTicker.data(pot);
+        Integer cook = pdc.get(GameTicker.fdKey("cook"), PersistentDataType.INTEGER);
+        Integer total = pdc.get(GameTicker.fdKey("cooktotal"), PersistentDataType.INTEGER);
+        int cookVal = cook == null ? 0 : cook;
+        int totalVal = total == null ? 0 : total;
+        if (cookVal <= 0) {
+            inventory.setItem(PROGRESS_SLOT, filler());
+            return;
+        }
+        int pct = Math.min(100, cookVal * 100 / Math.max(1, totalVal));
+        int stage = Math.min(21, pct * 22 / 100);
+        ItemStack item = new ItemStack(Material.PAPER);
+        ItemMeta meta = item.getItemMeta();
+        meta.setCustomModelData(PROGRESS_CMD_BASE + stage);
+        meta.displayName(Component.text(pct + "%")
+                .decoration(net.kyori.adventure.text.format.TextDecoration.ITALIC, false));
+        item.setItemMeta(meta);
+        inventory.setItem(PROGRESS_SLOT, item);
+    }
+
+    private void paintHeat() {
+        boolean heated = plugin.gameTicker().isHeated(pot.location());
+        ItemStack item = new ItemStack(Material.CAMPFIRE);
+        ItemMeta meta = item.getItemMeta();
+        meta.setCustomModelData(114001);
+        meta.displayName(Component.text(heated ? "已受热" : "下方需要热源",
+                heated ? net.kyori.adventure.text.format.NamedTextColor.GREEN
+                        : net.kyori.adventure.text.format.NamedTextColor.RED)
+                .decoration(net.kyori.adventure.text.format.TextDecoration.ITALIC, false));
+        item.setItemMeta(meta);
+        inventory.setItem(HEAT_SLOT, item);
     }
 
     @Override
@@ -93,6 +151,8 @@ public final class CookingPotGui implements InventoryHolder {
         setOrAir(MEAL_SLOT, data[GameTicker.SLOT_MEAL]);
         setOrAir(CONTAINER_SLOT, data[GameTicker.SLOT_CONTAINER]);
         setOrAir(OUTPUT_SLOT, data[GameTicker.SLOT_OUTPUT]);
+        paintProgress();
+        paintHeat();
     }
 
     private void setOrAir(int slot, ItemStack stack) {
@@ -116,7 +176,7 @@ public final class CookingPotGui implements InventoryHolder {
 
     private ItemStack stackAt(int slot) {
         ItemStack stack = inventory.getItem(slot);
-        if (stack == null || stack.getType() == Material.GRAY_STAINED_GLASS_PANE) return null;
+        if (stack == null || stack.getType() == Material.BLACK_STAINED_GLASS_PANE) return null;
         if (stack.getType().isAir()) return null;
         return stack;
     }
@@ -188,7 +248,8 @@ public final class CookingPotGui implements InventoryHolder {
                 }
             }
             ItemStack current = event.getCurrentItem();
-            boolean fillerClick = (current == null || current.getType() == Material.GRAY_STAINED_GLASS_PANE)
+            boolean fillerClick = (current == null || current.getType() == Material.BLACK_STAINED_GLASS_PANE
+                    || current.getType() == Material.PAPER || current.getType() == Material.CAMPFIRE)
                     && !INPUT_SLOTS.contains(raw) && raw != CONTAINER_SLOT;
             if (fillerClick) {
                 event.setCancelled(true);
@@ -217,6 +278,7 @@ public final class CookingPotGui implements InventoryHolder {
         public void onClose(InventoryCloseEvent event) {
             CookingPotGui gui = holderOf(event.getInventory());
             if (gui == null) return;
+            OPEN.remove(gui.pot.baseEntity().getUniqueId());
             gui.saveFromGui();
         }
     }

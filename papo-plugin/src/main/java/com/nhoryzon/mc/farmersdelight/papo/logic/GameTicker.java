@@ -288,6 +288,9 @@ public final class GameTicker {
                 saveInv(pot, inv);
             }
         }
+
+        // live progress/heat repaint for anyone watching this pot
+        com.nhoryzon.mc.farmersdelight.papo.gui.CookingPotGui.refreshIfHolding(pot);
     }
 
     /** mod canCook: cooking continues while the meal slot is empty or holds the same meal with stack room. */
