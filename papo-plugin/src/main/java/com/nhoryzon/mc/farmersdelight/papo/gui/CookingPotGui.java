@@ -122,30 +122,8 @@ public final class CookingPotGui implements InventoryHolder {
     }
 
     public void grantStoredExperience() {
-        var pdc = GameTicker.data(pot);
-        String exp = pdc.get(GameTicker.fdKey("exp"), PersistentDataType.STRING);
-        if (exp == null || exp.isEmpty()) return;
-        float total = 0;
-        for (String part : exp.split(";")) {
-            String[] kv = part.split(":");
-            if (kv.length != 2) continue;
-            int count = Integer.parseInt(kv[1]);
-            var recipe = plugin.recipes().cooking.stream()
-                    .filter(r -> r.id().equals(kv[0])).findFirst().orElse(null);
-            if (recipe != null) {
-                total += recipe.experience() * count;
-            }
-        }
-        if (total > 0) {
-            int orbs = Math.max(1, Math.round(total));
-            var loc = pot.location();
-            var world = loc.getWorld();
-            if (world != null) {
-                var orb = world.spawn(loc.add(0.5, 0.8, 0.5), org.bukkit.entity.ExperienceOrb.class);
-                orb.setExperience(orbs);
-            }
-        }
-        pdc.set(GameTicker.fdKey("exp"), PersistentDataType.STRING, "");
+        // mod grants stored experience at the taking player's position (floor + fractional round-up)
+        plugin.gameTicker().spawnStoredExperience(pot, player.getLocation());
     }
 
     /** Take-one-meal action when right clicking the pot with a valid container. */

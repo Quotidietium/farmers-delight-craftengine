@@ -197,6 +197,12 @@ public final class GameTicker {
         ItemStack[] inv = inv(pot);
         PersistentDataContainer pdc = data(pot);
 
+        // mod SidedInventory facets: hoppers above feed ingredients, side hoppers feed the
+        // container slot, hoppers below pull finished output (vanilla hopper cadence ~8t)
+        if (potHoppers(block, inv)) {
+            saveInv(pot, inv);
+        }
+
         boolean hasInput = false;
         for (int i = 0; i < SLOT_INPUTS; i++) {
             if (inv[i] != null && !inv[i].getType().isAir()) {
@@ -214,7 +220,7 @@ public final class GameTicker {
         int cook = pdc.get(key("cook"), PersistentDataType.INTEGER) == null ? 0
                 : pdc.get(key("cook"), PersistentDataType.INTEGER);
 
-        if (heated && recipe != null && canCookInto(inv)) {
+        if (heated && recipe != null && canCookInto(inv, recipe)) {
             int total = recipe.cookTime();
             cook += 10;
             pdc.set(key("cook"), PersistentDataType.INTEGER, cook);
@@ -240,15 +246,15 @@ public final class GameTicker {
                         inv[SLOT_MEAL].setAmount(inv[SLOT_MEAL].getAmount() + result.getAmount());
                     }
                 }
-                pdc.set(key("container"), PersistentDataType.STRING,
-                        recipe.container() != null ? recipe.container() : "minecraft:bowl");
-                addExperience(pdc, recipe, 1);
-                for (int i = 0; i < SLOT_INPUTS; i++) {
-                    if (inv[i] != null && !inv[i].getType().isAir()) {
-                        inv[i].setAmount(inv[i].getAmount() - 1);
-                        if (inv[i].getAmount() <= 0) inv[i] = null;
-                    }
+                // mod getMealContainer: explicit recipe container, else the result item's own remainder
+                String containerId = recipe.container();
+                if (containerId == null) {
+                    ItemStack remainder = result == null ? null : craftingRemainderOf(result);
+                    containerId = remainder == null ? "minecraft:air" : idOf(remainder);
                 }
+                pdc.set(key("container"), PersistentDataType.STRING, containerId);
+                addExperience(pdc, recipe, 1);
+                consumeInputs(pot, block, pdc, inv);
                 saveInv(pot, inv);
             }
         } else if (cook > 0) {
@@ -284,9 +290,127 @@ public final class GameTicker {
         }
     }
 
-    private boolean canCookInto(ItemStack[] inv) {
+    /** mod canCook: cooking continues while the meal slot is empty or holds the same meal with stack room. */
+    private boolean canCookInto(ItemStack[] inv, FDRecipes.CookingRecipe recipe) {
         ItemStack meal = inv[SLOT_MEAL];
-        return meal == null || meal.getType().isAir();
+        if (meal == null || meal.getType().isAir()) return true;
+        ItemStack result = CraftEngineHook.buildItem(Key.of(recipe.result()));
+        if (result == null || !meal.isSimilar(result)) return false;
+        return meal.getAmount() + recipe.resultCount() <= meal.getMaxStackSize();
+    }
+
+    /** Mod item remainders (Item.settings.recipeRemainder); Bukkit has no crafting-remainder API on 1.21.11. */
+    public static ItemStack craftingRemainderOf(ItemStack stack) {
+        if (stack == null || stack.getType().isAir()) return null;
+        String id = idOf(stack);
+        if ("farmersdelight:milk_bottle".equals(id)) return new ItemStack(Material.GLASS_BOTTLE);
+        if ("farmersdelight:tomato_sauce".equals(id)) return new ItemStack(Material.BOWL);
+        return switch (stack.getType()) {
+            case WATER_BUCKET, LAVA_BUCKET, MILK_BUCKET, POWDER_SNOW_BUCKET, AXOLOTL_BUCKET,
+                 COD_BUCKET, PUFFERFISH_BUCKET, SALMON_BUCKET, TROPICAL_FISH_BUCKET -> new ItemStack(Material.BUCKET);
+            case MUSHROOM_STEW, RABBIT_STEW, BEETROOT_SOUP, SUSPICIOUS_STEW -> new ItemStack(Material.BOWL);
+            case POTION, SPLASH_POTION, LINGERING_POTION, HONEY_BOTTLE -> new ItemStack(Material.GLASS_BOTTLE);
+            default -> null;
+        };
+    }
+
+    /** mod processCooking: consume one of every input, ejecting crafting remainders to the pot's left side. */
+    private void consumeInputs(BukkitFurniture pot, Block block, PersistentDataContainer pdc, ItemStack[] inv) {
+        String facing = pdc.get(fdKey("facing"), PersistentDataType.STRING);
+        Vector f = dirOf(facing == null ? "north" : facing);
+        Vector left = new Vector(f.getZ(), 0, -f.getX());
+        for (int i = 0; i < SLOT_INPUTS; i++) {
+            ItemStack in = inv[i];
+            if (in == null || in.getType().isAir()) continue;
+            ItemStack remainder = craftingRemainderOf(in);
+            if (remainder != null) {
+                Location dropLoc = block.getLocation()
+                        .add(0.5 + left.getX() * 0.25, 0.7, 0.5 + left.getZ() * 0.25);
+                org.bukkit.entity.Item dropped = block.getWorld().dropItem(dropLoc, remainder);
+                dropped.setVelocity(new Vector(left.getX() * 0.08, 0.25, left.getZ() * 0.08));
+            }
+            in.setAmount(in.getAmount() - 1);
+            if (in.getAmount() <= 0) inv[i] = null;
+        }
+    }
+
+    /** One hopper transfer step per pulse; returns true when the pot inventory changed. */
+    private boolean potHoppers(Block block, ItemStack[] inv) {
+        boolean changed = false;
+        // hopper above -> first stack that fits the ingredient slots
+        if (block.getRelative(org.bukkit.block.BlockFace.UP).getType() == Material.HOPPER
+                && block.getRelative(org.bukkit.block.BlockFace.UP).getState()
+                instanceof org.bukkit.block.Hopper hopper) {
+            changed |= pullOne(hopper.getInventory(), (slot, one) -> {
+                for (int i = 0; i < SLOT_INPUTS; i++) {
+                    ItemStack target = inv[i];
+                    if (target == null || target.getType().isAir()) {
+                        inv[i] = one;
+                        return true;
+                    }
+                    if (target.isSimilar(one) && target.getAmount() < target.getMaxStackSize()) {
+                        target.setAmount(target.getAmount() + 1);
+                        return true;
+                    }
+                }
+                return false;
+            });
+        }
+        // side hoppers facing the pot -> container slot only
+        for (org.bukkit.block.BlockFace face : new org.bukkit.block.BlockFace[]{
+                org.bukkit.block.BlockFace.NORTH, org.bukkit.block.BlockFace.SOUTH,
+                org.bukkit.block.BlockFace.EAST, org.bukkit.block.BlockFace.WEST}) {
+            org.bukkit.block.Block side = block.getRelative(face);
+            if (side.getType() != Material.HOPPER || !(side.getState() instanceof org.bukkit.block.Hopper hopper)) {
+                continue;
+            }
+            if (!(side.getBlockData() instanceof org.bukkit.block.data.Directional directional)
+                    || !side.getRelative(directional.getFacing()).equals(block)) {
+                continue;
+            }
+            changed |= pullOne(hopper.getInventory(), (slot, one) -> {
+                ItemStack target = inv[SLOT_CONTAINER];
+                if (target == null || target.getType().isAir()) {
+                    inv[SLOT_CONTAINER] = one;
+                    return true;
+                }
+                if (target.isSimilar(one) && target.getAmount() < target.getMaxStackSize()) {
+                    target.setAmount(target.getAmount() + 1);
+                    return true;
+                }
+                return false;
+            });
+        }
+        // hopper below -> extract one finished meal
+        org.bukkit.block.Block below = block.getRelative(org.bukkit.block.BlockFace.DOWN);
+        ItemStack output = inv[SLOT_OUTPUT];
+        if (below.getType() == Material.HOPPER && below.getState() instanceof org.bukkit.block.Hopper hopper
+                && output != null && !output.getType().isAir()) {
+            ItemStack one = output.clone();
+            one.setAmount(1);
+            var leftover = hopper.getInventory().addItem(one);
+            if (leftover.isEmpty()) {
+                output.setAmount(output.getAmount() - 1);
+                if (output.getAmount() <= 0) inv[SLOT_OUTPUT] = null;
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+    /** Take exactly one item out of a hopper inventory when the consumer accepts it. */
+    private boolean pullOne(org.bukkit.inventory.Inventory hopperInv, java.util.function.BiFunction<Integer, ItemStack, Boolean> consumer) {
+        for (int s = 0; s < hopperInv.getSize(); s++) {
+            ItemStack src = hopperInv.getItem(s);
+            if (src == null || src.getType().isAir()) continue;
+            ItemStack one = src.clone();
+            one.setAmount(1);
+            if (!consumer.apply(s, one)) continue;
+            src.setAmount(src.getAmount() - 1);
+            if (src.getAmount() <= 0) hopperInv.setItem(s, null);
+            return true;
+        }
+        return false;
     }
 
     private void addExperience(PersistentDataContainer pdc, FDRecipes.CookingRecipe recipe, int times) {
@@ -305,6 +429,37 @@ public final class GameTicker {
             sb.append(k).append(':').append(v);
         });
         pdc.set(key("exp"), PersistentDataType.STRING, sb.toString());
+    }
+
+    /** Stored per-recipe experience total (mod experienceTracker). */
+    public float storedExperience(BukkitFurniture furniture) {
+        String exp = data(furniture).get(key("exp"), PersistentDataType.STRING);
+        if (exp == null || exp.isEmpty()) return 0;
+        float total = 0;
+        for (String part : exp.split(";")) {
+            String[] kv = part.split(":");
+            if (kv.length != 2) continue;
+            FDRecipes.CookingRecipe recipe = plugin.recipes().cooking.stream()
+                    .filter(r -> r.id().equals(kv[0])).findFirst().orElse(null);
+            if (recipe != null) total += recipe.experience() * Integer.parseInt(kv[1]);
+        }
+        return total;
+    }
+
+    /** mod spawnStoredRecipeExperience: floor + fractional random round-up, orbs above the pot. */
+    public void spawnStoredExperience(BukkitFurniture furniture, Location at) {
+        PersistentDataContainer pdc = data(furniture);
+        float total = storedExperience(furniture);
+        pdc.set(key("exp"), PersistentDataType.STRING, "");
+        if (total <= 0) return;
+        int orbs = (int) Math.floor(total);
+        float fraction = total - orbs;
+        if (fraction != 0 && Math.random() < fraction) orbs++;
+        if (orbs > 0 && at.getWorld() != null) {
+            org.bukkit.entity.ExperienceOrb orb = at.getWorld()
+                    .spawn(at.clone().add(0, 0.3, 0), org.bukkit.entity.ExperienceOrb.class);
+            orb.setExperience(orbs);
+        }
     }
 
     /* ===================== skillet ===================== */

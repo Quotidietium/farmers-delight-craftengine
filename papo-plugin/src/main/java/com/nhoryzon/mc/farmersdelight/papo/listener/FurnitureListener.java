@@ -26,6 +26,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
@@ -63,14 +64,64 @@ public final class FurnitureListener implements Listener {
                 furniture.setVariant("tray", false);
             }
         }
-        // the placed skillet keeps its fire-aspect enchantment for faster cooking (mod stores the item in the BE)
-        if (placedId.equals("skillet")) {
+        // placed pots/skillets restore the state carried inside their dropped items
+        // (mod CopyMeal meal carry / CopySkillet full item carry incl. enchants)
+        if (placedId.equals("skillet") || placedId.equals("cooking_pot")) {
             org.bukkit.inventory.ItemStack placedItem = event.player().getInventory().getItem(
                     event.hand() == net.momirealms.craftengine.core.entity.player.InteractionHand.MAIN_HAND
                             ? org.bukkit.inventory.EquipmentSlot.HAND : org.bukkit.inventory.EquipmentSlot.OFF_HAND);
-            int fireAspect = placedItem == null ? 0 : placedItem.getEnchantmentLevel(Enchantment.FIRE_ASPECT);
-            if (fireAspect > 0) {
-                GameTicker.data(furniture).set(GameTicker.fdKey("fa"), PersistentDataType.INTEGER, fireAspect);
+            if (placedItem != null && !placedItem.getType().isAir()) {
+                org.bukkit.persistence.PersistentDataContainer itemPdc =
+                        placedItem.getItemMeta() == null ? null : placedItem.getItemMeta().getPersistentDataContainer();
+                if (placedId.equals("skillet")) {
+                    PersistentDataContainer pdc = GameTicker.data(furniture);
+                    // remember the actual placed stack so breaking drops the same enchanted skillet (mod BE item)
+                    pdc.set(GameTicker.fdKey("skillet_item"), PersistentDataType.BYTE_ARRAY,
+                            placedItem.serializeAsBytes());
+                    int fireAspect = placedItem.getEnchantmentLevel(Enchantment.FIRE_ASPECT);
+                    if (fireAspect > 0) {
+                        pdc.set(GameTicker.fdKey("fa"), PersistentDataType.INTEGER, fireAspect);
+                    }
+                    byte[] food = itemPdc == null ? null
+                            : itemPdc.get(GameTicker.fdKey("skillet_food"), PersistentDataType.BYTE_ARRAY);
+                    if (food != null && food.length > 0) {
+                        try {
+                            ItemStack foodStack = ItemStack.deserializeBytes(food);
+                            if (!foodStack.getType().isAir()) {
+                                ticker().setSkilletItem(furniture, foodStack);
+                                String result = itemPdc.get(GameTicker.fdKey("skillet_result"), PersistentDataType.STRING);
+                                Integer total = itemPdc.get(GameTicker.fdKey("skillet_total"), PersistentDataType.INTEGER);
+                                if (result != null) {
+                                    pdc.set(GameTicker.fdKey("result"), PersistentDataType.STRING, result);
+                                }
+                                if (total != null) {
+                                    pdc.set(GameTicker.fdKey("cooktotal"), PersistentDataType.INTEGER, total);
+                                }
+                                pdc.set(GameTicker.fdKey("cook"), PersistentDataType.INTEGER, 0);
+                            }
+                        } catch (Throwable ignored) {
+                        }
+                    }
+                } else if (itemPdc != null) {
+                    byte[] mealBytes = itemPdc.get(GameTicker.fdKey("pot_meal"), PersistentDataType.BYTE_ARRAY);
+                    if (mealBytes != null && mealBytes.length > 0) {
+                        try {
+                            ItemStack meal = ItemStack.deserializeBytes(mealBytes);
+                            if (!meal.getType().isAir()) {
+                                ItemStack[] inv = GameTicker.inv(furniture);
+                                inv[GameTicker.SLOT_MEAL] = meal;
+                                GameTicker.saveInv(furniture, inv);
+                                String containerId = itemPdc.get(
+                                        GameTicker.fdKey("pot_container"), PersistentDataType.STRING);
+                                if (containerId != null && !containerId.isEmpty()) {
+                                    GameTicker.data(furniture).set(GameTicker.fdKey("container"),
+                                            PersistentDataType.STRING, containerId);
+                                }
+                            }
+                        } catch (Throwable ignored) {
+                        }
+                    }
+                }
             }
         }
         // feasts are placed fully stocked (highest servings variant)
@@ -120,19 +171,96 @@ public final class FurnitureListener implements Listener {
         Key id = furniture.id();
         if (id.equals(FD.COOKING_POT)) {
             ItemStack[] inv = GameTicker.inv(furniture);
-            for (ItemStack stack : inv) {
+            Location drop = furniture.location().clone().add(0.5, 0.6, 0.5);
+            // mod drops every slot EXCEPT the meal display slot, which travels inside the pot item (CopyMeal)
+            for (int i = 0; i < inv.length; i++) {
+                if (i == GameTicker.SLOT_MEAL) continue;
+                ItemStack stack = inv[i];
                 if (stack != null && !stack.getType().isAir()) {
-                    furniture.location().getWorld().dropItemNaturally(
-                            furniture.location().clone().add(0.5, 0.6, 0.5), stack);
+                    drop.getWorld().dropItemNaturally(drop, stack);
                 }
             }
-        } else if (id.equals(FD.CUTTING_BOARD) || id.equals(FD.SKILLET)) {
+            ticker().spawnStoredExperience(furniture, drop);
+            ItemStack meal = inv[GameTicker.SLOT_MEAL];
+            event.setDropItems(false);
+            ItemStack potItem = CraftEngineHook.buildItem(id);
+            if (potItem != null) {
+                if (meal != null && !meal.getType().isAir()) {
+                    String containerId = GameTicker.data(furniture).get(
+                            GameTicker.fdKey("container"), PersistentDataType.STRING);
+                    potItem = potItem.clone();
+                    ItemStack mealCopy = meal;
+                    potItem.editMeta(meta -> {
+                        meta.getPersistentDataContainer().set(GameTicker.fdKey("pot_meal"),
+                                PersistentDataType.BYTE_ARRAY, mealCopy.serializeAsBytes());
+                        if (containerId != null && !containerId.isEmpty()) {
+                            meta.getPersistentDataContainer().set(GameTicker.fdKey("pot_container"),
+                                    PersistentDataType.STRING, containerId);
+                        }
+                        meta.lore(List.of(
+                                net.kyori.adventure.text.Component.text()
+                                        .content("装有 " + mealCopy.getAmount() + " 份: ")
+                                        .color(net.kyori.adventure.text.format.NamedTextColor.GRAY)
+                                        .append(mealCopy.effectiveName().colorIfAbsent(
+                                                net.kyori.adventure.text.format.NamedTextColor.GRAY))
+                                        .build()));
+                    });
+                }
+                drop.getWorld().dropItemNaturally(drop, potItem);
+            }
+        } else if (id.equals(FD.CUTTING_BOARD)) {
             ItemStack stored = ticker().skilletItem(furniture);
             if (stored != null) {
                 furniture.location().getWorld().dropItemNaturally(
                         furniture.location().clone().add(0.5, 0.4, 0.5), stored);
             }
             ticker().setDisplayChild(furniture, "itemEntity", null, 0.5, 0.4, 0.5, 0.3f);
+        } else if (id.equals(FD.SKILLET)) {
+            // mod CopySkillet: the uncooked food travels inside the dropped skillet item,
+            // and the dropped skillet is the exact stack that was placed (enchants included)
+            ItemStack stored = ticker().skilletItem(furniture);
+            ticker().setDisplayChild(furniture, "itemEntity", null, 0.5, 0.4, 0.5, 0.3f);
+            event.setDropItems(false);
+            ItemStack skilletItem = null;
+            byte[] placed = GameTicker.data(furniture).get(
+                    GameTicker.fdKey("skillet_item"), PersistentDataType.BYTE_ARRAY);
+            if (placed != null && placed.length > 0) {
+                try {
+                    skilletItem = ItemStack.deserializeBytes(placed);
+                } catch (Throwable ignored) {
+                }
+            }
+            if (skilletItem == null || skilletItem.getType().isAir()) {
+                skilletItem = CraftEngineHook.buildItem(id);
+            }
+            if (skilletItem != null) {
+                if (stored != null && !stored.getType().isAir()) {
+                    PersistentDataContainer pdc = GameTicker.data(furniture);
+                    String result = pdc.get(GameTicker.fdKey("result"), PersistentDataType.STRING);
+                    Integer total = pdc.get(GameTicker.fdKey("cooktotal"), PersistentDataType.INTEGER);
+                    Integer fa = pdc.get(GameTicker.fdKey("fa"), PersistentDataType.INTEGER);
+                    skilletItem = skilletItem.clone();
+                    ItemStack storedCopy = stored;
+                    skilletItem.editMeta(meta -> {
+                        meta.getPersistentDataContainer().set(GameTicker.fdKey("skillet_food"),
+                                PersistentDataType.BYTE_ARRAY, storedCopy.serializeAsBytes());
+                        if (result != null) {
+                            meta.getPersistentDataContainer().set(GameTicker.fdKey("skillet_result"),
+                                    PersistentDataType.STRING, result);
+                        }
+                        if (total != null) {
+                            meta.getPersistentDataContainer().set(GameTicker.fdKey("skillet_total"),
+                                    PersistentDataType.INTEGER, total);
+                        }
+                        if (fa != null) {
+                            meta.getPersistentDataContainer().set(GameTicker.fdKey("fa"),
+                                    PersistentDataType.INTEGER, fa);
+                        }
+                    });
+                }
+                furniture.location().getWorld().dropItemNaturally(
+                        furniture.location().clone().add(0.5, 0.4, 0.5), skilletItem);
+            }
         } else if (id.toString().endsWith("_canvas_sign") || id.toString().endsWith("_canvas_wall_sign")) {
             removeSignText(furniture);
         } else if (id.equals(FD.TATAMI)) {
