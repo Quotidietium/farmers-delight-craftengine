@@ -40,6 +40,14 @@
 - 资源包未更新：服务器控制台执行 `ce reload pack`
 
 
+## 一键回归工具（推荐）
+
+```
+python tools/client-test/regression.py
+```
+自动起服/部署道具/RCON 检查/监听关键日志行，结束（Ctrl+C）生成
+`smoke/regression-report.txt`。以下手动步骤仍适用。
+
 ## 附魔台实测（1.3.1+，验证偏差表⑦是否已随 1.2.x 附魔注册方式修复）
 
 1. `/ce item give @s farmersdelight:iron_knife` ×2，另备青金石+等级
