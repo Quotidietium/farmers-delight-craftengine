@@ -140,6 +140,15 @@ def generate_blocks() -> tuple[str, list[str]]:
             lines.append("        close: minecraft:block.barrel.close")
 
         # custom behaviors provided by the plugin (registered in onLoad)
+        if bid == "organic_compost":
+            # mod getComparatorOutput = MAX_STAGE+1-stage (signal FALLS as composting advances)
+            lines.append("    behavior:")
+            lines.append("      - type: farmersdelight:comparator_signal")
+            lines.append("        property: composting")
+            lines.append("        signal_map:")
+            for stage in range(8):
+                lines.append(f"          {stage}: {8 - stage}")
+
         if bid == "rich_soil_farmland":
             # mod RichSoilFarmlandBlock: moisture 0-7 sim + 20% growth boost (plugin behavior)
             lines.append("    behavior:")

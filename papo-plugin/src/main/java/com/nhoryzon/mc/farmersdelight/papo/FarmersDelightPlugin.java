@@ -59,6 +59,8 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
             getLogger().info("Registered block behavior: farmersdelight:crop");
             com.nhoryzon.mc.farmersdelight.papo.ce.behavior.FDRichFarmlandBehavior.register();
             getLogger().info("Registered block behavior: farmersdelight:rich_farmland");
+            com.nhoryzon.mc.farmersdelight.papo.ce.behavior.FDComparatorSignalBehavior.register();
+            getLogger().info("Registered block behavior: farmersdelight:comparator_signal");
         } catch (Throwable t) {
             getLogger().severe("Failed to register CE block behaviors: " + t);
         }

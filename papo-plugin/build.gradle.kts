@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "com.nhoryzon.mc"
-version = "1.2.1"
+version = "1.2.2"
 description = "Farmer's Delight rewritten for Papo (Paper 1.21.11) with CraftEngine-hosted assets"
 
 repositories {

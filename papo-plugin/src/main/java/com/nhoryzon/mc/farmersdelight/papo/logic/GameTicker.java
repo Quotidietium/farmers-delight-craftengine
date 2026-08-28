@@ -630,6 +630,13 @@ public final class GameTicker {
             stove.getWorld().playSound(stove.getLocation(), FD.SND_STOVE_CRACKLE,
                     SoundCategory.BLOCKS, 0.4f, 1.0f);
         }
+        // ambient crackle while lit: the reference pack schedules it every 60-100 ticks
+        // (volume 1.0, pitch 0.9-1.1); on the 10-tick pulse a 1-in-8 roll gives the same
+        // mean interval, played only when the stove is actually burning
+        if (isLit && Math.random() < 1.0 / 8.0) {
+            stove.getWorld().playSound(stove.getLocation(), FD.SND_STOVE_CRACKLE,
+                    SoundCategory.BLOCKS, 1.0f, 0.9f + (float) Math.random() * 0.2f);
+        }
         if (dirty) {
             plugin.blockStore().setItems(stove, "grill", items);
             refreshStoveDisplays(stove, items);

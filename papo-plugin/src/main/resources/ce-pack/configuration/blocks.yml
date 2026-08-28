@@ -1308,6 +1308,18 @@ blocks:
         hit: minecraft:block.gravel.hit
         fall: minecraft:block.gravel.fall
       item: "farmersdelight:organic_compost"
+    behavior:
+      - type: farmersdelight:comparator_signal
+        property: composting
+        signal_map:
+          0: 8
+          1: 7
+          2: 6
+          3: 5
+          4: 4
+          5: 3
+          6: 2
+          7: 1
 
   "farmersdelight:potato_crate":
     state:
