@@ -144,7 +144,7 @@ papo-plugin/
 | 2 | 告示牌为聊天输入 | 无原版编辑 GUI | 逐行输入，done/cancel 结束 |
 | 3 | 原版汤类堆叠 16 未实现 | 无法改原版物品组件 | —（FD 碗餐不受影响） |
 | 4 | 村庄堆肥小屋未注入 | 结构池运行时修改风险 | 野生作物已覆盖获取途径 |
-| 6 | 绳子攀爬为速度模拟 | 家具非方块无 climbable 标签 | 每 tick 上浮 0.13/潜行悬停 |
+| 6 | ~~绳子攀爬~~ 复审（1.4.1）：**mod 绳子本不可攀爬**（RopeBlock extends PaneBlock，无 climbable）——上浮模拟为附加功能而非未复现差距 | 非差距 | 保留实现（纯增益） |
 | 7 | 手持煎锅右键启动 | 无法检测按住右键时长 | actionbar 进度条+完成音效 |
 | 8 | ~~附魔台获取背刺~~ **已实现（1.4.0）** | 背刺改为 1.21 数据包附魔（datapack enchantment，原版附魔台枚举的注册表条目）：supported_items/primary_items=CE 刀具底层材质，min/max cost=mod 公式 | 附魔台候选确定性出现（不依赖插件注册）；效果仍由插件 EntityDamage 监听按 mod 公式计算 |
 
