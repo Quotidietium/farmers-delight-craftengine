@@ -46,6 +46,7 @@ public final class GameTicker {
     private final BukkitTask task;
 
     public final ChunkIndex stoveIndex;
+    public final ChunkIndex potIndex;
     public final ChunkIndex basketIndex;
     public final ChunkIndex compostIndex;
     public final ChunkIndex cropIndex;
@@ -54,6 +55,7 @@ public final class GameTicker {
     public GameTicker(FarmersDelightPlugin plugin) {
         this.plugin = plugin;
         this.stoveIndex = new ChunkIndex(plugin, "stove");
+        this.potIndex = new ChunkIndex(plugin, "pot");
         this.basketIndex = new ChunkIndex(plugin, "basket");
         this.compostIndex = new ChunkIndex(plugin, "compost");
         this.cropIndex = new ChunkIndex(plugin, "crop");
@@ -193,6 +195,7 @@ public final class GameTicker {
         for (World world : Bukkit.getWorlds()) {
             for (var chunk : world.getLoadedChunks()) {
                 segMark = System.nanoTime();
+                for (Location loc : potIndex.entries(chunk)) tickPotBlock(loc.getBlock());
                 for (Location loc : stoveIndex.entries(chunk)) tickStove(loc.getBlock());
                 segmentNanos[2] += System.nanoTime() - segMark;
 
@@ -510,6 +513,223 @@ public final class GameTicker {
         float fraction = total - orbs;
         if (fraction != 0 && Math.random() < fraction) orbs++;
         if (orbs > 0 && at.getWorld() != null) {
+            org.bukkit.entity.ExperienceOrb orb = at.getWorld()
+                    .spawn(at.clone().add(0, 0.3, 0), org.bukkit.entity.ExperienceOrb.class);
+            orb.setExperience(orbs);
+        }
+    }
+
+    /* ===================== block cooking pot (real CE block) ===================== */
+
+    /**
+     * Pot tick for the real CE block placements (chunk-PDC storage). Mirrors the
+     * furniture-pot cooking core; kept separate so the legacy furniture path for
+     * pre-migration worlds stays untouched.
+     */
+    private void tickPotBlock(Block pot) {
+        var state = CraftEngineHook.customBlockState(pot);
+        if (state == null || !state.owner().value().id().equals(FD.COOKING_POT)) {
+            potIndex.remove(pot);
+            return;
+        }
+        PersistentDataContainer pdc = plugin.blockStore().chunkPdc(pot);
+        ItemStack[] inv = plugin.blockStore().getItems(pot, "inv");
+        if (inv == null || inv.length != SLOT_INPUTS + 3) {
+            ItemStack[] padded = new ItemStack[SLOT_INPUTS + 3];
+            if (inv != null) System.arraycopy(inv, 0, padded, 0, Math.min(inv.length, padded.length));
+            inv = padded;
+        }
+        String facing = state.<String>getProperty("facing") == null ? "north"
+                : state.getNullable(state.<String>getProperty("facing"));
+        pdc.set(fdKey("facing"), PersistentDataType.STRING, facing);
+
+        boolean changed = potHoppers(pot, inv);
+
+        boolean hasInput = false;
+        for (int i = 0; i < SLOT_INPUTS; i++) {
+            if (inv[i] != null && !inv[i].getType().isAir()) {
+                hasInput = true;
+                break;
+            }
+        }
+        FDRecipes.CookingRecipe recipe = hasInput
+                ? plugin.recipes().matchCooking(java.util.Arrays.copyOfRange(inv, 0, SLOT_INPUTS))
+                : null;
+        boolean heated = isHeated(pot.getLocation());
+        int cook = plugin.blockStore().getInt(pot, "cook");
+        int total = plugin.blockStore().getInt(pot, "cooktotal");
+
+        if (heated && recipe != null && canCookInto(inv, recipe)) {
+            total = recipe.cookTime();
+            cook += 10;
+            if (cook % 60 == 0) {
+                pot.getWorld().playSound(pot.getLocation(), FD.SND_BOIL_SOUP,
+                        SoundCategory.BLOCKS, 0.6f, 1.0f);
+                pot.getWorld().spawnParticle(Particle.BUBBLE_POP,
+                        pot.getLocation().add(0.5, 0.7, 0.5), 4, 0.2, 0.05, 0.2, 0.0);
+            }
+            if (cook >= total) {
+                cook = 0;
+                ItemStack result = CraftEngineHook.buildItem(Key.of(recipe.result()));
+                if (result != null) {
+                    result.setAmount(recipe.resultCount());
+                    if (inv[SLOT_MEAL] == null || inv[SLOT_MEAL].getType().isAir()) {
+                        inv[SLOT_MEAL] = result;
+                    } else if (inv[SLOT_MEAL].isSimilar(result)
+                            && inv[SLOT_MEAL].getAmount() + result.getAmount() <= result.getMaxStackSize()) {
+                        inv[SLOT_MEAL].setAmount(inv[SLOT_MEAL].getAmount() + result.getAmount());
+                    }
+                }
+                String containerId = recipe.container();
+                if (containerId == null) {
+                    ItemStack remainder = result == null ? null : craftingRemainderOf(result);
+                    containerId = remainder == null ? "minecraft:air" : idOf(remainder);
+                }
+                plugin.blockStore().setString(pot, "container", containerId);
+                addExpBlock(pot, recipe);
+                consumeInputsBlock(pot, facing, inv);
+                changed = true;
+            }
+            plugin.blockStore().setInt(pot, "cook", cook);
+            plugin.blockStore().setInt(pot, "cooktotal", total);
+        } else if (cook > 0) {
+            plugin.blockStore().setInt(pot, "cook", Math.max(0, cook - 20));
+        }
+
+        // hopper neighbors mutate the CE-side storage; re-read to avoid clobbering
+        if (adjacentHopper(pot)) {
+            inv = plugin.blockStore().getItems(pot, "inv");
+            if (inv == null || inv.length != SLOT_INPUTS + 3) {
+                ItemStack[] padded = new ItemStack[SLOT_INPUTS + 3];
+                if (inv != null) System.arraycopy(inv, 0, padded, 0, Math.min(inv.length, padded.length));
+                inv = padded;
+            }
+        }
+        ItemStack meal = inv[SLOT_MEAL];
+        if (meal != null && !meal.getType().isAir()) {
+            String containerId = plugin.blockStore().getString(pot, "container");
+            boolean needsContainer = containerId != null && !containerId.equals("minecraft:air");
+            ItemStack containerStack = inv[SLOT_CONTAINER];
+            if (!needsContainer) {
+                if (inv[SLOT_OUTPUT] == null || inv[SLOT_OUTPUT].getType().isAir()) {
+                    inv[SLOT_OUTPUT] = meal;
+                    inv[SLOT_MEAL] = null;
+                    changed = true;
+                }
+            } else if (containerStack != null && !containerStack.getType().isAir()
+                    && idOf(containerStack).equals(containerId)
+                    && (inv[SLOT_OUTPUT] == null || inv[SLOT_OUTPUT].getType().isAir())) {
+                ItemStack out = meal.clone();
+                out.setAmount(1);
+                inv[SLOT_OUTPUT] = out;
+                meal.setAmount(meal.getAmount() - 1);
+                if (meal.getAmount() <= 0) inv[SLOT_MEAL] = null;
+                containerStack.setAmount(containerStack.getAmount() - 1);
+                if (containerStack.getAmount() <= 0) inv[SLOT_CONTAINER] = null;
+                changed = true;
+            }
+        }
+        if (changed) plugin.blockStore().setItems(pot, "inv", inv);
+        com.nhoryzon.mc.farmersdelight.papo.gui.CookingPotBlockGui.refreshIfHolding(pot);
+    }
+
+    private void addExpBlock(Block pot, FDRecipes.CookingRecipe recipe) {
+        String exp = plugin.blockStore().getString(pot, "exp");
+        Map<String, Integer> map = new HashMap<>();
+        if (exp != null) {
+            for (String part : exp.split(";")) {
+                String[] kv = part.split(":");
+                if (kv.length == 2) map.put(kv[0], Integer.parseInt(kv[1]));
+            }
+        }
+        map.merge(recipe.id(), 1, Integer::sum);
+        StringBuilder sb = new StringBuilder();
+        map.forEach((k, v) -> {
+            if (sb.length() > 0) sb.append(';');
+            sb.append(k).append(':').append(v);
+        });
+        plugin.blockStore().setString(pot, "exp", sb.toString());
+    }
+
+    /** Mod processCooking: consume one of every input, eject remainders to the pot's left. */
+    private void consumeInputsBlock(Block pot, String facing, ItemStack[] inv) {
+        Vector f = dirOf(facing);
+        Vector left = new Vector(f.getZ(), 0, -f.getX());
+        for (int i = 0; i < SLOT_INPUTS; i++) {
+            ItemStack in = inv[i];
+            if (in == null || in.getType().isAir()) continue;
+            ItemStack remainder = craftingRemainderOf(in);
+            if (remainder != null) {
+                Location dropLoc = pot.getLocation()
+                        .add(0.5 + left.getX() * 0.25, 0.7, 0.5 + left.getZ() * 0.25);
+                org.bukkit.entity.Item dropped = pot.getWorld().dropItem(dropLoc, remainder);
+                dropped.setVelocity(new Vector(left.getX() * 0.08, 0.25, left.getZ() * 0.08));
+            }
+            in.setAmount(in.getAmount() - 1);
+            if (in.getAmount() <= 0) inv[i] = null;
+        }
+    }
+
+    /** Reads (and normalizes to 9 slots) the pot inventory from the chunk PDC. */
+    public ItemStack[] potInv(Block pot) {
+        ItemStack[] inv = plugin.blockStore().getItems(pot, "inv");
+        if (inv == null || inv.length != SLOT_INPUTS + 3) {
+            ItemStack[] padded = new ItemStack[SLOT_INPUTS + 3];
+            if (inv != null) System.arraycopy(inv, 0, padded, 0, Math.min(inv.length, padded.length));
+            inv = padded;
+        }
+        return inv;
+    }
+
+    /** Take-one-meal when the held item matches the required container (mod parity). */
+    public ItemStack servePotBlock(Block pot, ItemStack held) {
+        ItemStack[] inv = potInv(pot);
+        ItemStack meal = inv[SLOT_MEAL];
+        if (meal == null || meal.getType().isAir()) return null;
+        String containerId = plugin.blockStore().getString(pot, "container");
+        boolean needsContainer = containerId != null && !containerId.equals("minecraft:air");
+        if (needsContainer) {
+            if (held == null || held.getType().isAir()) return null;
+            String heldId = idOf(held);
+            if (heldId == null || !heldId.equals(containerId)) return null;
+            held.setAmount(held.getAmount() - 1);
+        }
+        ItemStack portion = meal.clone();
+        portion.setAmount(1);
+        meal.setAmount(meal.getAmount() - 1);
+        if (meal.getAmount() <= 0) inv[SLOT_MEAL] = null;
+        plugin.blockStore().setItems(pot, "inv", inv);
+        return portion;
+    }
+
+    /** Stored per-recipe experience for block pots. */
+    public float storedExpBlock(Block pot) {
+        String exp = plugin.blockStore().getString(pot, "exp");
+        if (exp == null || exp.isEmpty()) return 0;
+        float total = 0;
+        for (String part : exp.split(";")) {
+            String[] kv = part.split(":");
+            if (kv.length != 2) continue;
+            FDRecipes.CookingRecipe recipe = plugin.recipes().cooking.stream()
+                    .filter(r -> r.id().equals(kv[0])).findFirst().orElse(null);
+            if (recipe != null) total += recipe.experience() * Integer.parseInt(kv[1]);
+        }
+        return total;
+    }
+
+    public void clearExpBlock(Block pot) {
+        plugin.blockStore().setString(pot, "exp", "");
+    }
+
+    /** Pays out stored block-pot experience as orbs (floor + fractional round-up). */
+    public void spawnExpBlockOrbs(Block pot, Location at) {
+        float total = storedExpBlock(pot);
+        clearExpBlock(pot);
+        if (total <= 0 || at.getWorld() == null) return;
+        int orbs = (int) Math.floor(total);
+        float fraction = total - orbs;
+        if (fraction != 0 && Math.random() < fraction) orbs++;
+        if (orbs > 0) {
             org.bukkit.entity.ExperienceOrb orb = at.getWorld()
                     .spawn(at.clone().add(0, 0.3, 0), org.bukkit.entity.ExperienceOrb.class);
             orb.setExperience(orbs);

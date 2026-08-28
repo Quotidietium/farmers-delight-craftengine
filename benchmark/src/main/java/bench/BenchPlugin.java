@@ -112,10 +112,10 @@ public final class BenchPlugin extends JavaPlugin {
                         getServer().getPluginManager().getPlugin("FarmersDelight");
         org.bukkit.World world = Bukkit.getWorlds().getFirst();
         org.bukkit.Location spawn = world.getSpawnLocation();
-        Key[] furnitureIds = {
-                Key.of("farmersdelight:cooking_pot"), Key.of("farmersdelight:skillet")};
+        Key[] furnitureIds = {Key.of("farmersdelight:skillet")};
         Key[] blockIds = {
-                Key.of("farmersdelight:stove"), Key.of("farmersdelight:organic_compost"),
+                Key.of("farmersdelight:cooking_pot"), Key.of("farmersdelight:stove"),
+                Key.of("farmersdelight:organic_compost"),
                 Key.of("farmersdelight:rich_soil_farmland"), Key.of("farmersdelight:advanced_wheat"),
                 Key.of("farmersdelight:basket")};
         StringBuilder out = new StringBuilder("FD load build n=" + n + " @ " + java.time.Instant.now() + "\n");
@@ -134,11 +134,11 @@ public final class BenchPlugin extends JavaPlugin {
                     loc.getWorld().setChunkForceLoaded(x >> 4, z >> 4, true);
                     try {
                         boolean ok;
-                        if (i[0] % 8 < 2) {
+                        if (i[0] % 8 < 1) {
                             ok = net.momirealms.craftengine.bukkit.api.CraftEngineFurniture.place(
-                                    loc, furnitureIds[i[0] % 2]) != null;
+                                    loc, furnitureIds[0]) != null;
                         } else {
-                            int bi = i[0] % 5;
+                            int bi = i[0] % 6;
                             if (bi == 3) {
                                 // farmland into the air cell, wheat on top of it
                                 ok = net.momirealms.craftengine.bukkit.api.CraftEngineBlocks.place(
@@ -157,10 +157,11 @@ public final class BenchPlugin extends JavaPlugin {
                                 var ticker = fd.gameTicker();
                                 org.bukkit.block.Block block = loc.getBlock();
                                 switch (bi) {
-                                    case 0 -> ticker.stoveIndex.add(block);
-                                    case 1 -> ticker.compostIndex.add(block);
-                                    case 2 -> ticker.soilIndex.add(block);
-                                    case 3 -> ticker.cropIndex.add(loc.clone().add(0, 1, 0).getBlock());
+                                    case 0 -> ticker.potIndex.add(block);
+                                    case 1 -> ticker.stoveIndex.add(block);
+                                    case 2 -> ticker.compostIndex.add(block);
+                                    case 3 -> ticker.soilIndex.add(block);
+                                    case 4 -> ticker.cropIndex.add(loc.clone().add(0, 1, 0).getBlock());
                                     default -> ticker.basketIndex.add(block);
                                 }
                             }

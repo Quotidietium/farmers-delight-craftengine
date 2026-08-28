@@ -3,7 +3,7 @@ from .parse_registry import parse_blocks
 
 # blocks realized as CraftEngine furniture (custom hitboxes / thin plates)
 FURNITURE_BLOCK_IDS = {
-    "cooking_pot", "cutting_board", "skillet", "rope", "safety_net", "canvas_rug",
+    "cutting_board", "skillet", "rope", "safety_net", "canvas_rug",
     "tatami", "full_tatami_mat", "half_tatami_mat",
     "roast_chicken_block", "stuffed_pumpkin_block", "honey_glazed_ham_block",
     "shepherds_pie_block", "rice_roll_medley_block",
@@ -60,6 +60,7 @@ CE_BLOCK_IDS = [bid for bid in BLOCK_ID_BY_ENUM.values()
 
 # per-family settings: hardness, sounds, tool
 FAMILY_SETTINGS = {
+    "lantern": dict(hardness=0.5, sounds="minecraft:block.lantern"),
     "wood": dict(hardness=2.0, sounds="minecraft:block.wood"),
     "dirt": dict(hardness=0.6, sounds="minecraft:block.gravel"),
     "stone": dict(hardness=2.0, sounds="minecraft:block.stone"),
@@ -68,7 +69,7 @@ FAMILY_SETTINGS = {
 }
 
 BLOCK_FAMILY = {
-    "stove": "stone", "basket": "wood",
+    "cooking_pot": "lantern", "stove": "stone", "basket": "wood",
     "carrot_crate": "wood", "potato_crate": "wood", "beetroot_crate": "wood",
     "cabbage_crate": "wood", "tomato_crate": "wood", "onion_crate": "wood",
     "rice_bale": "wood", "rice_bag": "wool", "straw_bale": "wood",

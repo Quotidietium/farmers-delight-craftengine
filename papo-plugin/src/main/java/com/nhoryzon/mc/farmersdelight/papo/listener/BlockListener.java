@@ -65,6 +65,33 @@ public final class BlockListener implements Listener {
             ticker().stoveIndex.add(block);
             return;
         }
+        if (id.equals(FD.COOKING_POT)) {
+            ticker().potIndex.add(block);
+            // restore a meal carried inside the placed pot item (mod CopyMeal);
+            // the event exposes no item, so read the remaining main-hand stack
+            ItemStack placed = event.player().getInventory().getItemInMainHand();
+            if (placed != null && !placed.getType().isAir() && placed.getItemMeta() != null) {
+                var itemPdc = placed.getItemMeta().getPersistentDataContainer();
+                byte[] meal = itemPdc.get(GameTicker.fdKey("pot_meal"), org.bukkit.persistence.PersistentDataType.BYTE_ARRAY);
+                if (meal != null && meal.length > 0) {
+                    try {
+                        ItemStack mealStack = ItemStack.deserializeBytes(meal);
+                        if (!mealStack.getType().isAir()) {
+                            ItemStack[] inv = ticker().potInv(block);
+                            inv[GameTicker.SLOT_MEAL] = mealStack;
+                            plugin.blockStore().setItems(block, "inv", inv);
+                            String containerId = itemPdc.get(GameTicker.fdKey("pot_container"),
+                                    org.bukkit.persistence.PersistentDataType.STRING);
+                            if (containerId != null) {
+                                plugin.blockStore().setString(block, "container", containerId);
+                            }
+                        }
+                    } catch (Throwable ignored) {
+                    }
+                }
+            }
+            return;
+        }
         if (id.equals(FD.BASKET)) {
             ticker().basketIndex.add(block);
             var dirProp = state.<String>getProperty("direction");
@@ -172,6 +199,10 @@ public final class BlockListener implements Listener {
             case "organic_compost" -> {
                 event.setCancelled(true);
                 interactCompost(block, player, held, state);
+            }
+            case "cooking_pot" -> {
+                event.setCancelled(true);
+                interactCookingPotBlock(block, state, player, held);
             }
             case "cabbages", "onions", "tomatoes", "rice_panicle",
                  "brown_mushroom_colony", "red_mushroom_colony" -> {
@@ -337,6 +368,46 @@ public final class BlockListener implements Listener {
         ticker().setBlockProperty(pie, "bites", bites + 1);
     }
 
+    /* ===================== block cooking pot ===================== */
+
+    private void interactCookingPotBlock(Block block, ImmutableBlockState state,
+                                         Player player, ItemStack held) {
+        String support = null;
+        var supProp = state.getProperty("support");
+        if (supProp != null) {
+            Object v = state.getNullable(supProp);
+            support = v == null ? "none" : String.valueOf(v);
+        }
+        // sneak + empty hand cycles the support variant (mod support toggle)
+        if ((held == null || held.getType().isAir()) && player.isSneaking()) {
+            String next = switch (support) {
+                case "tray" -> "handle";
+                case "handle" -> "none";
+                default -> "tray";
+            };
+            ticker().setBlockProperty(block, "support", next);
+            block.getWorld().playSound(block.getLocation(), "minecraft:block.lantern.place",
+                    SoundCategory.BLOCKS, 0.7f, 1.0f);
+            return;
+        }
+        // serve a held-container portion before opening (mod useHeldItemOnMeal)
+        if (held != null && !held.getType().isAir()) {
+            ItemStack portion = ticker().servePotBlock(block, held);
+            if (portion != null) {
+                giveOrDrop(player, portion);
+                player.swingMainHand();
+                return;
+            }
+        }
+        com.nhoryzon.mc.farmersdelight.papo.gui.CookingPotBlockGui.open(plugin, block, player);
+    }
+
+    private void giveOrDrop(Player player, ItemStack stack) {
+        if (stack == null || stack.getType().isAir()) return;
+        player.getInventory().addItem(stack).values()
+                .forEach(left -> player.getWorld().dropItemNaturally(player.getLocation(), left));
+    }
+
     /* ===================== breaks ===================== */
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -358,6 +429,48 @@ public final class BlockListener implements Listener {
             event.setDropItems(false);
             plugin.cropManager().advancedCropDrops(block, state, event.getPlayer(),
                     event.getPlayer().getInventory().getItemInMainHand());
+        } else if (s.equals("farmersdelight:cooking_pot")) {
+            // mod CopyMeal: every slot but the meal drops raw; the meal travels inside
+            // the dropped pot item (PDC) along with its container requirement; stored
+            // experience is paid out as orbs; the replacement restores the meal
+            event.setDropItems(false);
+            ticker().potIndex.remove(block);
+            Location drop = block.getLocation().add(0.5, 0.6, 0.5);
+            ItemStack[] inv = ticker().potInv(block);
+            for (int i = 0; i < inv.length; i++) {
+                if (i == GameTicker.SLOT_MEAL) continue;
+                ItemStack stack = inv[i];
+                if (stack != null && !stack.getType().isAir()) {
+                    drop.getWorld().dropItemNaturally(drop, stack);
+                }
+            }
+            ticker().spawnExpBlockOrbs(block, drop);
+            ItemStack meal = inv[GameTicker.SLOT_MEAL];
+            ItemStack potItem = CraftEngineHook.buildItem(id);
+            if (potItem != null) {
+                if (meal != null && !meal.getType().isAir()) {
+                    String containerId = plugin.blockStore().getString(block, "container");
+                    ItemStack mealCopy = meal;
+                    potItem.editMeta(meta -> {
+                        meta.getPersistentDataContainer().set(GameTicker.fdKey("pot_meal"),
+                                org.bukkit.persistence.PersistentDataType.BYTE_ARRAY, mealCopy.serializeAsBytes());
+                        if (containerId != null && !containerId.isEmpty()) {
+                            meta.getPersistentDataContainer().set(GameTicker.fdKey("pot_container"),
+                                    org.bukkit.persistence.PersistentDataType.STRING, containerId);
+                        }
+                        meta.lore(java.util.List.of(
+                                net.kyori.adventure.text.Component.text()
+                                        .content("装有 " + mealCopy.getAmount() + " 份: ")
+                                        .color(net.kyori.adventure.text.format.NamedTextColor.GRAY)
+                                        .append(mealCopy.effectiveName().colorIfAbsent(
+                                                net.kyori.adventure.text.format.NamedTextColor.GRAY))
+                                        .build()));
+                    });
+                }
+                drop.getWorld().dropItemNaturally(drop, potItem);
+            }
+            plugin.blockStore().clearAll(block, java.util.List.of(
+                    "inv", "cook", "cooktotal", "container", "exp", "facing"));
         } else if (s.equals("farmersdelight:organic_compost")) {
             event.setDropItems(false);
             ItemStack self = CraftEngineHook.buildItem(FD.ORGANIC_COMPOST);

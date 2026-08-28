@@ -78,7 +78,7 @@ OWN_ITEM_DEFAULT_VARIANTS = {
     "cutting_board": "ground", "rope": "ground", "safety_net": "ground",
     "canvas_rug": "ground", "half_tatami_mat": "ground",
     "tatami": "ground", "full_tatami_mat": "foot",
-    "skillet": "ground", "cooking_pot": "ground",
+    "skillet": "ground",
     "roast_chicken_block": "s4", "stuffed_pumpkin_block": "s4",
     "honey_glazed_ham_block": "s4", "shepherds_pie_block": "s4",
     "rice_roll_medley_block": "s8",
@@ -147,17 +147,7 @@ def north_models(block_id: str) -> dict[str, str]:
 def generate_furniture() -> str:
     chunks = []
 
-    # ---------------- cooking pot: variants none/tray/handle
-    lines = _furniture_head("cooking_pot")
-    _variant(lines, "ground", "cooking_pot", ("0.125,0,0.125", 0.75, 0.625, True), fid="cooking_pot")
-    _variant(lines, "tray", "cooking_pot_tray", ("0.0625,0,0.0625", 0.875, 0.625, True), fid="cooking_pot")
-    _variant(lines, "handle", "cooking_pot_handle", ("0.25,0,0.25", 0.5, 0.625, True), fid="cooking_pot")
-    lines.append("    behavior:")
-    lines.append("      type: simple_storage_furniture")
-    lines.append("      data_key: farmersdelight:pot_contents")
-    lines.append('      title: "<!i><lang:farmersdelight.container.cooking_pot>"')
-    lines.append("      rows: 1")
-    chunks.append("\n".join(lines))
+    # cooking_pot migrated to a real CE block (blocks.yml) for comparator/mod parity
 
     # ---------------- skillet: ground + tray
     lines = _furniture_head("skillet")

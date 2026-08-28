@@ -730,6 +730,117 @@ blocks:
         fall: minecraft:block.grass.fall
       item: "farmersdelight:chocolate_pie"
 
+  "farmersdelight:cooking_pot":
+    states:
+      properties:
+        facing:
+          type: horizontal_direction
+          default: north
+        support:
+          type: string
+          default: none
+          values: [none, tray, handle]
+      appearances:
+        app0:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/cooking_pot"
+        app1:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/cooking_pot"
+            y: 180
+        app2:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/cooking_pot"
+            y: 270
+        app3:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/cooking_pot"
+            y: 90
+        app4:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/cooking_pot_tray"
+        app5:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/cooking_pot_tray"
+            y: 180
+        app6:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/cooking_pot_tray"
+            y: 270
+        app7:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/cooking_pot_tray"
+            y: 90
+        app8:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/cooking_pot_handle"
+        app9:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/cooking_pot_handle"
+            y: 180
+        app10:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/cooking_pot_handle"
+            y: 270
+        app11:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/cooking_pot_handle"
+            y: 90
+      variants:
+        facing=north,support=none:
+          appearance: app0
+        facing=south,support=none:
+          appearance: app1
+        facing=west,support=none:
+          appearance: app2
+        facing=east,support=none:
+          appearance: app3
+        facing=north,support=tray:
+          appearance: app4
+        facing=south,support=tray:
+          appearance: app5
+        facing=west,support=tray:
+          appearance: app6
+        facing=east,support=tray:
+          appearance: app7
+        facing=north,support=handle:
+          appearance: app8
+        facing=south,support=handle:
+          appearance: app9
+        facing=west,support=handle:
+          appearance: app10
+        facing=east,support=handle:
+          appearance: app11
+    settings:
+      hardness: 0.5
+      sounds:
+        break: minecraft:block.lantern.break
+        step: minecraft:block.lantern.step
+        place: minecraft:block.lantern.place
+        hit: minecraft:block.lantern.hit
+        fall: minecraft:block.lantern.fall
+      item: "farmersdelight:cooking_pot"
+    behavior:
+      - type: farmersdelight:cooking_pot
+    loot:
+      pools:
+        - rolls: 1
+          entries:
+            - type: item
+              item: "farmersdelight:cooking_pot"
+
   "farmersdelight:crimson_cabinet":
     states:
       properties:

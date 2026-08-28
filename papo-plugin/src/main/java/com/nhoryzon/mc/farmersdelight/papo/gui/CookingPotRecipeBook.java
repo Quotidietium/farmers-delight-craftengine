@@ -39,7 +39,8 @@ public final class CookingPotRecipeBook implements InventoryHolder {
     private static final List<Integer> D_INGREDIENT_SLOTS = List.of(10, 11, 12, 13, 14, 15);
 
     private final FarmersDelightPlugin plugin;
-    private final BukkitFurniture pot;
+    private final BukkitFurniture furniturePot;
+    private final org.bukkit.block.Block blockPot;
     private final Player player;
     private final List<FDRecipes.CookingRecipe> recipes;
     private int page;
@@ -47,16 +48,32 @@ public final class CookingPotRecipeBook implements InventoryHolder {
     private boolean detail;
     private FDRecipes.CookingRecipe selected;
 
-    private CookingPotRecipeBook(FarmersDelightPlugin plugin, BukkitFurniture pot, Player player) {
+    private CookingPotRecipeBook(FarmersDelightPlugin plugin, BukkitFurniture pot,
+                                 org.bukkit.block.Block blockPot, Player player) {
         this.plugin = plugin;
-        this.pot = pot;
+        this.furniturePot = pot;
+        this.blockPot = blockPot;
         this.player = player;
         this.recipes = plugin.recipes().cooking;
         openList(0);
     }
 
     public static void open(FarmersDelightPlugin plugin, BukkitFurniture pot, Player player) {
-        new CookingPotRecipeBook(plugin, pot, player);
+        new CookingPotRecipeBook(plugin, pot, null, player);
+    }
+
+    public static void open(FarmersDelightPlugin plugin, org.bukkit.block.Block pot, Player player) {
+        new CookingPotRecipeBook(plugin, null, pot, player);
+    }
+
+    private void backToPot() {
+        if (furniturePot != null) {
+            CookingPotGui.open(plugin, furniturePot, player);
+        } else if (blockPot != null) {
+            CookingPotBlockGui.open(plugin, blockPot, player);
+        } else {
+            player.closeInventory();
+        }
     }
 
     /* ---------------- list view ---------------- */
@@ -205,10 +222,6 @@ public final class CookingPotRecipeBook implements InventoryHolder {
         return inventory;
     }
 
-    public BukkitFurniture pot() {
-        return pot;
-    }
-
     public static CookingPotRecipeBook holderOf(Inventory inv) {
         return inv.getHolder() instanceof CookingPotRecipeBook book ? book : null;
     }
@@ -227,7 +240,7 @@ public final class CookingPotRecipeBook implements InventoryHolder {
                 if (raw == D_SLOT_BACK) {
                     book.openList(book.page);
                 } else if (raw == D_SLOT_BACK_POT) {
-                    CookingPotGui.open(book.plugin, book.pot, book.player);
+                    book.backToPot();
                 }
                 return;
             }
@@ -236,7 +249,7 @@ public final class CookingPotRecipeBook implements InventoryHolder {
             } else if (raw == SLOT_NEXT && book.page < book.maxPage()) {
                 book.openList(book.page + 1);
             } else if (raw == SLOT_BACK_POT_LIST) {
-                CookingPotGui.open(book.plugin, book.pot, book.player);
+                book.backToPot();
             } else if (raw >= 0 && raw < PAGE_SIZE) {
                 int index = book.page * PAGE_SIZE + raw;
                 if (index < book.recipes.size()) {

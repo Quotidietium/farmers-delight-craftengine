@@ -20,8 +20,8 @@ items:
     data:
       item_name: "<!i><lang:block.farmersdelight.cooking_pot>"
     behavior:
-      type: furniture_item
-      furniture: "farmersdelight:cooking_pot"
+      type: block_item
+      block: "farmersdelight:cooking_pot"
 
   "farmersdelight:skillet":
     material: minecraft:iron_ingot

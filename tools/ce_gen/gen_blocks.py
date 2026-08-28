@@ -140,6 +140,11 @@ def generate_blocks() -> tuple[str, list[str]]:
             lines.append("        close: minecraft:block.barrel.close")
 
         # custom behaviors provided by the plugin (registered in onLoad)
+        if bid == "cooking_pot":
+            # real CE block (mod parity): comparator from pot contents, plugin ticks it
+            lines.append("    behavior:")
+            lines.append("      - type: farmersdelight:cooking_pot")
+
         if bid == "organic_compost":
             # mod getComparatorOutput = MAX_STAGE+1-stage (signal FALLS as composting advances)
             lines.append("    behavior:")
