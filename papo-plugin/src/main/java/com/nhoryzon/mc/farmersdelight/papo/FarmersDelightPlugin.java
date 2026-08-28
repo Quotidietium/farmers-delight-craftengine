@@ -165,11 +165,45 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
                                 + " | recipes: " + recipes.cooking.size() + " cooking / "
                                 + recipes.cutting.size() + " cutting");
                     }
+                    case "cutting" -> {
+                        if (!(sender instanceof org.bukkit.entity.Player p)) {
+                            sender.sendMessage("只有玩家能查询：手持物品后输入 /fd cutting");
+                            return true;
+                        }
+                        ItemStack held = p.getInventory().getItemInMainHand();
+                        if (held == null || held.getType().isAir()) {
+                            sender.sendMessage("手持要查询的物品，再输入 /fd cutting");
+                            return true;
+                        }
+                        String inputId = GameTicker.idOf(held);
+                        boolean found = false;
+                        for (var r : recipes.cutting) {
+                            if (inputId == null || !r.input().contains(inputId)) continue;
+                            found = true;
+                            StringBuilder tools = new StringBuilder();
+                            for (String t : r.tools()) {
+                                if (tools.length() > 0) tools.append('/');
+                                tools.append(t.replace("farmersdelight:", "").replace("minecraft:", ""));
+                            }
+                            StringBuilder outs = new StringBuilder();
+                            for (var res : r.results()) {
+                                if (outs.length() > 0) outs.append(", ");
+                                outs.append(res.item().replace("farmersdelight:", "")
+                                        .replace("minecraft:", ""))
+                                        .append("x").append(res.count());
+                                int pct = Math.round(res.chance() * 100);
+                                if (pct < 100) outs.append('(').append(pct).append("%)");
+                            }
+                            sender.sendMessage("§7[§e" + tools + "§7] §a→ §f" + outs);
+                        }
+                        if (!found) sender.sendMessage("§c该物品没有切割配方");
+                    }
                     default -> sender.sendMessage(
-                            "FarmersDelight v" + FD.VERSION + " - /fd version | /fd status | /fd guide");
+                            "FarmersDelight v" + FD.VERSION + " - /fd version | /fd status | /fd guide | /fd cutting");
                     case "guide" -> {
                         sender.sendMessage("§6§lFarmer's Delight 玩法速查");
                         sender.sendMessage("§e小刀 §7合成后手持右键食材可切割；放在砧板上右键切割");
+                        sender.sendMessage("§7  - 手持食材输入 /fd cutting 可查询切割产物");
                         sender.sendMessage("§e烹饪锅 §7下方热源（火/岩浆块等）加热；手持碗右键取餐");
                         sender.sendMessage("§7  - 锅 GUI 内 Shift+点击 背包食材快速投料（碗自动进容器槽）");
                         sender.sendMessage("§7  - 锅 GUI 内配方书可查看全部 27 种烹饪配方");
@@ -185,7 +219,7 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
             public java.util.List<String> tabComplete(org.bukkit.command.CommandSender sender, String alias, String[] args) {
                 if (args.length == 1) {
                     String prefix = args[0].toLowerCase(java.util.Locale.ROOT);
-                    return java.util.stream.Stream.of("help", "version", "status")
+                    return java.util.stream.Stream.of("help", "version", "status", "guide", "cutting")
                             .filter(s -> s.startsWith(prefix)).toList();
                 }
                 return java.util.List.of();

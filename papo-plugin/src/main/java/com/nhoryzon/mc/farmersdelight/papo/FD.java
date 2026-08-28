@@ -9,7 +9,7 @@ import java.util.Set;
 public final class FD {
 
     public static final String MOD_ID = "farmersdelight";
-    public static final String VERSION = "1.4.7";
+    public static final String VERSION = "1.4.8";
 
     private FD() {
     }
