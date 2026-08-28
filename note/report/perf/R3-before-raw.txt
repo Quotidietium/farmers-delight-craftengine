@@ -1,0 +1,33 @@
+FD tick sampling 25s @ 2026-08-28T11:48:10.335275100Z
+segments: total | furniture | stove | basket | compost | crop+soil (ns/10t pulse)
+t=00s total=233,562,700 furn=1,425,300 stove=80,914,900 basket=42,385,200 compost=92,976,300 crop+soil=6,839,300
+t=01s total= 1,807,200 furn=   11,600 stove= 620,400 basket= 282,900 compost= 818,400 crop+soil=   25,500
+t=02s total= 1,581,800 furn=   13,800 stove= 550,900 basket= 257,100 compost= 681,600 crop+soil=   32,400
+t=03s total= 1,858,700 furn=   11,500 stove= 641,900 basket= 315,400 compost= 811,700 crop+soil=   28,500
+t=04s total= 2,182,600 furn=   13,500 stove= 730,100 basket= 325,700 compost=1,033,100 crop+soil=   23,500
+t=05s total= 2,081,300 furn=   20,600 stove= 733,700 basket= 358,600 compost= 866,800 crop+soil=   32,400
+t=06s total= 2,075,900 furn=  117,900 stove= 652,600 basket= 321,800 compost= 860,800 crop+soil=   47,600
+t=07s total= 2,253,300 furn=  190,700 stove= 658,300 basket= 347,000 compost= 911,000 crop+soil=   41,600
+t=08s total= 1,815,100 furn=   70,800 stove= 595,000 basket= 283,200 compost= 742,400 crop+soil=   26,700
+t=09s total= 1,638,600 furn=   15,500 stove= 554,500 basket= 282,600 compost= 685,000 crop+soil=   29,600
+t=10s total= 2,207,000 furn=   28,500 stove= 741,500 basket= 379,800 compost= 905,300 crop+soil=   45,700
+t=11s total= 1,751,600 furn=    7,000 stove= 564,500 basket= 260,000 compost= 772,400 crop+soil=   37,600
+t=12s total= 1,755,600 furn=    1,700 stove= 596,300 basket= 272,500 compost= 805,600 crop+soil=   29,400
+t=13s total= 2,135,000 furn=    2,100 stove= 697,100 basket= 324,700 compost=1,005,400 crop+soil=   24,600
+t=14s total= 1,562,300 furn=    1,400 stove= 518,600 basket= 246,200 compost= 704,000 crop+soil=   21,200
+t=15s total= 2,011,200 furn=    1,400 stove= 669,400 basket= 299,900 compost= 971,700 crop+soil=   23,200
+t=16s total= 1,898,600 furn=    1,500 stove= 632,900 basket= 282,200 compost= 923,200 crop+soil=   18,300
+t=17s total= 2,007,900 furn=    1,900 stove= 695,400 basket= 296,500 compost= 942,000 crop+soil=   24,700
+t=18s total= 1,905,400 furn=    1,500 stove= 616,200 basket= 298,400 compost= 917,600 crop+soil=   30,900
+t=19s total= 1,963,600 furn=    1,700 stove= 653,900 basket= 292,900 compost= 947,000 crop+soil=   22,200
+t=20s total= 1,550,900 furn=    1,500 stove= 521,400 basket= 245,000 compost= 728,700 crop+soil=   19,300
+t=21s total= 2,162,100 furn=    1,700 stove= 710,100 basket= 341,100 compost=1,037,900 crop+soil=   23,400
+t=22s total= 1,724,200 furn=    2,000 stove= 563,700 basket= 268,700 compost= 832,200 crop+soil=   19,100
+t=23s total= 1,524,000 furn=    1,500 stove= 521,000 basket= 242,500 compost= 707,100 crop+soil=   20,500
+t=24s total= 1,951,800 furn=    1,700 stove= 627,900 basket= 288,100 compost= 975,000 crop+soil=   19,200
+seg0 mean=11,158,736 p95=2,253,300 ns/pulse
+seg1 mean=77,932 p95=190,700 ns/pulse
+seg2 mean=3,839,288 p95=741,500 ns/pulse
+seg3 mean=1,979,920 p95=379,800 ns/pulse
+seg4 mean=4,542,488 p95=1,037,900 ns/pulse
+seg5 mean=300,256 p95=47,600 ns/pulse

@@ -634,8 +634,28 @@ public final class GameTicker {
             plugin.blockStore().setItems(stove, "grill", items);
             refreshStoveDisplays(stove, items);
         }
-        plugin.blockStore().setString(stove, "grill_times", joinTimes(times));
-        plugin.blockStore().setString(stove, "grill_totals", joinTimes(totals));
+        // empty idle stove: progress stays all-zero, so the per-pulse PDC writes are
+        // pure waste (reading an absent key yields the same zeros the write produced)
+        boolean anyFood = false;
+        for (int i = 0; i < 6; i++) {
+            if (items != null && items[i] != null && !items[i].getType().isAir()) {
+                anyFood = true;
+                break;
+            }
+        }
+        boolean anyProgress = false;
+        for (int i = 0; i < 6; i++) {
+            if (times[i] > 0 || totals[i] > 0) {
+                anyProgress = true;
+                break;
+            }
+        }
+        if (LEGACY_TICK || anyFood || anyProgress || dirty) {
+            plugin.blockStore().setString(stove, "grill_times", joinTimes(times));
+            if (LEGACY_TICK || anyFood || anyProgress || dirty) {
+                plugin.blockStore().setString(stove, "grill_totals", joinTimes(totals));
+            }
+        }
     }
 
     private int[] times(String joined) {
@@ -709,6 +729,9 @@ public final class GameTicker {
         if (enabled != null && !enabled) return;
         org.bukkit.inventory.Inventory inv = ceStorageInventory(basket);
         if (inv == null) return;
+        // a completely full basket can never absorb anything, so the entity scan
+        // (the expensive part) is skipped; partial stacks still allow merging
+        if (!LEGACY_TICK && inv.firstEmpty() == -1 && noPartialStack(inv)) return;
 
         String facing = plugin.blockStore().getString(basket, "facing");
         Vector dir = dirOf(facing);
@@ -723,6 +746,14 @@ public final class GameTicker {
                 item.setItemStack(left.values().iterator().next());
             }
         }
+    }
+
+    private static boolean noPartialStack(org.bukkit.inventory.Inventory inv) {
+        for (ItemStack s : inv.getContents()) {
+            if (s == null || s.getType().isAir()) return false;
+            if (s.getAmount() < s.getMaxStackSize()) return false;
+        }
+        return true;
     }
 
     /** Access the CE simple_storage_block container inventory at a block position. */

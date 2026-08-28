@@ -10,6 +10,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Tracks positions of ticking custom blocks (crops, compost, baskets, stoves) per chunk
@@ -20,6 +21,13 @@ public final class ChunkIndex {
 
     private final Plugin plugin;
     private final NamespacedKey key;
+    /**
+     * Deserialized entries per chunk; the ticker reads the same chunk's index 4-5 times
+     * per pulse, so the PDC parse is done once. Invalidated on every write. Callers
+     * must treat the returned list as read-only.
+     */
+    private final Map<Chunk, List<Location>> entriesCache =
+            java.util.Collections.synchronizedMap(new java.util.WeakHashMap<>());
 
     public ChunkIndex(Plugin plugin, String type) {
         this.plugin = plugin;
@@ -46,6 +54,7 @@ public final class ChunkIndex {
         long packed = pack(block);
         if (arr == null) {
             pdc.set(key, PersistentDataType.LONG_ARRAY, new long[]{packed});
+            entriesCache.remove(block.getChunk());
             return;
         }
         for (long v : arr) {
@@ -55,6 +64,7 @@ public final class ChunkIndex {
         System.arraycopy(arr, 0, next, 0, arr.length);
         next[arr.length] = packed;
         pdc.set(key, PersistentDataType.LONG_ARRAY, next);
+        entriesCache.remove(block.getChunk());
     }
 
     public boolean remove(Block block) {
@@ -74,6 +84,7 @@ public final class ChunkIndex {
         }
         if (found) {
             pdc.set(key, PersistentDataType.LONG_ARRAY, next);
+            entriesCache.remove(block.getChunk());
         }
         return found;
     }
@@ -88,13 +99,18 @@ public final class ChunkIndex {
         return false;
     }
 
+    /** Read-only view; cached per chunk until the next write to that chunk's index. */
     public List<Location> entries(Chunk chunk) {
+        List<Location> cached = entriesCache.get(chunk);
+        if (cached != null) return cached;
         long[] arr = chunk.getPersistentDataContainer().get(key, PersistentDataType.LONG_ARRAY);
         List<Location> out = new ArrayList<>();
-        if (arr == null) return out;
-        for (long v : arr) {
-            out.add(unpack(chunk, v));
+        if (arr != null) {
+            for (long v : arr) {
+                out.add(unpack(chunk, v));
+            }
         }
+        entriesCache.put(chunk, out);
         return out;
     }
 }
