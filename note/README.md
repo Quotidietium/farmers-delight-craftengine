@@ -33,6 +33,7 @@
 | [03-workflow.md](03-workflow.md) | 开发/CI/发布工作流、数据包（配方/战利品/世界生成）结构、核心业务流程决策树 |
 | [04-ai-substitution.md](04-ai-substitution.md) | 各模块 AI 替代/辅助开发可行性评估与路线图 |
 | [port/README.md](port/README.md) | **Papo (Paper 1.21.11) + CraftEngine 插件移植**：架构、安装、功能对照审计与偏差清单 |
+| [report/perf/README.md](report/perf/README.md) | **性能优化报告**（R1-R3：配方匹配 4-8x、ticker 2.15x，含量化方法与复现） |
 
 ## 核心发现（TL;DR）
 
