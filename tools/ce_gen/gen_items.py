@@ -21,8 +21,6 @@ KNIFE_BASE = {
 FURNITURE_BLOCKS = {
     "cutting_board", "skillet", "rope", "safety_net", "canvas_rug",
     "tatami", "full_tatami_mat", "half_tatami_mat",
-    "roast_chicken_block", "stuffed_pumpkin_block", "honey_glazed_ham_block",
-    "shepherds_pie_block", "rice_roll_medley_block",
 }
 
 # ids of items that are block items of CE blocks; display uses block.<ns>.<id> lang key

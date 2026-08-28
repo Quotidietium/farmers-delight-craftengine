@@ -13,16 +13,6 @@ SIMPLE_FURNITURE = {
     "half_tatami_mat": [("ground", "tatami_mat_half", ("0,0,0", 1.0, 0.0625, True))],
 }
 
-FEAST_BLOCKS = ["roast_chicken_block", "stuffed_pumpkin_block", "honey_glazed_ham_block",
-                "shepherds_pie_block", "rice_roll_medley_block"]
-
-FEAST_HITBOX = {
-    "roast_chicken_block": ("0.125,0,0.125", 0.75, 0.75, True),
-    "stuffed_pumpkin_block": ("0,0,0", 1.0, 1.0, True),
-    "honey_glazed_ham_block": ("0.125,0,0.125", 0.75, 0.5, True),
-    "shepherds_pie_block": ("0.125,0,0.125", 0.75, 0.5, True),
-    "rice_roll_medley_block": ("0.0625,0,0.0625", 0.875, 0.4, True),
-}
 
 FURNITURE_SOUNDS = {
     "default": "minecraft:block.wood",
@@ -79,9 +69,6 @@ OWN_ITEM_DEFAULT_VARIANTS = {
     "canvas_rug": "ground", "half_tatami_mat": "ground",
     "tatami": "ground", "full_tatami_mat": "foot",
     "skillet": "ground",
-    "roast_chicken_block": "s4", "stuffed_pumpkin_block": "s4",
-    "honey_glazed_ham_block": "s4", "shepherds_pie_block": "s4",
-    "rice_roll_medley_block": "s8",
 }
 
 
@@ -173,18 +160,6 @@ def generate_furniture() -> str:
     _variant(lines, "foot", "tatami_mat_foot", ("0,0,0", 1.0, 0.0625, True), fid="full_tatami_mat")
     _variant(lines, "head", "tatami_mat_head", ("0,0,0", 1.0, 0.0625, True), fid="full_tatami_mat")
     chunks.append("\n".join(lines))
-
-    # ---------------- feasts: one variant per servings value
-    for fid in FEAST_BLOCKS:
-        models = north_models(fid)
-        lines = _furniture_head(fid)
-        hitbox = FEAST_HITBOX[fid]
-        for servings in sorted(models, key=lambda s: int(s.split("=")[-1]) if "=" in s else 0):
-            model = models[servings]
-            base = model.split("/")[-1]
-            n = int(servings.split("=")[-1]) if "=" in servings else 0
-            _variant(lines, f"s{n}", base, hitbox, fid=fid)
-        chunks.append("\n".join(lines))
 
     # ---------------- canvas signs
     for color in SIGN_COLORS:

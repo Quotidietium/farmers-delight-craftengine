@@ -3,7 +3,12 @@ from .common import NS, yaml_str, iter_blockstates
 from .block_map import CE_BLOCK_IDS, PLANT_BLOCKS, PLANT_GROUP, PLUGIN_LOOT_BLOCKS, BLOCK_FAMILY, FAMILY_SETTINGS
 
 
-def prop_cep_type(name: str, values: list[str]):
+# feasts are placed fully stocked (mod getDefaultState uses getMaxServings)
+FEAST_IDS = {"roast_chicken_block", "stuffed_pumpkin_block", "honey_glazed_ham_block",
+             "shepherds_pie_block", "rice_roll_medley_block"}
+
+
+def prop_cep_type(bid: str, name: str, values: list[str]):
     """Map a blockstate property to a CE property definition, or None to drop."""
     if name == "facing" and set(values) <= {"north", "south", "east", "west"}:
         return dict(type="horizontal_direction", default=values[0])
@@ -13,7 +18,9 @@ def prop_cep_type(name: str, values: list[str]):
         return dict(type="axis", default=values[0])
     if name in ("age", "composting", "bites", "moisture", "servings", "level"):
         nums = sorted(int(v) for v in values)
-        return dict(type="int", default=nums[0], range=f"{nums[0]}~{nums[-1]}")
+        # feasts spawn fully stocked; everything else starts at the minimum
+        default = nums[-1] if bid in FEAST_IDS and name == "servings" else nums[0]
+        return dict(type="int", default=default, range=f"{nums[0]}~{nums[-1]}")
     if all(v in ("true", "false") for v in values):
         return dict(type="boolean", default=values[0])
     return dict(type="string", default=values[0], values=values)
@@ -85,7 +92,7 @@ def generate_blocks() -> tuple[str, list[str]]:
             for pname in sorted(prop_values):
                 if pname in drop_props:
                     continue
-                defn = prop_cep_type(pname, prop_values[pname])
+                defn = prop_cep_type(bid, pname, prop_values[pname])
                 lines.append(f"        {pname}:")
                 for dk, dv in defn.items():
                     if isinstance(dv, list):
@@ -140,6 +147,25 @@ def generate_blocks() -> tuple[str, list[str]]:
             lines.append("        close: minecraft:block.barrel.close")
 
         # custom behaviors provided by the plugin (registered in onLoad)
+        if bid in FEAST_IDS:
+            max_servings = 8 if bid == "rice_roll_medley_block" else 4
+            # mod getComparatorOutput = servings
+            lines.append("    behavior:")
+            lines.append("      - type: farmersdelight:comparator_signal")
+            lines.append("        property: servings")
+            lines.append("        signal_map:")
+            for s in range(max_servings + 1):
+                lines.append(f"          {s}: {s}")
+
+        if bid in ("apple_pie", "sweet_berry_cheesecake", "chocolate_pie"):
+            # mod PieBlock getComparatorOutput = MAX_BITES - bites
+            lines.append("    behavior:")
+            lines.append("      - type: farmersdelight:comparator_signal")
+            lines.append("        property: bites")
+            lines.append("        signal_map:")
+            for b in range(4):
+                lines.append(f"          {b}: {3 - b}")
+
         if bid == "cooking_pot":
             # real CE block (mod parity): comparator from pot contents, plugin ticks it
             lines.append("    behavior:")

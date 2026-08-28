@@ -146,13 +146,18 @@ papo-plugin/
 | 7 | 手持煎锅右键启动 | 无法检测按住右键时长 | actionbar 进度条+完成音效 |
 | 8 | 附魔台获取背刺依赖组件 | 附魔效果组件需数据包 | 刀具已带 enchantable 组件，铁砧+附魔书可用 |
 
-### 🔄 架构迁移进行中（1.3.0）：烹饪锅已迁移为真实 CE 方块
+### ✅ 架构迁移完成（1.3.1）：锅/盛宴/派均为真实 CE 方块，比较器全部实现
 
-- 烹饪锅已从家具迁移为 CE 方块（mod blockstate 的 facing×support 外观、
-  `farmersdelight:cooking_pot` 行为、**mod 填充率比较器公式** `floor(f×14)+1`、
-  区块 PDC 存储、漏斗/取餐/GUI/带餐搬运全功能）。存量世界的家具锅走 legacy 路径继续工作。
-- 盛宴/派的比较器（servings/bites）迁移路径已打通（同一 comparator 模式），
-  待后续迭代按需迁移；其作为家具的其余功能不受影响。
+- 烹饪锅（1.3.0）：mod 填充率公式 `floor(f×14)+1`，区块 PDC 存储，全功能（漏斗/GUI/
+  CopyMeal），存量家具锅走 legacy 路径。
+- 派 ×3（1.3.1）：已本是 CE 方块，补 comparator 行为 = `3 − bites`（mod PieBlock）。
+- 盛宴 ×5（1.3.1）：家具迁为 CE 方块（facing×servings 外观、放置即满份 4/8）、
+  comparator = servings（mod FeastBlock）、取食（碗+每份食物，RiceRoll 按份数表）、
+  空盘破坏音/无剩余型消失（stuffed_pumpkin）、破坏掉落（满=自身/动过=碗+骨粉，
+  mod loot 表）全功能迁移；存量家具盛宴走 legacy 路径。
+
+至此 mod 全部 6 类比较器输出（锅/篮/橱柜/堆肥/盛宴/派）均已在插件实现
+（篮/橱柜走 CE simple_storage 原生支持），砧板经 mod 源码确认本无比较器。
 
 ## 4. 安装与验证（当前版本 1.0.4）
 

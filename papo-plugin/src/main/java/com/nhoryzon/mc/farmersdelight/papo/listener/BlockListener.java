@@ -65,6 +65,11 @@ public final class BlockListener implements Listener {
             ticker().stoveIndex.add(block);
             return;
         }
+        if (FEAST_IDS.contains(id.toString().substring(id.toString().indexOf(':') + 1))) {
+            // feasts are placed fully stocked via the block's default state
+            plugin.advancements().onCustomPlace(event.player(), id.toString());
+            return;
+        }
         if (id.equals(FD.COOKING_POT)) {
             ticker().potIndex.add(block);
             // restore a meal carried inside the placed pot item (mod CopyMeal);
@@ -203,6 +208,11 @@ public final class BlockListener implements Listener {
             case "cooking_pot" -> {
                 event.setCancelled(true);
                 interactCookingPotBlock(block, state, player, held);
+            }
+            case "roast_chicken_block", "stuffed_pumpkin_block", "honey_glazed_ham_block",
+                 "shepherds_pie_block", "rice_roll_medley_block" -> {
+                event.setCancelled(true);
+                interactFeastBlock(block, state, player, held);
             }
             case "cabbages", "onions", "tomatoes", "rice_panicle",
                  "brown_mushroom_colony", "red_mushroom_colony" -> {
@@ -368,6 +378,80 @@ public final class BlockListener implements Listener {
         ticker().setBlockProperty(pie, "bites", bites + 1);
     }
 
+    /* ===================== block feasts ===================== */
+
+    private static final java.util.Set<String> FEAST_IDS = java.util.Set.of(
+            "roast_chicken_block", "stuffed_pumpkin_block", "honey_glazed_ham_block",
+            "shepherds_pie_block", "rice_roll_medley_block");
+
+    private void interactFeastBlock(Block block, ImmutableBlockState state,
+                                    Player player, ItemStack held) {
+        Integer servingsState = ticker().getInt(state, "servings");
+        int servings = servingsState == null ? 0 : servingsState;
+        boolean hasLeftovers = !block.getType().key().toString().contains("stuffed_pumpkin");
+
+        if (servings <= 0) {
+            // mod takeServing(0): wood-break sound + breakBlock(drops=true)
+            block.getWorld().playSound(block.getLocation(), "minecraft:block.wood.break",
+                    SoundCategory.PLAYERS, 0.8f, 0.8f);
+            dropFeastLoot(block, 0);
+            CraftEngineHook.removeBlock(block, false);
+            return;
+        }
+        // mod: the serving's recipe remainder is the bowl, so a bowl must be held
+        if (held == null || held.getType() != Material.BOWL) return;
+        ItemStack serving = feastServing(block, servings);
+        if (serving == null) return;
+        held.setAmount(held.getAmount() - 1);
+        giveOrDrop(player, serving);
+        int next = servings - 1;
+        if (next == 0 && !hasLeftovers) {
+            // mod: no-leftovers feasts vanish at the last serving (no drop)
+            CraftEngineHook.removeBlock(block, false);
+        } else {
+            ticker().setBlockProperty(block, "servings", next);
+        }
+        block.getWorld().playSound(block.getLocation().add(0.5, 0.4, 0.5),
+                "minecraft:item.armor.equip_generic", SoundCategory.BLOCKS, 1.0f, 1.0f);
+    }
+
+    /** Mod per-serving item, including RiceRollMedley's servings-indexed table. */
+    private ItemStack feastServing(Block block, int servings) {
+        String item = switch (block.getType().key().toString()) {
+            case "roast_chicken_block" -> "roast_chicken";
+            case "stuffed_pumpkin_block" -> "stuffed_pumpkin";
+            case "honey_glazed_ham_block" -> "honey_glazed_ham";
+            case "shepherds_pie_block" -> "shepherds_pie";
+            case "rice_roll_medley_block" -> switch (servings) {
+                case 8, 7, 6 -> "kelp_roll_slice";
+                case 5, 4, 3 -> "salmon_roll";
+                default -> "cod_roll";
+            };
+            default -> null;
+        };
+        return item == null ? null : CraftEngineHook.buildItem(Key.of(FD.MOD_ID, item));
+    }
+
+    /** Mod loot: full feast drops itself; a touched one drops bowl + bone meal. */
+    private void dropFeastLoot(Block block, int servings) {
+        String id = block.getType().key().toString();
+        if (servings == 4 || (id.equals("rice_roll_medley_block") && servings == 8)) {
+            ItemStack self = CraftEngineHook.buildItem(Key.of(FD.MOD_ID, id));
+            if (self != null) {
+                block.getWorld().dropItemNaturally(
+                        block.getLocation().add(0.5, 0.4, 0.5), self);
+            }
+        } else {
+            dropFeastLootSimple(block, Material.BOWL);
+            dropFeastLootSimple(block, Material.BONE_MEAL);
+        }
+    }
+
+    private void dropFeastLootSimple(Block block, Material material) {
+        block.getWorld().dropItemNaturally(block.getLocation().add(0.5, 0.4, 0.5),
+                new ItemStack(material));
+    }
+
     /* ===================== block cooking pot ===================== */
 
     private void interactCookingPotBlock(Block block, ImmutableBlockState state,
@@ -494,6 +578,10 @@ public final class BlockListener implements Listener {
         } else if (s.equals("farmersdelight:basket")) {
             plugin.blockStore().clear(block, "facing");
             ticker().basketIndex.remove(block);
+        } else if (FEAST_IDS.contains(s.substring(s.indexOf(':') + 1))) {
+            event.setDropItems(false);
+            Integer servingsState = ticker().getInt(state, "servings");
+            dropFeastLoot(block, servingsState == null ? 0 : servingsState);
         } else if (PIE_IDS.contains(s)) {
             event.setDropItems(false); // pies drop nothing, like cake
         } else if (s.equals("farmersdelight:rich_soil") || s.equals("farmersdelight:rich_soil_farmland")) {

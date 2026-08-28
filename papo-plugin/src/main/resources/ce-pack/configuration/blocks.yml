@@ -218,6 +218,14 @@ blocks:
         hit: minecraft:block.grass.hit
         fall: minecraft:block.grass.fall
       item: "farmersdelight:apple_pie"
+    behavior:
+      - type: farmersdelight:comparator_signal
+        property: bites
+        signal_map:
+          0: 3
+          1: 2
+          2: 1
+          3: 0
 
   "farmersdelight:basket":
     states:
@@ -729,6 +737,14 @@ blocks:
         hit: minecraft:block.grass.hit
         fall: minecraft:block.grass.fall
       item: "farmersdelight:chocolate_pie"
+    behavior:
+      - type: farmersdelight:comparator_signal
+        property: bites
+        signal_map:
+          0: 3
+          1: 2
+          2: 1
+          3: 0
 
   "farmersdelight:cooking_pot":
     states:
@@ -1016,6 +1032,172 @@ blocks:
           entries:
             - type: item
               item: "farmersdelight:dark_oak_cabinet"
+
+  "farmersdelight:honey_glazed_ham_block":
+    states:
+      properties:
+        facing:
+          type: horizontal_direction
+          default: north
+        servings:
+          type: int
+          default: 4
+          range: 0~4
+      appearances:
+        app0:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_leftover"
+        app1:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_leftover"
+            y: 180
+        app2:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_leftover"
+            y: 270
+        app3:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_leftover"
+            y: 90
+        app4:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage3"
+        app5:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage3"
+            y: 180
+        app6:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage3"
+            y: 270
+        app7:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage3"
+            y: 90
+        app8:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage2"
+        app9:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage2"
+            y: 180
+        app10:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage2"
+            y: 270
+        app11:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage2"
+            y: 90
+        app12:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage1"
+        app13:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage1"
+            y: 180
+        app14:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage1"
+            y: 270
+        app15:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage1"
+            y: 90
+        app16:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage0"
+        app17:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage0"
+            y: 180
+        app18:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage0"
+            y: 270
+        app19:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/honey_glazed_ham_block_stage0"
+            y: 90
+      variants:
+        facing=north,servings=0:
+          appearance: app0
+        facing=south,servings=0:
+          appearance: app1
+        facing=west,servings=0:
+          appearance: app2
+        facing=east,servings=0:
+          appearance: app3
+        facing=north,servings=1:
+          appearance: app4
+        facing=south,servings=1:
+          appearance: app5
+        facing=west,servings=1:
+          appearance: app6
+        facing=east,servings=1:
+          appearance: app7
+        facing=north,servings=2:
+          appearance: app8
+        facing=south,servings=2:
+          appearance: app9
+        facing=west,servings=2:
+          appearance: app10
+        facing=east,servings=2:
+          appearance: app11
+        facing=north,servings=3:
+          appearance: app12
+        facing=south,servings=3:
+          appearance: app13
+        facing=west,servings=3:
+          appearance: app14
+        facing=east,servings=3:
+          appearance: app15
+        facing=north,servings=4:
+          appearance: app16
+        facing=south,servings=4:
+          appearance: app17
+        facing=west,servings=4:
+          appearance: app18
+        facing=east,servings=4:
+          appearance: app19
+    settings:
+      hardness: 0.8
+      sounds:
+        break: minecraft:block.wool.break
+        step: minecraft:block.wool.step
+        place: minecraft:block.wool.place
+        hit: minecraft:block.wool.hit
+        fall: minecraft:block.wool.fall
+      item: "farmersdelight:honey_glazed_ham_block"
+    behavior:
+      - type: farmersdelight:comparator_signal
+        property: servings
+        signal_map:
+          0: 0
+          1: 1
+          2: 2
+          3: 3
+          4: 4
 
   "farmersdelight:jungle_cabinet":
     states:
@@ -1761,6 +1943,172 @@ blocks:
             - type: item
               item: "rich_soil"
 
+  "farmersdelight:roast_chicken_block":
+    states:
+      properties:
+        facing:
+          type: horizontal_direction
+          default: north
+        servings:
+          type: int
+          default: 4
+          range: 0~4
+      appearances:
+        app0:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_leftover"
+        app1:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_leftover"
+            y: 180
+        app2:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_leftover"
+            y: 270
+        app3:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_leftover"
+            y: 90
+        app4:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage3"
+        app5:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage3"
+            y: 180
+        app6:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage3"
+            y: 270
+        app7:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage3"
+            y: 90
+        app8:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage2"
+        app9:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage2"
+            y: 180
+        app10:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage2"
+            y: 270
+        app11:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage2"
+            y: 90
+        app12:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage1"
+        app13:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage1"
+            y: 180
+        app14:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage1"
+            y: 270
+        app15:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage1"
+            y: 90
+        app16:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage0"
+        app17:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage0"
+            y: 180
+        app18:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage0"
+            y: 270
+        app19:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/roast_chicken_block_stage0"
+            y: 90
+      variants:
+        facing=north,servings=0:
+          appearance: app0
+        facing=south,servings=0:
+          appearance: app1
+        facing=west,servings=0:
+          appearance: app2
+        facing=east,servings=0:
+          appearance: app3
+        facing=north,servings=1:
+          appearance: app4
+        facing=south,servings=1:
+          appearance: app5
+        facing=west,servings=1:
+          appearance: app6
+        facing=east,servings=1:
+          appearance: app7
+        facing=north,servings=2:
+          appearance: app8
+        facing=south,servings=2:
+          appearance: app9
+        facing=west,servings=2:
+          appearance: app10
+        facing=east,servings=2:
+          appearance: app11
+        facing=north,servings=3:
+          appearance: app12
+        facing=south,servings=3:
+          appearance: app13
+        facing=west,servings=3:
+          appearance: app14
+        facing=east,servings=3:
+          appearance: app15
+        facing=north,servings=4:
+          appearance: app16
+        facing=south,servings=4:
+          appearance: app17
+        facing=west,servings=4:
+          appearance: app18
+        facing=east,servings=4:
+          appearance: app19
+    settings:
+      hardness: 0.8
+      sounds:
+        break: minecraft:block.wool.break
+        step: minecraft:block.wool.step
+        place: minecraft:block.wool.place
+        hit: minecraft:block.wool.hit
+        fall: minecraft:block.wool.fall
+      item: "farmersdelight:roast_chicken_block"
+    behavior:
+      - type: farmersdelight:comparator_signal
+        property: servings
+        signal_map:
+          0: 0
+          1: 1
+          2: 2
+          3: 3
+          4: 4
+
   "farmersdelight:sandy_shrub":
     state:
       auto_state: weeping_vine
@@ -1775,6 +2123,172 @@ blocks:
         hit: minecraft:block.grass.hit
         fall: minecraft:block.grass.fall
       item: "farmersdelight:sandy_shrub"
+
+  "farmersdelight:shepherds_pie_block":
+    states:
+      properties:
+        facing:
+          type: horizontal_direction
+          default: north
+        servings:
+          type: int
+          default: 4
+          range: 0~4
+      appearances:
+        app0:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_leftover"
+        app1:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_leftover"
+            y: 180
+        app2:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_leftover"
+            y: 270
+        app3:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_leftover"
+            y: 90
+        app4:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage3"
+        app5:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage3"
+            y: 180
+        app6:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage3"
+            y: 270
+        app7:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage3"
+            y: 90
+        app8:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage2"
+        app9:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage2"
+            y: 180
+        app10:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage2"
+            y: 270
+        app11:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage2"
+            y: 90
+        app12:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage1"
+        app13:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage1"
+            y: 180
+        app14:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage1"
+            y: 270
+        app15:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage1"
+            y: 90
+        app16:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage0"
+        app17:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage0"
+            y: 180
+        app18:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage0"
+            y: 270
+        app19:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/shepherds_pie_block_stage0"
+            y: 90
+      variants:
+        facing=north,servings=0:
+          appearance: app0
+        facing=south,servings=0:
+          appearance: app1
+        facing=west,servings=0:
+          appearance: app2
+        facing=east,servings=0:
+          appearance: app3
+        facing=north,servings=1:
+          appearance: app4
+        facing=south,servings=1:
+          appearance: app5
+        facing=west,servings=1:
+          appearance: app6
+        facing=east,servings=1:
+          appearance: app7
+        facing=north,servings=2:
+          appearance: app8
+        facing=south,servings=2:
+          appearance: app9
+        facing=west,servings=2:
+          appearance: app10
+        facing=east,servings=2:
+          appearance: app11
+        facing=north,servings=3:
+          appearance: app12
+        facing=south,servings=3:
+          appearance: app13
+        facing=west,servings=3:
+          appearance: app14
+        facing=east,servings=3:
+          appearance: app15
+        facing=north,servings=4:
+          appearance: app16
+        facing=south,servings=4:
+          appearance: app17
+        facing=west,servings=4:
+          appearance: app18
+        facing=east,servings=4:
+          appearance: app19
+    settings:
+      hardness: 0.8
+      sounds:
+        break: minecraft:block.wool.break
+        step: minecraft:block.wool.step
+        place: minecraft:block.wool.place
+        hit: minecraft:block.wool.hit
+        fall: minecraft:block.wool.fall
+      item: "farmersdelight:shepherds_pie_block"
+    behavior:
+      - type: farmersdelight:comparator_signal
+        property: servings
+        signal_map:
+          0: 0
+          1: 1
+          2: 2
+          3: 3
+          4: 4
 
   "farmersdelight:spruce_cabinet":
     states:
@@ -1993,6 +2507,153 @@ blocks:
             - type: item
               item: "farmersdelight:straw_bale"
 
+  "farmersdelight:stuffed_pumpkin_block":
+    states:
+      properties:
+        facing:
+          type: horizontal_direction
+          default: north
+        servings:
+          type: int
+          default: 4
+          range: 0~4
+      appearances:
+        app0:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage3"
+        app1:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage3"
+            y: 180
+        app2:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage3"
+            y: 270
+        app3:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage3"
+            y: 90
+        app4:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage2"
+        app5:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage2"
+            y: 180
+        app6:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage2"
+            y: 270
+        app7:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage2"
+            y: 90
+        app8:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage1"
+        app9:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage1"
+            y: 180
+        app10:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage1"
+            y: 270
+        app11:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage1"
+            y: 90
+        app12:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage0"
+        app13:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage0"
+            y: 180
+        app14:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage0"
+            y: 270
+        app15:
+          auto_state: note_block
+          model:
+            path: "farmersdelight:block/stuffed_pumpkin_block_stage0"
+            y: 90
+      variants:
+        facing=north,servings=0:
+          appearance: app0
+        facing=south,servings=0:
+          appearance: app1
+        facing=west,servings=0:
+          appearance: app2
+        facing=east,servings=0:
+          appearance: app3
+        facing=north,servings=1:
+          appearance: app0
+        facing=south,servings=1:
+          appearance: app1
+        facing=west,servings=1:
+          appearance: app2
+        facing=east,servings=1:
+          appearance: app3
+        facing=north,servings=2:
+          appearance: app4
+        facing=south,servings=2:
+          appearance: app5
+        facing=west,servings=2:
+          appearance: app6
+        facing=east,servings=2:
+          appearance: app7
+        facing=north,servings=3:
+          appearance: app8
+        facing=south,servings=3:
+          appearance: app9
+        facing=west,servings=3:
+          appearance: app10
+        facing=east,servings=3:
+          appearance: app11
+        facing=north,servings=4:
+          appearance: app12
+        facing=south,servings=4:
+          appearance: app13
+        facing=west,servings=4:
+          appearance: app14
+        facing=east,servings=4:
+          appearance: app15
+    settings:
+      hardness: 0.8
+      sounds:
+        break: minecraft:block.wool.break
+        step: minecraft:block.wool.step
+        place: minecraft:block.wool.place
+        hit: minecraft:block.wool.hit
+        fall: minecraft:block.wool.fall
+      item: "farmersdelight:stuffed_pumpkin_block"
+    behavior:
+      - type: farmersdelight:comparator_signal
+        property: servings
+        signal_map:
+          0: 0
+          1: 1
+          2: 2
+          3: 3
+          4: 4
+
   "farmersdelight:sweet_berry_cheesecake":
     states:
       properties:
@@ -2122,6 +2783,14 @@ blocks:
         hit: minecraft:block.grass.hit
         fall: minecraft:block.grass.fall
       item: "farmersdelight:sweet_berry_cheesecake"
+    behavior:
+      - type: farmersdelight:comparator_signal
+        property: bites
+        signal_map:
+          0: 3
+          1: 2
+          2: 1
+          3: 0
 
   "farmersdelight:tomato_crate":
     state:

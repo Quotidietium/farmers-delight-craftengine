@@ -5,8 +5,6 @@ from .parse_registry import parse_blocks
 FURNITURE_BLOCK_IDS = {
     "cutting_board", "skillet", "rope", "safety_net", "canvas_rug",
     "tatami", "full_tatami_mat", "half_tatami_mat",
-    "roast_chicken_block", "stuffed_pumpkin_block", "honey_glazed_ham_block",
-    "shepherds_pie_block", "rice_roll_medley_block",
 }
 
 def _sign_block_ids():
@@ -46,6 +44,8 @@ PLANT_GROUP = {
 PLUGIN_LOOT_BLOCKS = PLANT_BLOCKS | {
     "apple_pie", "sweet_berry_cheesecake", "chocolate_pie",
     "organic_compost",
+    "roast_chicken_block", "stuffed_pumpkin_block", "honey_glazed_ham_block",
+    "shepherds_pie_block", "rice_roll_medley_block",
 }
 
 # enum name -> block id mapping from BlocksRegistry
@@ -75,6 +75,9 @@ BLOCK_FAMILY = {
     "rice_bale": "wood", "rice_bag": "wool", "straw_bale": "wood",
     "rich_soil": "dirt", "rich_soil_farmland": "dirt", "organic_compost": "dirt",
     "apple_pie": "plant", "sweet_berry_cheesecake": "plant", "chocolate_pie": "plant",
+    "roast_chicken_block": "wool", "stuffed_pumpkin_block": "wool",
+    "honey_glazed_ham_block": "wool", "shepherds_pie_block": "wool",
+    "rice_roll_medley_block": "wool",
 }
 for _pid in PLANT_BLOCKS:
     BLOCK_FAMILY[_pid] = "plant"
