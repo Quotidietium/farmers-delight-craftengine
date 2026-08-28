@@ -365,12 +365,21 @@ public final class BlockListener implements Listener {
     private void interactCompost(Block compost, Player player, ItemStack held, ImmutableBlockState state) {
         if (held == null || held.getType().isAir()) return;
         Integer level = ticker().getInt(state, "composting");
-        if (level == null || level >= 7) return;
+        if (level != null && level >= 7) {
+            player.sendActionBar(Component.text("堆肥已完成，稍后自动转化为富壤",
+                    NamedTextColor.GREEN));
+            return;
+        }
         Float chance = plugin.compostables().get(GameTicker.idOf(held));
-        if (chance == null) return;
+        if (chance == null) {
+            player.sendActionBar(Component.text("该物品不能堆肥", NamedTextColor.RED));
+            return;
+        }
         consumeBoneMeal(player, held);
         if (Math.random() < chance) {
             ticker().setBlockProperty(compost, "composting", level + 1);
+            player.sendActionBar(Component.text("堆肥 " + (level + 1) + "/7",
+                    NamedTextColor.GREEN));
             compost.getWorld().playSound(compost.getLocation().add(0.5, 0.5, 0.5),
                     "minecraft:block.composter.fill", SoundCategory.BLOCKS, 0.8f, 1.0f);
         } else {
@@ -421,7 +430,10 @@ public final class BlockListener implements Listener {
             return;
         }
         // mod: the serving's recipe remainder is the bowl, so a bowl must be held
-        if (held == null || held.getType() != Material.BOWL) return;
+        if (held == null || held.getType() != Material.BOWL) {
+            player.sendActionBar(Component.text("需要手持碗才能取餐", NamedTextColor.RED));
+            return;
+        }
         ItemStack serving = feastServing(block, servings);
         if (serving == null) return;
         held.setAmount(held.getAmount() - 1);
@@ -432,6 +444,8 @@ public final class BlockListener implements Listener {
             CraftEngineHook.removeBlock(block, false);
         } else {
             ticker().setBlockProperty(block, "servings", next);
+            player.sendActionBar(Component.text("盛宴还剩 " + next + " 份",
+                    NamedTextColor.GRAY));
         }
         block.getWorld().playSound(block.getLocation().add(0.5, 0.4, 0.5),
                 "minecraft:item.armor.equip_generic", SoundCategory.BLOCKS, 1.0f, 1.0f);
