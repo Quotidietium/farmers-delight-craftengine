@@ -43,12 +43,154 @@ public final class BenchPlugin extends JavaPlugin {
                         sender.sendMessage("bench done -> plugins/FdBench/results.txt");
                         getLogger().info(report);
                     });
+                } else if (args[0].equals("tick")) {
+                    int seconds = args.length > 1 ? Integer.parseInt(args[1]) : 10;
+                    startTickSampling(seconds);
+                    sender.sendMessage("tick sampling for " + seconds + "s -> plugins/FdBench/tick.txt");
+                } else if (args[0].equals("load")) {
+                    int n = args.length > 1 ? Integer.parseInt(args[1]) : 100;
+                    startLoad(n);
+                    sender.sendMessage("placing " + n + " mechanic objects -> plugins/FdBench/load.txt");
                 }
                 return true;
             }
         };
         Bukkit.getCommandMap().register("bench", cmd);
-        getLogger().info("FdBench ready: /bench recipes");
+        getLogger().info("FdBench ready: /bench recipes|tick [s]|load [n]");
+    }
+
+    /** Samples GameTicker segment timers once a second for {@code seconds} seconds. */
+    private void startTickSampling(int seconds) {
+        com.nhoryzon.mc.farmersdelight.papo.FarmersDelightPlugin fd =
+                (com.nhoryzon.mc.farmersdelight.papo.FarmersDelightPlugin)
+                        getServer().getPluginManager().getPlugin("FarmersDelight");
+        StringBuilder out = new StringBuilder("FD tick sampling " + seconds + "s @ "
+                + java.time.Instant.now() + "\n");
+        out.append("segments: total | furniture | stove | basket | compost | crop+soil (ns/10t pulse)\n");
+        final int[] remaining = {seconds};
+        final long[][] samples = new long[6][seconds];
+        final Runnable[] task = new Runnable[1];
+        task[0] = new Runnable() {
+            int i = 0;
+            @Override
+            public void run() {
+                long[] seg = fd.gameTicker().sampleSegments();
+                for (int s = 0; s < 6; s++) samples[s][i] = seg[s];
+                out.append(String.format("t=%02ds total=%,10d furn=%,9d stove=%,8d basket=%,8d compost=%,8d crop+soil=%,9d%n",
+                        i, seg[0], seg[1], seg[2], seg[3], seg[4], seg[5]));
+                if (++i >= seconds) {
+                    for (int s = 0; s < 6; s++) {
+                        java.util.Arrays.sort(samples[s]);
+                        long mean = java.util.Arrays.stream(samples[s]).sum() / Math.max(1, seconds);
+                        long p95 = samples[s][(int) (seconds * 0.95)];
+                        out.append(String.format("seg%d mean=%,d p95=%,d ns/pulse%n", s, mean, p95));
+                    }
+                    writeFile("tick.txt", out.toString());
+                    getLogger().info(out.toString());
+                    cancelTask(taskHandle);
+                    return;
+                }
+            }
+        };
+        taskHandle = getServer().getScheduler().runTaskTimer(this, task[0], 20L, 20L);
+    }
+
+    private org.bukkit.scheduler.BukkitTask taskHandle;
+
+    private void cancelTask(org.bukkit.scheduler.BukkitTask t) {
+        if (t != null) t.cancel();
+    }
+
+    /**
+     * Spreads {@code n} mechanic objects (cooking pots, skillets, stoves, baskets,
+     * composts, rich soil farmland with advanced wheat) around the world spawn,
+     * a few per tick, to create a measurable ticker workload.
+     */
+    private void startLoad(int n) {
+        com.nhoryzon.mc.farmersdelight.papo.FarmersDelightPlugin fd =
+                (com.nhoryzon.mc.farmersdelight.papo.FarmersDelightPlugin)
+                        getServer().getPluginManager().getPlugin("FarmersDelight");
+        org.bukkit.World world = Bukkit.getWorlds().getFirst();
+        org.bukkit.Location spawn = world.getSpawnLocation();
+        Key[] furnitureIds = {
+                Key.of("farmersdelight:cooking_pot"), Key.of("farmersdelight:skillet")};
+        Key[] blockIds = {
+                Key.of("farmersdelight:stove"), Key.of("farmersdelight:organic_compost"),
+                Key.of("farmersdelight:rich_soil_farmland"), Key.of("farmersdelight:advanced_wheat"),
+                Key.of("farmersdelight:basket")};
+        StringBuilder out = new StringBuilder("FD load build n=" + n + " @ " + java.time.Instant.now() + "\n");
+        final int[] placed = {0};
+        final int[] fail = {0};
+        final int[] i = {0};
+        taskHandle = getServer().getScheduler().runTaskTimer(this, new Runnable() {
+            @Override
+            public void run() {
+                long start = System.nanoTime();
+                while (placed[0] < n && System.nanoTime() - start < 20_000_000L) {
+                    int x = spawn.getBlockX() + (i[0] % 24) * 2 - 24;
+                    int z = spawn.getBlockZ() + (i[0] / 24 % 24) * 2 - 24;
+                    int y = world.getHighestBlockYAt(x, z) + 1;
+                    org.bukkit.Location loc = new org.bukkit.Location(world, x, y, z);
+                    loc.getWorld().setChunkForceLoaded(x >> 4, z >> 4, true);
+                    try {
+                        boolean ok;
+                        if (i[0] % 8 < 2) {
+                            ok = net.momirealms.craftengine.bukkit.api.CraftEngineFurniture.place(
+                                    loc, furnitureIds[i[0] % 2]) != null;
+                        } else {
+                            int bi = i[0] % 5;
+                            if (bi == 3) {
+                                // farmland into the air cell, wheat on top of it
+                                ok = net.momirealms.craftengine.bukkit.api.CraftEngineBlocks.place(
+                                        loc, Key.of("farmersdelight:rich_soil_farmland"), true);
+                                if (ok) {
+                                    ok = net.momirealms.craftengine.bukkit.api.CraftEngineBlocks.place(
+                                            loc.clone().add(0, 1, 0), blockIds[3], true);
+                                }
+                            } else {
+                                ok = net.momirealms.craftengine.bukkit.api.CraftEngineBlocks.place(
+                                        loc, blockIds[bi], true);
+                            }
+                            // the static place API bypasses CE's place events, so the plugin's
+                            // listener never registers the block - register exactly as it would
+                            if (ok) {
+                                var ticker = fd.gameTicker();
+                                org.bukkit.block.Block block = loc.getBlock();
+                                switch (bi) {
+                                    case 0 -> ticker.stoveIndex.add(block);
+                                    case 1 -> ticker.compostIndex.add(block);
+                                    case 2 -> ticker.soilIndex.add(block);
+                                    case 3 -> ticker.cropIndex.add(loc.clone().add(0, 1, 0).getBlock());
+                                    default -> ticker.basketIndex.add(block);
+                                }
+                            }
+                        }
+                        if (!ok) fail[0]++;
+                    } catch (Throwable t) {
+                        fail[0]++;
+                        if (fail[0] < 4) out.append("place fail @").append(i[0]).append(": ").append(t).append('\n');
+                    }
+                    placed[0]++;
+                    i[0]++;
+                }
+                if (placed[0] >= n) {
+                    out.append("placed ").append(placed[0]).append(" objects, failures: ").append(fail[0]).append("\n");
+                    writeFile("load.txt", out.toString());
+                    getLogger().info(out.toString());
+                    cancelTask(taskHandle);
+                }
+            }
+        }, 1L, 1L);
+    }
+
+    private void writeFile(String name, String content) {
+        try {
+            Path file = getDataFolder().toPath().resolve(name);
+            Files.createDirectories(file.getParent());
+            Files.writeString(file, content, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            getLogger().severe("failed to write " + name + ": " + e.getMessage());
+        }
     }
 
     private static final class RecipeBench {

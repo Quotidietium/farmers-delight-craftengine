@@ -177,6 +177,8 @@ public final class CropManager {
         // rich soil FARMLAND ticks through its CE behavior (moisture + boost);
         // plain rich soil boosts here at vanilla random-tick cadence (mod scheduledTick)
         if (isBlock(soil, FD.RICH_SOIL_FARMLAND)) {
+            // farmland ticks through its CE behavior; drop stale index entries
+            ticker().soilIndex.remove(soil);
             return;
         }
         if (!isBlock(soil, FD.RICH_SOIL)) {

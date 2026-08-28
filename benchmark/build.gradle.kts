@@ -22,7 +22,7 @@ dependencies {
     compileOnly("net.momirealms:craft-engine-core:26.7")
     compileOnly("net.momirealms:craft-engine-bukkit:26.7")
     // benchmark runs inside the smoke server next to the production plugin
-    compileOnly(files(fileTree("../papo-plugin/build/libs") { include("farmers-delight-papo-*.jar") }))
+    compileOnly(fileTree("../papo-plugin/build/libs") { include("farmers-delight-papo-*.jar") })
 }
 
 tasks.jar {

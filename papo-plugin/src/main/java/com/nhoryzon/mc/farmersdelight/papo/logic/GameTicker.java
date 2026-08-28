@@ -158,8 +158,17 @@ public final class GameTicker {
 
     /* ===================== main tick ===================== */
 
+    /**
+     * A/B benchmark switch (-Dfd.legacy-tick=true): restores the pre-R2 hot path
+     * (no chunk-loaded early exit, no compost pre-gate, always-reread pot inventory)
+     * so the benchmark can measure both variants on the same build.
+     */
+    static final boolean LEGACY_TICK = Boolean.getBoolean("fd.legacy-tick");
+
     private void tick() {
+        long totalStart = System.nanoTime();
         // --- furniture based mechanics
+        long segMark = System.nanoTime();
         Iterator<Map.Entry<UUID, FurnitureTracker.Entry>> it =
                 plugin.furnitureTracker().tracked().entrySet().iterator();
         while (it.hasNext()) {
@@ -168,25 +177,54 @@ public final class GameTicker {
                 it.remove();
                 continue;
             }
+            Location loc = entry.furniture().location();
+            if (!LEGACY_TICK && (!loc.isWorldLoaded()
+                    || !loc.getWorld().isChunkLoaded(loc.getBlockX() >> 4, loc.getBlockZ() >> 4))) {
+                continue;
+            }
             if (entry.furnitureId().equals(FD.COOKING_POT)) {
                 tickPot(entry.furniture());
             } else if (entry.furnitureId().equals(FD.SKILLET)) {
                 tickSkillet(entry.furniture());
             }
         }
+        segmentNanos[1] += System.nanoTime() - segMark;
         // --- block based mechanics
         for (World world : Bukkit.getWorlds()) {
             for (var chunk : world.getLoadedChunks()) {
+                segMark = System.nanoTime();
                 for (Location loc : stoveIndex.entries(chunk)) tickStove(loc.getBlock());
+                segmentNanos[2] += System.nanoTime() - segMark;
+
+                segMark = System.nanoTime();
                 for (Location loc : basketIndex.entries(chunk)) tickBasket(loc.getBlock());
+                segmentNanos[3] += System.nanoTime() - segMark;
+
+                segMark = System.nanoTime();
                 for (Location loc : compostIndex.entries(chunk)) tickCompost(loc.getBlock());
+                segmentNanos[4] += System.nanoTime() - segMark;
+
                 if ((chunk.getX() + chunk.getZ() + (int) (world.getTime() / 10)) % 4 == 0) {
                     // stagger crop growth across chunks (each chunk processed ~2x/s effective 1x/s)
+                    segMark = System.nanoTime();
                     for (Location loc : cropIndex.entries(chunk)) tickCrop(loc.getBlock());
                     for (Location loc : soilIndex.entries(chunk)) tickSoil(loc.getBlock());
+                    segmentNanos[5] += System.nanoTime() - segMark;
                 }
             }
         }
+        segmentNanos[0] += System.nanoTime() - totalStart;
+    }
+
+    // zero-allocation segmented sampling (see /bench tick): 0=total 1=furniture
+    // 2=stove 3=basket 4=compost 5=crop+soil, cumulative nanos since last sample
+    private final long[] segmentNanos = new long[6];
+
+    /** Returns cumulative per-segment nanos since the previous sample and resets them. */
+    public long[] sampleSegments() {
+        long[] snapshot = segmentNanos.clone();
+        java.util.Arrays.fill(segmentNanos, 0);
+        return snapshot;
     }
 
     /* ===================== cooking pot ===================== */
@@ -262,8 +300,12 @@ public final class GameTicker {
             pdc.set(key("cook"), PersistentDataType.INTEGER, cook);
         }
 
-        // move prepared meal to output when no container needed, or fill containers
-        inv = inv(pot);
+        // move prepared meal to output when no container needed, or fill containers;
+        // re-read only when hoppers are adjacent (they mutate the CE inventory on their
+        // own tick, so our array snapshot would be stale and overwrite their insert)
+        if (LEGACY_TICK || adjacentHopper(block)) {
+            inv = inv(pot);
+        }
         ItemStack meal = inv[SLOT_MEAL];
         if (meal != null && !meal.getType().isAir()) {
             String containerId = pdc.get(key("container"), PersistentDataType.STRING);
@@ -337,9 +379,18 @@ public final class GameTicker {
         }
     }
 
+    /** Cheap adjacency probe (5 material reads) used to decide a fresh inventory read. */
+    private static boolean adjacentHopper(Block block) {
+        return block.getRelative(org.bukkit.block.BlockFace.UP).getType() == Material.HOPPER
+                || block.getRelative(org.bukkit.block.BlockFace.DOWN).getType() == Material.HOPPER
+                || block.getRelative(org.bukkit.block.BlockFace.NORTH).getType() == Material.HOPPER
+                || block.getRelative(org.bukkit.block.BlockFace.SOUTH).getType() == Material.HOPPER
+                || block.getRelative(org.bukkit.block.BlockFace.EAST).getType() == Material.HOPPER
+                || block.getRelative(org.bukkit.block.BlockFace.WEST).getType() == Material.HOPPER;
+    }
+
     /** One hopper transfer step per pulse; returns true when the pot inventory changed. */
-    private boolean potHoppers(Block block, ItemStack[] inv) {
-        boolean changed = false;
+    private boolean potHoppers(Block block, ItemStack[] inv) {        boolean changed = false;
         // hopper above -> first stack that fits the ingredient slots
         if (block.getRelative(org.bukkit.block.BlockFace.UP).getType() == Material.HOPPER
                 && block.getRelative(org.bukkit.block.BlockFace.UP).getState()
@@ -721,6 +772,11 @@ public final class GameTicker {
     /* ===================== compost / crops / soil ===================== */
 
     private void tickCompost(Block compost) {
+        // pre-gate before the 27-block scan: the achievable chance is capped at
+        // 0.02*27 + 0.1 + 0.1 = 0.74, so gate scale = 0.74 * (3/4096) * 10 ≈ 0.0054.
+        // Mathematically equivalent (rejection when the uniform draw cannot pass the
+        // real gate) and saves the whole neighbourhood scan for ~99.5% of calls.
+        if (!LEGACY_TICK && Math.random() >= 0.74 * (3.0 / 4096.0) * 10) return;
         var state = CraftEngineHook.customBlockState(compost);
         if (state == null) {
             compostIndex.remove(compost);
