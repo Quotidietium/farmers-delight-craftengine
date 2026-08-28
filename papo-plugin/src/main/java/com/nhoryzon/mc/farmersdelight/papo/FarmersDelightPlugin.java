@@ -22,6 +22,7 @@ import com.nhoryzon.mc.farmersdelight.papo.recipe.FDRecipes;
 import com.nhoryzon.mc.farmersdelight.papo.recipe.RecipeLoader;
 import com.nhoryzon.mc.farmersdelight.papo.world.WildCropGenerator;
 import org.bukkit.Bukkit;
+import net.momirealms.craftengine.core.util.Key;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
@@ -84,11 +85,36 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
         this.signSessions = new SignSessions(this);
         this.advancements = new AdvancementListener(this);
 
-        // server-side check that the datapack backstabbing enchantment resolves
-        var backstab = org.bukkit.enchantments.Enchantment.getByKey(
-                new NamespacedKey(FD.MOD_ID, "backstabbing"));
-        getLogger().info("Backstabbing datapack enchantment: "
-                + (backstab != null ? "resolved (" + backstab.getKey() + ")" : "NOT FOUND"));
+        // server-side check that the datapack backstabbing enchantment resolves and
+        // accepts the CE knives: canEnchantItem is the same supported-items test the
+        // vanilla enchanting table uses to build its offers, so a true here means
+        // Backstabbing shows up in the table for every knife material
+        // datapack enchantments live in the Paper registry mirror, not the legacy
+        // Enchantment.getByKey lookup
+        var backstab = io.papermc.paper.registry.RegistryAccess.registryAccess()
+                .getRegistry(io.papermc.paper.registry.RegistryKey.ENCHANTMENT)
+                .get(net.kyori.adventure.key.Key.key(FD.MOD_ID, "backstabbing"));
+        var enchRegistry = io.papermc.paper.registry.RegistryAccess.registryAccess()
+                .getRegistry(io.papermc.paper.registry.RegistryKey.ENCHANTMENT);
+        var fdKeys = new java.util.ArrayList<String>();
+        enchRegistry.forEach(e -> {
+            String k = e.getKey().toString();
+            if (k.contains("farmersdelight")) fdKeys.add(k);
+        });
+        getLogger().info("Backstabbing registry scan: size=" + enchRegistry.size()
+                + " fdKeys=" + fdKeys);
+        if (backstab != null) {
+            StringBuilder materials = new StringBuilder();
+            for (String mat : new String[]{"flint", "iron_nugget", "gold_nugget",
+                    "diamond", "netherite_scrap"}) {
+                var stack = new org.bukkit.inventory.ItemStack(org.bukkit.Material.matchMaterial(mat));
+                boolean ok = backstab.canEnchantItem(stack);
+                materials.append(mat).append('=').append(ok).append(' ');
+            }
+            getLogger().info("Backstabbing datapack enchantment: resolved; canEnchantItem: " + materials);
+        } else {
+            getLogger().info("Backstabbing datapack enchantment: NOT FOUND");
+        }
 
         // install / refresh the bundled CraftEngine pack, then reload CE content
         boolean installed = false;

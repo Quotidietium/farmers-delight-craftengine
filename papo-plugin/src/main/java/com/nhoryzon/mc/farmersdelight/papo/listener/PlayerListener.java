@@ -82,8 +82,10 @@ public final class PlayerListener implements Listener {
 
         // backstabbing knives
         if (!FDRecipes_isKnife(weapon)) return;
-        NamespacedKey backstabKey = new NamespacedKey(FD.MOD_ID, "backstabbing");
-        var backstab = org.bukkit.enchantments.Enchantment.getByKey(backstabKey);
+        // datapack enchantments resolve through the Paper registry mirror
+        var backstab = io.papermc.paper.registry.RegistryAccess.registryAccess()
+                .getRegistry(io.papermc.paper.registry.RegistryKey.ENCHANTMENT)
+                .get(net.kyori.adventure.key.Key.key(FD.MOD_ID, "backstabbing"));
         if (backstab == null) return;
         int level = weapon.getEnchantmentLevel(backstab);
         if (level <= 0) return;

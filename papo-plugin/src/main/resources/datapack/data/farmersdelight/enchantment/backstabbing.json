@@ -1,0 +1,34 @@
+{
+  "anvil_cost": 4,
+  "description": {
+    "translate": "farmersdelight.enchantment.backstabbing"
+  },
+  "effects": {},
+  "max_cost": {
+    "base": 65,
+    "per_level_above_first": 9
+  },
+  "max_level": 3,
+  "min_cost": {
+    "base": 15,
+    "per_level_above_first": 9
+  },
+  "primary_items": [
+    "minecraft:flint",
+    "minecraft:iron_nugget",
+    "minecraft:gold_nugget",
+    "minecraft:diamond",
+    "minecraft:netherite_scrap"
+  ],
+  "slots": [
+    "mainhand"
+  ],
+  "supported_items": [
+    "minecraft:flint",
+    "minecraft:iron_nugget",
+    "minecraft:gold_nugget",
+    "minecraft:diamond",
+    "minecraft:netherite_scrap"
+  ],
+  "weight": 10
+}
