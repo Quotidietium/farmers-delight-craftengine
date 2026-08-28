@@ -1,5 +1,8 @@
 # 移植主线收敛报告（1.3.1，2026-08-28）
 
+> 完成度审计（目标逐句对照证据）：[completion-audit.md](completion-audit.md)
+
+
 > 目标：将 Farmer's Delight mod（farmers-delight-fabric 1.20.1-1.4.3，本仓库 src/）
 > 复现为 Papo（Paper 1.21.11）+ CraftEngine 插件。规格仲裁：**mod 源码为唯一规格**，
 > REF（papersdelight 反编译/CE 包 v0.10.6）仅作实现方法参考。
