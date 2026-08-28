@@ -262,6 +262,47 @@ public final class PlayerListener implements Listener {
         if (held == null || !FDRecipes_isKnife(held)) return;
         if (event.getHand() != EquipmentSlot.HAND) return;
 
+        // mod KnifeItem#useOnBlock: a knife on a pumpkin carves it, dropping 4 seeds
+        // from the carved face (click face, or the player's facing on top/bottom clicks)
+        if (block.getType() == Material.PUMPKIN) {
+            event.setCancelled(true);
+            org.bukkit.block.BlockFace clicked = event.getBlockFace();
+            org.bukkit.block.BlockFace facing =
+                    clicked == org.bukkit.block.BlockFace.UP || clicked == org.bukkit.block.BlockFace.DOWN
+                            ? event.getPlayer().getFacing().getOppositeFace()
+                            : clicked;
+            block.getWorld().playSound(block.getLocation(), "minecraft:block.pumpkin.carve",
+                    SoundCategory.BLOCKS, 1.0f, 1.0f);
+            block.setBlockData(org.bukkit.Bukkit.createBlockData(
+                    "minecraft:carved_pumpkin[facing=" + facing.name().toLowerCase(java.util.Locale.ROOT) + "]"));
+            ItemStack seeds = new ItemStack(Material.PUMPKIN_SEEDS, 4);
+            block.getWorld().dropItemNaturally(
+                    block.getLocation().add(0.5 + facing.getModX() * 0.65, 0.1, 0.5 + facing.getModZ() * 0.65),
+                    seeds);
+            held.damage(1, event.getPlayer());
+            return;
+        }
+
+        // mod KnivesEventListener: knife on a candle cake pops the candle, leaves a
+        // bitten cake (bites=1) and drops one slice
+        if (block.getType().name().endsWith("_CANDLE_CAKE")) {
+            event.setCancelled(true);
+            String candleMatName = block.getType().name()
+                    .substring(0, block.getType().name().length() - "_CAKE".length());
+            Material candle = Material.matchMaterial(candleMatName);
+            if (candle != null) {
+                block.getWorld().dropItemNaturally(
+                        block.getLocation().add(0.5, 0.5, 0.5), new ItemStack(candle));
+            }
+            dropSlice(block, 1);
+            block.setType(Material.CAKE);
+            if (block.getBlockData() instanceof Cake plain) plain.setBites(1);
+            block.getWorld().playSound(block.getLocation().add(0.5, 0.5, 0.5),
+                    "minecraft:block.wool.break", SoundCategory.BLOCKS, 0.8f, 0.8f);
+            held.damage(1, event.getPlayer());
+            return;
+        }
+
         if (block.getType() == Material.CAKE
                 && block.getBlockData() instanceof Cake cake) {
             event.setCancelled(true);
