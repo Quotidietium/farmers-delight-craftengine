@@ -47,6 +47,12 @@ public final class BenchPlugin extends JavaPlugin {
                     int seconds = args.length > 1 ? Integer.parseInt(args[1]) : 10;
                     startTickSampling(seconds);
                     sender.sendMessage("tick sampling for " + seconds + "s -> plugins/FdBench/tick.txt");
+                } else if (args[0].equals("stove")) {
+                    Bukkit.getGlobalRegionScheduler().execute(BenchPlugin.this, () -> {
+                        String report = new StoveChainCheck().run();
+                        sender.sendMessage("stove chain check -> plugins/FdBench/stove.txt");
+                        getLogger().info(report);
+                    });
                 } else if (args[0].equals("load")) {
                     int n = args.length > 1 ? Integer.parseInt(args[1]) : 100;
                     startLoad(n);
@@ -182,6 +188,79 @@ public final class BenchPlugin extends JavaPlugin {
                 }
             }
         }, 1L, 1L);
+    }
+
+    /**
+     * Verifies every server-side link of the stove grill chain with a real place +
+     * a real Bukkit campfire-recipe lookup, bypassing only the player interaction
+     * event itself.
+     */
+    private final class StoveChainCheck {
+        // uses plugin accessor directly
+        String run() {
+            StringBuilder out = new StringBuilder("FD stove chain check @ " + java.time.Instant.now() + "\n");
+            try {
+                var fd = com.nhoryzon.mc.farmersdelight.papo.FarmersDelightPlugin.get();
+                org.bukkit.World world = getServer().getWorlds().getFirst();
+                org.bukkit.Location base = world.getSpawnLocation();
+                int x = base.getBlockX() + 3;
+                int z = base.getBlockZ() + 3;
+                int y = world.getHighestBlockYAt(x, z) + 1;
+                org.bukkit.Location loc = new org.bukkit.Location(world, x, y, z);
+                world.setChunkForceLoaded(x >> 4, z >> 4, true);
+
+                Key stoveId = Key.of("farmersdelight:stove");
+                boolean placed = net.momirealms.craftengine.bukkit.api.CraftEngineBlocks.place(loc, stoveId, true);
+                out.append("place stove: ").append(placed).append('\n');
+                if (!placed) return finish(out);
+                org.bukkit.block.Block stove = world.getBlockAt(x, y, z);
+                var ticker = fd.gameTicker();
+                ticker.stoveIndex.add(stove);
+
+                // link 1: campfire recipe lookup for a raw beef-like item
+                var beef = org.bukkit.inventory.ItemStack.of(org.bukkit.Material.BEEF);
+                out.append("campfireResult(BEEF): ").append(ticker.campfireResult(beef) == null ? "null" : "ok").append('\n');
+
+                // link 2: blocked-above check
+                out.append("above passable: ").append(stove.getRelative(org.bukkit.block.BlockFace.UP).isPassable()).append('\n');
+
+                // link 3: simulate the grill placement the listener performs
+                ItemStack[] grill = new ItemStack[6];
+                grill[0] = org.bukkit.inventory.ItemStack.of(org.bukkit.Material.BEEF);
+                fd.blockStore().setItems(stove, "grill", grill);
+                ItemStack[] readBack = fd.blockStore().getItems(stove, "grill");
+                out.append("grill write/read roundtrip: ").append(readBack != null && readBack[0] != null
+                        && readBack[0].getType() == org.bukkit.Material.BEEF ? "ok" : "FAILED").append('\n');
+
+                // link 4: run the actual stove tick once via the ticker's public path
+                ticker.tickStovePublic(stove);
+                ItemStack[] after = fd.blockStore().getItems(stove, "grill");
+                out.append("after one tickStove grill[0] still present: ")
+                   .append(after != null && after[0] != null ? "ok" : "GONE (check tick logic)").append('\n');
+                // link 5: CE state read (lit property visible to the plugin)
+                var ceState = com.nhoryzon.mc.farmersdelight.papo.ce.CraftEngineHook.customBlockState(stove);
+                out.append("CE state visible: ").append(ceState != null);
+                if (ceState != null) {
+                    var litProp = ceState.getProperty("lit");
+                    out.append(", lit=").append(litProp == null ? "?" : String.valueOf(ceState.getNullable(litProp)));
+                }
+                out.append('\n');
+            } catch (Throwable t) {
+                out.append("EXCEPTION: ").append(t).append('\n');
+                for (var s : t.getStackTrace()) out.append("  at ").append(s).append('\n');
+            }
+            return finish(out);
+        }
+
+        private String finish(StringBuilder out) {
+            try {
+                var file = getServer().getPluginManager().getPlugin("FdBench").getDataFolder().toPath().resolve("stove.txt");
+                java.nio.file.Files.createDirectories(file.getParent());
+                java.nio.file.Files.writeString(file, out.toString(), java.nio.charset.StandardCharsets.UTF_8);
+            } catch (Exception ignored) {
+            }
+            return out.toString();
+        }
     }
 
     private void writeFile(String name, String content) {
