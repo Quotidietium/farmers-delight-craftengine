@@ -69,6 +69,7 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
         instance = this;
         this.blockStore = new BlockStore(this);
         this.recipes = RecipeLoader.load(this);
+        this.recipes.invalidateCaches();
         this.content = ContentConfig.load(this);
         this.furnitureTracker = new FurnitureTracker(this);
         this.gameTicker = new GameTicker(this);

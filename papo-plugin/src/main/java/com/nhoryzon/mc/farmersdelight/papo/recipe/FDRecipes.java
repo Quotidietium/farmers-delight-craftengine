@@ -32,29 +32,109 @@ public final class FDRecipes {
     /** item id -> effects applied on consume */
     public final Map<String, List<FoodEffect>> foodEffects = new HashMap<>();
 
+    // ---- lookup accelerators (lazily built; recipes are only mutated during load) ----
+    private volatile Map<String, CuttingRecipe> cuttingIndex;
+    private volatile Map<String, Set<String>> toolIndex;
+    private final Map<Integer, List<CookingRecipe>> cookingBySize = new HashMap<>();
+
+    /** Drops all lookup caches; must be called after the recipe lists are (re)loaded. */
+    public void invalidateCaches() {
+        cuttingIndex = null;
+        toolIndex = null;
+        cookingBySize.clear();
+    }
+
+    private Map<String, CuttingRecipe> cuttingIndex() {
+        Map<String, CuttingRecipe> index = cuttingIndex;
+        if (index == null) {
+            synchronized (this) {
+                index = cuttingIndex;
+                if (index == null) {
+                    index = new HashMap<>();
+                    for (CuttingRecipe recipe : cutting) {
+                        for (String input : recipe.input()) {
+                            index.putIfAbsent(input, recipe);
+                        }
+                    }
+                    cuttingIndex = index;
+                }
+            }
+        }
+        return index;
+    }
+
+    private Map<String, Set<String>> toolIndex() {
+        Map<String, Set<String>> index = toolIndex;
+        if (index == null) {
+            synchronized (this) {
+                index = toolIndex;
+                if (index == null) {
+                    index = new HashMap<>();
+                    for (CuttingRecipe recipe : cutting) {
+                        for (String input : recipe.input()) {
+                            index.computeIfAbsent(input, k -> new HashSet<>())
+                                    .addAll(recipe.tools());
+                        }
+                    }
+                    toolIndex = index;
+                }
+            }
+        }
+        return index;
+    }
+
     public record FoodEffect(String effect, int duration, int amplifier, float chance) {
     }
 
     /* ------------------------------------------------ matching ------------------------------------------------ */
 
+    /**
+     * Item-id resolution strategy. Defaults to the CraftEngine lookup; tests and
+     * benchmarks may inject a vanilla-only resolver to run without a server.
+     */
+    public interface ItemIdResolver {
+        @Nullable String idOf(@Nullable ItemStack stack);
+    }
+
+    private static volatile ItemIdResolver idResolver = null;
+
+    /** Injects an alternative id resolver (benchmark/test hook); pass null to restore CE lookup. */
+    public static void setItemIdResolver(@Nullable ItemIdResolver resolver) {
+        idResolver = resolver;
+    }
+
     private static String idOf(ItemStack stack) {
         if (stack == null || stack.getType().isAir()) return null;
+        ItemIdResolver resolver = idResolver;
+        if (resolver != null) return resolver.idOf(stack);
         Key custom = CraftEngineItems.getCustomItemId(stack);
         if (custom != null) return custom.toString();
         return stack.getType().key().toString();
     }
 
-    /** Unordered multiset match of the (up to) 6 input slots against ingredient groups. */
+    /**
+     * Unordered multiset match of the (up to) 6 input slots against ingredient groups.
+     * Recipes are bucketed by group count so most candidates are skipped without a
+     * scan (a signature cache measured slower than this direct greedy pass).
+     */
     @Nullable
     public CookingRecipe matchCooking(ItemStack[] slots) {
-        List<String> present = new ArrayList<>();
+        List<String> present = new ArrayList<>(slots.length);
         for (ItemStack s : slots) {
             String id = idOf(s);
             if (id != null) present.add(id);
         }
+        int n = present.size();
+        if (n == 0) return null;
+        List<CookingRecipe> bucket = cookingBySize.computeIfAbsent(n, k -> {
+            List<CookingRecipe> list = new ArrayList<>(2);
+            for (CookingRecipe recipe : cooking) {
+                if (recipe.ingredientGroups().size() == n) list.add(recipe);
+            }
+            return list;
+        });
         outer:
-        for (CookingRecipe recipe : cooking) {
-            if (recipe.ingredientGroups().size() != present.size()) continue;
+        for (CookingRecipe recipe : bucket) {
             // greedy bipartite match: each group consumed by exactly one present item
             List<String> pool = new ArrayList<>(present);
             for (Set<String> group : recipe.ingredientGroups()) {
@@ -78,22 +158,15 @@ public final class FDRecipes {
         String input = idOf(boardItem);
         String toolId = idOf(tool);
         if (input == null || toolId == null) return null;
-        for (CuttingRecipe recipe : cutting) {
-            if (recipe.input().contains(input) && recipe.tools().contains(toolId)) {
-                return recipe;
-            }
-        }
-        return null;
+        CuttingRecipe recipe = cuttingIndex().get(input);
+        return recipe != null && recipe.tools().contains(toolId) ? recipe : null;
     }
 
     public Set<String> toolsForInput(ItemStack boardItem) {
         String input = idOf(boardItem);
-        Set<String> tools = new HashSet<>();
-        if (input == null) return tools;
-        for (CuttingRecipe recipe : cutting) {
-            if (recipe.input().contains(input)) tools.addAll(recipe.tools());
-        }
-        return tools;
+        if (input == null) return Set.of();
+        Set<String> tools = toolIndex().get(input);
+        return tools == null ? Set.of() : tools;
     }
 
     @Nullable

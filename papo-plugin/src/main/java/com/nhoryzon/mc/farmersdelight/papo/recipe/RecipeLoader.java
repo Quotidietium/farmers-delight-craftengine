@@ -41,11 +41,32 @@ public final class RecipeLoader {
         }
     }
 
+    /** Parses a cooking-recipes YAML into {@code out}; exposed for benchmarks/tests. */
+    public static void parseCooking(YamlConfiguration yaml, FDRecipes out) {
+        ConfigurationSection root = yaml.getConfigurationSection("recipes");
+        if (root == null) return;
+        parseCookingSection(root, out);
+    }
+
+    /** Parses a cutting-recipes YAML into {@code out}; exposed for benchmarks/tests. */
+    public static void parseCutting(YamlConfiguration yaml, FDRecipes out) {
+        ConfigurationSection root = yaml.getConfigurationSection("recipes");
+        if (root == null) return;
+        parseCuttingSection(root, out);
+    }
+
     private static void loadCooking(Plugin plugin, FDRecipes out) {
         try {
             YamlConfiguration yaml = bundledOrOverride(plugin, "cooking_recipes.yml");
             ConfigurationSection root = yaml.getConfigurationSection("recipes");
             if (root == null) return;
+            parseCookingSection(root, out);
+        } catch (IOException e) {
+            plugin.getLogger().severe("Failed to load cooking recipes: " + e.getMessage());
+        }
+    }
+
+    private static void parseCookingSection(ConfigurationSection root, FDRecipes out) {
             for (String id : root.getKeys(false)) {
                 ConfigurationSection sec = root.getConfigurationSection(id);
                 if (sec == null) continue;
@@ -71,9 +92,6 @@ public final class RecipeLoader {
                         (float) sec.getDouble("experience", 0),
                         sec.getInt("cook_time", 200)));
             }
-        } catch (IOException e) {
-            plugin.getLogger().severe("Failed to load cooking recipes: " + e.getMessage());
-        }
     }
 
     private static void loadCutting(Plugin plugin, FDRecipes out) {
@@ -81,6 +99,13 @@ public final class RecipeLoader {
             YamlConfiguration yaml = bundledOrOverride(plugin, "cutting_recipes.yml");
             ConfigurationSection root = yaml.getConfigurationSection("recipes");
             if (root == null) return;
+            parseCuttingSection(root, out);
+        } catch (IOException e) {
+            plugin.getLogger().severe("Failed to load cutting recipes: " + e.getMessage());
+        }
+    }
+
+    private static void parseCuttingSection(ConfigurationSection root, FDRecipes out) {
             for (String id : root.getKeys(false)) {
                 ConfigurationSection sec = root.getConfigurationSection(id);
                 if (sec == null) continue;
@@ -100,9 +125,6 @@ public final class RecipeLoader {
                 if (input.isEmpty() || results.isEmpty()) continue;
                 out.cutting.add(new FDRecipes.CuttingRecipe(id, input, tools, results, sec.getString("sound")));
             }
-        } catch (IOException e) {
-            plugin.getLogger().severe("Failed to load cutting recipes: " + e.getMessage());
-        }
     }
 
     private static void loadFoodEffects(Plugin plugin, FDRecipes out) {

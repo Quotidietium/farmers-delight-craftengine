@@ -69,7 +69,13 @@ public final class CraftEngineHook implements Listener {
     @Nullable
     public static ItemStack buildItem(Key id) {
         BukkitItemDefinition def = CraftEngineItems.byId(id);
-        return def == null ? null : def.buildBukkitItem((Player) null);
+        if (def == null) return null;
+        try {
+            // the no-arg build uses an empty context; a null player crashes CE 26.7.x
+            return def.buildBukkitItem();
+        } catch (Throwable ignored) {
+            return def.buildBukkitItem((Player) null);
+        }
     }
 
     @Nullable

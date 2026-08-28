@@ -1,0 +1,13 @@
+FD recipe matching benchmark @ 2026-08-28T10:59:30.898847500Z
+production: FDRecipes (live plugin instance), baseline: snapshot 1ac1c83
+cooking recipes=27 cutting recipes=106
+
+hit inputs: 21 cooking, 18 cutting
+
+parity gate: 40000 checks, 0 mismatches -> PASS
+
+miss-heavy                             baseline    86652.0 ns/op | production   211032.2 ns/op | speedup 0.41x
+hit-heavy                              baseline    99637.9 ns/op | production   181758.3 ns/op | speedup 0.55x
+miss-heavy                             baseline   103087.2 ns/op | production    65283.0 ns/op | speedup 1.58x
+hit-heavy                              baseline   160777.1 ns/op | production    91469.1 ns/op | speedup 1.76x
+toolsForInput                          baseline   151648.9 ns/op | production    25720.7 ns/op | speedup 5.90x

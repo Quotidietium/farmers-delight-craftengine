@@ -1,0 +1,7 @@
+name: FdBench
+version: 1.0.0
+main: bench.BenchPlugin
+api-version: '1.21'
+description: In-server performance benchmarks for the FarmersDelight Papo plugin
+depend:
+  - FarmersDelight
