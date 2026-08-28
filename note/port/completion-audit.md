@@ -27,6 +27,8 @@
    服务端验证 `Backstabbing datapack enchantment: resolved`）
 ✅ 1.4.1：高级作物 8/8（茎×2 走 CE 内建 stem_block+attached×2、火炬花/瓶子草
    骨粉固定+1、掉落表按原版），mod「任意作物可种沃土」mixin 全覆盖
+✅ 1.4.2：1.4.1 附魔文件缺失热修 + RegistryAccess 解析 + canEnchantItem 材质探针全 true
+✅ 1.4.3：刀具小功能补全（雕刻南瓜/蜡烛蛋糕刀切）——mod item/event 层全覆盖
 
 ### 「材质方面请你根据 REF 下的 CE 包，对现有的 CE 包的模型做调整」
 ✅ REF 编辑过的 76 个模型+39 贴图 vendor 进 `tools/ce_gen/assets_ref`，
