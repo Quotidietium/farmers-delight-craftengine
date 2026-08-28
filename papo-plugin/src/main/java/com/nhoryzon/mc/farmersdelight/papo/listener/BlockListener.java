@@ -5,6 +5,8 @@ import com.nhoryzon.mc.farmersdelight.papo.FarmersDelightPlugin;
 import com.nhoryzon.mc.farmersdelight.papo.ce.CraftEngineHook;
 import com.nhoryzon.mc.farmersdelight.papo.gui.ContainerBlockGui;
 import com.nhoryzon.mc.farmersdelight.papo.logic.GameTicker;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.momirealms.craftengine.bukkit.api.event.CustomBlockBreakEvent;
 import net.momirealms.craftengine.bukkit.api.event.CustomBlockInteractEvent;
 import net.momirealms.craftengine.bukkit.api.event.CustomBlockPlaceEvent;
@@ -302,6 +304,18 @@ public final class BlockListener implements Listener {
                     return;
                 }
             }
+        }
+        // UX: explain the two silent failure cases (mod gives no feedback either)
+        if (held != null && !held.getType().isAir() && !held.getType().name().endsWith("_SHOVEL")
+                && held.getType() != Material.WATER_BUCKET
+                && ticker().campfireResult(held) != null) {
+            if (isBlockedAbove(stove)) {
+                player.sendActionBar(Component.text("灶台上方被阻挡，无法烤制",
+                        NamedTextColor.RED));
+                return;
+            }
+            player.sendActionBar(Component.text("灶台上已经放满了", NamedTextColor.RED));
+            return;
         }
 
         // mod tryExtinguish: shovel / water bucket put the stove out (only reached

@@ -166,7 +166,18 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
                                 + recipes.cutting.size() + " cutting");
                     }
                     default -> sender.sendMessage(
-                            "FarmersDelight v" + FD.VERSION + " - /fd version | /fd status");
+                            "FarmersDelight v" + FD.VERSION + " - /fd version | /fd status | /fd guide");
+                    case "guide" -> {
+                        sender.sendMessage("§6§lFarmer's Delight 玩法速查");
+                        sender.sendMessage("§e小刀 §7合成后手持右键食材可切割；放在砧板上右键切割");
+                        sender.sendMessage("§e烹饪锅 §7下方热源（火/岩浆块等）加热；手持碗右键取餐");
+                        sender.sendMessage("§7  - 锅 GUI 内 Shift+点击 背包食材快速投料（碗自动进容器槽）");
+                        sender.sendMessage("§7  - 锅 GUI 内配方书可查看全部 27 种烹饪配方");
+                        sender.sendMessage("§e炉灶 §7可堆放食材烤制（同篝火配方）；上方有方块时无法烤制");
+                        sender.sendMessage("§e篮子 §7自动收集 5 格内掉落物；§e橱柜 §7为 27 格存储");
+                        sender.sendMessage("§e堆肥 §7有机 compost 随时间转为富壤（作物产量更高）");
+                        sender.sendMessage("§e盛宴 §7多人右键分食，分食完掉落碗");
+                    }
                 }
                 return true;
             }
