@@ -68,10 +68,12 @@ MASTER_CHEF_MEALS = [
 
 
 def generate_advancements() -> int:
-    if DATA_PACK.exists():
-        import shutil
-        shutil.rmtree(DATA_PACK)
+    # clear only the generated advancement subtree; the datapack also carries
+    # hand-maintained entries (enchantment/backstabbing.json) that must survive
     out_dir = DATA_PACK / "data" / NS / "advancement"
+    if out_dir.exists():
+        import shutil
+        shutil.rmtree(out_dir)
     out_dir.mkdir(parents=True)
     (DATA_PACK / "pack.mcmeta").write_text(json.dumps({
         "pack": {"pack_format": 88, "min_format": 88, "max_format": 999,
