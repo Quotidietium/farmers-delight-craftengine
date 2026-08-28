@@ -62,6 +62,31 @@ public final class PlayerListener implements Listener {
 
     /* ===================== backstabbing ===================== */
 
+    /**
+     * Server-side proof for deviation 7's client layer: when a player opens the
+     * enchanting table, the resolved offers are logged, so the regression script
+     * can verify Backstabbing appears among them without manual observation.
+     */
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPrepareEnchant(org.bukkit.event.enchantment.PrepareItemEnchantEvent event) {
+        var backstab = io.papermc.paper.registry.RegistryAccess.registryAccess()
+                .getRegistry(io.papermc.paper.registry.RegistryKey.ENCHANTMENT)
+                .get(net.kyori.adventure.key.Key.key(FD.MOD_ID, "backstabbing"));
+        if (backstab == null) return;
+        for (org.bukkit.enchantments.EnchantmentOffer offer : event.getOffers()) {
+            if (offer != null && offer.getEnchantment() != null
+                    && offer.getEnchantment().getKey().equals(backstab.getKey())) {
+                event.getEnchanter().getWorld().getPlayers().forEach(p -> p.sendMessage(
+                        net.kyori.adventure.text.Component.text(
+                                "[FD] 附魔台候选: 背刺 " + offer.getCost(),
+                                net.kyori.adventure.text.format.NamedTextColor.GREEN)));
+                plugin.getLogger().info("[ENCHANT-TABLE OFFER] Backstabbing cost=" + offer.getCost()
+                        + " item=" + event.getItem().getType());
+            }
+        }
+    }
+
+
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event) {
         if (!(event.getDamager() instanceof Player player)) return;

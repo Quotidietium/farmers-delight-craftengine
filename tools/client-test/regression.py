@@ -26,6 +26,7 @@ CHECKS = [
     (r"\[PATH-B\] Bukkit entity interact fallback", "PATH-B fallback interaction", "B. interactions"),
     (r"\[GUI\] opened for .*", "pot GUI opened", "B. interactions"),
     (r"\[GUI\] pot layout swapped", "pot layout swap", "B. interactions"),
+    (r"\[ENCHANT-TABLE OFFER\] Backstabbing", "ENCHANT-TABLE Backstabbing offer (deviation 7 closed)", "C. enchanting table"),
 ]
 STEPS = """
 ================ 真人客户端回归步骤（对照 note/port/CLIENT_TEST.md） ================
