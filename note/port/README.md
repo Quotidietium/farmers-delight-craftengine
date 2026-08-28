@@ -127,6 +127,8 @@ papo-plugin/
 配方匹配 4-8x、ticker 总耗时 2.15x（堆肥 20x）；量化程序 `benchmark/`，
 报告 `note/report/perf/`。详见 release/1.2.1.md。
 
+> 偏差表 7 项的逐项论证与处置建议（含⑤⑦的可行路径与成本）：[deviation-decisions.md](deviation-decisions.md) —— **等待你的处置决定**。
+
 ### ✅ 迭代 5 补齐（2026-08-28，1.2.2）
 
 | 项 | 状态 |
