@@ -391,6 +391,15 @@ public final class FurnitureListener implements Listener {
 
         if (stored == null || stored.getType().isAir()) {
             if (held == null || held.getType().isAir()) return;
+            // knives are tools, not board items: putting the held knife on the board
+            // when the player actually wants to cut is the reported bug - reject with
+            // a hint instead (mod also allows it, but only as deliberate display)
+            if (FDRecipes.isKnife(held) && !player.isSneaking()) {
+                player.sendActionBar(net.kyori.adventure.text.Component.text(
+                        "手持食材放上砧板，再用小刀切割",
+                        net.kyori.adventure.text.format.NamedTextColor.GRAY));
+                return;
+            }
             // place item onto the board
             ItemStack one = held.clone();
             one.setAmount(1);
@@ -399,6 +408,18 @@ public final class FurnitureListener implements Listener {
             board.location().getWorld().playSound(loc, "minecraft:block.wood.place",
                     SoundCategory.BLOCKS, 0.8f, 1.0f);
             return;
+        }
+
+        // board has an item: a held knife must CUT it, never land on the board
+        if (FDRecipes.isKnife(held)) {
+            FDRecipes.CuttingRecipe cut = plugin.recipes().matchCutting(stored, held);
+            if (cut == null) {
+                player.sendActionBar(net.kyori.adventure.text.Component.text(
+                        "该物品无法用小刀切割",
+                        net.kyori.adventure.text.format.NamedTextColor.GRAY));
+                return;
+            }
+            // fall through to the shared cutting block below
         }
 
         if (held == null || held.getType().isAir()) {

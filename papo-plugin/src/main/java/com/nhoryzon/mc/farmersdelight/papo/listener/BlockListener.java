@@ -273,21 +273,13 @@ public final class BlockListener implements Listener {
                 return;
             }
         }
-        if (isLit && held != null && (held.getType().name().endsWith("_SHOVEL")
-                || held.getType() == Material.WATER_BUCKET)) {
-            ticker().setBlockProperty(stove, "lit", false);
-            stove.getWorld().playSound(stove.getLocation().add(0.5, 0.5, 0.5),
-                    "minecraft:item.firecharge.use", SoundCategory.BLOCKS, 1.0f, 0.8f);
-            if (held.getType() == Material.WATER_BUCKET) {
-                player.getInventory().setItemInMainHand(new ItemStack(Material.BUCKET));
-            } else {
-                damage(held, player);
-            }
-            return;
-        }
-        // place food on the grill
-        if (held != null && !held.getType().isAir() && isLit) {
-            if (ticker().campfireResult(held) == null) return;
+        // mod order: try placing food FIRST (no lit requirement - the mod lets you
+        // stock an unlit stove and it starts cooking once lit), extinguish only when
+        // the held item matches no campfire recipe
+        if (held != null && !held.getType().isAir() && !held.getType().name().endsWith("_SHOVEL")
+                && held.getType() != Material.WATER_BUCKET
+                && ticker().campfireResult(held) != null
+                && !isBlockedAbove(stove)) {
             ItemStack[] grill = plugin.blockStore().getItems(stove, "grill");
             if (grill == null) grill = new ItemStack[6];
             for (int i = 0; i < 6; i++) {
@@ -314,6 +306,25 @@ public final class BlockListener implements Listener {
                 }
             }
         }
+
+        // mod tryExtinguish: shovel / water bucket put the stove out (only reached
+        // when the held item is not a placeable grill item)
+        if (isLit && held != null && (held.getType().name().endsWith("_SHOVEL")
+                || held.getType() == Material.WATER_BUCKET)) {
+            ticker().setBlockProperty(stove, "lit", false);
+            stove.getWorld().playSound(stove.getLocation().add(0.5, 0.5, 0.5),
+                    "minecraft:item.firecharge.use", SoundCategory.BLOCKS, 1.0f, 0.8f);
+            if (held.getType() == Material.WATER_BUCKET) {
+                player.getInventory().setItemInMainHand(new ItemStack(Material.BUCKET));
+            } else {
+                damage(held, player);
+            }
+        }
+    }
+
+    /** mod isStoveBlockedAbove: no free space above the grill means nothing to place onto. */
+    private static boolean isBlockedAbove(Block stove) {
+        return !stove.getRelative(org.bukkit.block.BlockFace.UP).isPassable();
     }
 
     private int[] grillTimes(String joined) {
