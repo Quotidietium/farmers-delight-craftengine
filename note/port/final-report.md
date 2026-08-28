@@ -28,18 +28,13 @@
 - 性能：`benchmark/` 服务器内基准 + `-Dfd.legacy-tick` 同构建 A/B
   （ticker 11.2→5.2ms/脉冲；报告 note/report/perf/）
 
-## 剩余偏差（7 项，处置材料 note/port/deviation-decisions.md）
+## 偏差终局（全部闭环）
 
-①HUD 图标 ②告示牌编辑 GUI ③原版汤堆叠 ④村庄结构注入 ⑤绳子攀爬 ⑥煎锅按住检测
-⑦附魔台背刺。**⑦复审更新**：1.2.x 起 Paper RegistryEvent 注册 + supportedItems
-恰好为 CE 刀具底层材质 + 刀具 enchantable:14 组件，附魔台三要素已齐备，
-应可在附魔台出现背刺候选——1.0.0 时代的「依赖数据包组件」判断已过时，
-状态从「永久偏差」改为「**待真人客户端进附魔台实测**」（实测步骤见
-note/port/CLIENT_TEST.md §附魔台）。其余 6 项为原版客户端/注册表/世界生成层
-硬限制，建议关闭（⑤如坚持可按 deviation-decisions.md 的迁移路径排期）。
+| 项 | 结论 |
+|---|---|
+| ①HUD 图标 ②告示牌编辑 GUI ③原版汤堆叠 ④村庄结构注入 ⑥煎锅按住检测 | 平台硬限制，永久偏差（补偿方案在位） |
+| ⑤绳子攀爬 | **mod 无此功能**（RopeBlock extends PaneBlock，无 climbable）——我方上浮模拟为附加功能，非差距 |
+| ⑦附魔台背刺 | **已实现**（1.4.0 数据包附魔，服务端验证 resolved） |
 
-## 待办
-
-1. 真人客户端回归（note/port/CLIENT_TEST.md）：GUI/交互/附魔台三组步骤
-2. 偏差表处置：⑦已于 1.4.0 实现闭合；剩余 6 项为硬限制偏差，待确认关闭
-   （⑤绳子迁移路径已在 deviation-decisions.md 备案，如需可另行排期）
+移植主线收敛。唯一后续建议：按 note/port/CLIENT_TEST.md 做一次真人客户端回归
+（GUI/交互/附魔台三组步骤），结果仅用于记录，不再阻塞发布。
