@@ -539,8 +539,8 @@ public final class GameTicker {
             if (inv != null) System.arraycopy(inv, 0, padded, 0, Math.min(inv.length, padded.length));
             inv = padded;
         }
-        String facing = state.<String>getProperty("facing") == null ? "north"
-                : state.getNullable(state.<String>getProperty("facing"));
+        String facing = getPropString(state, "facing");
+        if (facing == null) facing = "north";
         pdc.set(fdKey("facing"), PersistentDataType.STRING, facing);
 
         boolean changed = potHoppers(pot, inv);
@@ -556,8 +556,8 @@ public final class GameTicker {
                 ? plugin.recipes().matchCooking(java.util.Arrays.copyOfRange(inv, 0, SLOT_INPUTS))
                 : null;
         boolean heated = isHeated(pot.getLocation());
-        int cook = plugin.blockStore().getInt(pot, "cook");
-        int total = plugin.blockStore().getInt(pot, "cooktotal");
+        int cook = plugin.blockStore().getInt(pot, "cook", 0);
+        int total = plugin.blockStore().getInt(pot, "cooktotal", 0);
 
         if (heated && recipe != null && canCookInto(inv, recipe)) {
             total = recipe.cookTime();
@@ -1216,6 +1216,22 @@ public final class GameTicker {
         if (state == null) return null;
         var prop = state.<Integer>getProperty(name);
         return prop == null ? null : state.getNullable(prop);
+    }
+
+    /**
+     * Type-safe read of any block property as a lowercase string. CE property values
+     * are typed (Direction enums for facing etc.), so blind String casts crash at
+     * runtime - this accepts whatever the property carries.
+     */
+    public static String getPropString(net.momirealms.craftengine.core.block.ImmutableBlockState state, String name) {
+        try {
+            var prop = state.getProperty(name);
+            if (prop == null) return null;
+            Object value = state.getNullable(prop);
+            return value == null ? null : String.valueOf(value).toLowerCase(java.util.Locale.ROOT);
+        } catch (Throwable t) {
+            return null;
+        }
     }
 
     public Boolean getBool(net.momirealms.craftengine.core.block.ImmutableBlockState state, String name) {

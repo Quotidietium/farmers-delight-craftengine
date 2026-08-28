@@ -110,8 +110,8 @@ public final class CookingPotBlockGui implements InventoryHolder {
     }
 
     private void paintProgress() {
-        int cook = plugin.blockStore().getInt(pot, "cook");
-        int total = plugin.blockStore().getInt(pot, "cooktotal");
+        int cook = plugin.blockStore().getInt(pot, "cook", 0);
+        int total = plugin.blockStore().getInt(pot, "cooktotal", 0);
         if (cook <= 0) {
             inventory.setItem(PROGRESS_SLOT, filler());
             return;

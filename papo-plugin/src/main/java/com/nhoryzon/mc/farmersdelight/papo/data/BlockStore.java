@@ -43,6 +43,12 @@ public final class BlockStore {
         return chunkPdc(block).get(key(block, field), PersistentDataType.INTEGER);
     }
 
+    /** int primitive variant: a missing field reads as {@code def} instead of null. */
+    public int getInt(Block block, String field, int def) {
+        Integer value = getInt(block, field);
+        return value == null ? def : value;
+    }
+
     public void setInt(Block block, String field, int value) {
         chunkPdc(block).set(key(block, field), PersistentDataType.INTEGER, value);
     }

@@ -99,9 +99,9 @@ public final class BlockListener implements Listener {
         }
         if (id.equals(FD.BASKET)) {
             ticker().basketIndex.add(block);
-            var dirProp = state.<String>getProperty("direction");
-            if (dirProp != null) {
-                plugin.blockStore().setString(block, "facing", state.getNullable(dirProp));
+            String dir = GameTicker.getPropString(state, "direction");
+            if (dir != null) {
+                plugin.blockStore().setString(block, "facing", dir);
             }
             return;
         }
@@ -288,11 +288,8 @@ public final class BlockListener implements Listener {
                     one.setAmount(1);
                     grill[i] = one;
                     consumeBoneMeal(player, held); // consumes one food item
-                    var facingProp = state.<String>getProperty("facing");
-                    if (facingProp != null) {
-                        String facing = state.getNullable(facingProp);
-                        plugin.blockStore().setString(stove, "facing", facing == null ? "north" : facing);
-                    }
+                    String facing = GameTicker.getPropString(state, "facing");
+                    plugin.blockStore().setString(stove, "facing", facing == null ? "north" : facing);
                     int[] totals = new int[6];
                     int[] existing = grillTimes(plugin.blockStore().getString(stove, "grill_totals"));
                     System.arraycopy(existing, 0, totals, 0, 6);
