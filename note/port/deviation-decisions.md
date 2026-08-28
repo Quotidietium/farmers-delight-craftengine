@@ -73,3 +73,12 @@
 
 **回复方式**：直接说明「全部关闭」或「⑤/⑦ 继续（其余关闭）」等即可，
 我按你的决定执行（关闭=整理最终收敛报告结束主线；继续=按上表路径开迭代）。
+
+## 附：⑦客户端回归自动化可行性终查（2026-08-28）
+
+「真人回归」的 bot 自动化曾尝试 mineflayer 生态复活的可能：官方 npm 最新
+mineflayer 4.38.0 + minecraft-data 3.114.0 的协议数据**已含 1.21.11**（协议 774），
+握手与离线认证成功；但 PLAY 前的**配置阶段**（select_known_packs → finish_config）
+流程未适配，连接在 registry_data ×23 后无限等待，master 分支与 @next 均同样卡死。
+→ 客户端层验证（附魔台候选显示）确需真人客户端；工具已备
+（tools/client-test/regression.py 一键脚本 + PrepareItemEnchantEvent 自动留痕）。
