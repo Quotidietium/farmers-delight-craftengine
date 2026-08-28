@@ -280,6 +280,17 @@ public final class CookingPotBlockGui implements InventoryHolder {
             }
             if (raw == MEAL_SLOT || raw == PROGRESS_SLOT || raw == HEAT_SLOT) {
                 event.setCancelled(true);
+                if (raw == MEAL_SLOT) {
+                    // UX: explain how to serve instead of failing silently
+                    ItemStack meal = event.getView().getTopInventory().getItem(MEAL_SLOT);
+                    ItemStack container = event.getView().getTopInventory().getItem(CONTAINER_SLOT);
+                    if (meal != null && !meal.getType().isAir()
+                            && (container == null || container.getType().isAir())) {
+                        event.getWhoClicked().sendActionBar(Component.text(
+                                "手持匹配的容器右键锅可取餐",
+                                net.kyori.adventure.text.format.NamedTextColor.GRAY));
+                    }
+                }
                 return;
             }
             if (raw == OUTPUT_SLOT) {

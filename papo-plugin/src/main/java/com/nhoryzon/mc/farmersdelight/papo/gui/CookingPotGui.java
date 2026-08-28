@@ -3,6 +3,7 @@ package com.nhoryzon.mc.farmersdelight.papo.gui;
 import com.nhoryzon.mc.farmersdelight.papo.FarmersDelightPlugin;
 import com.nhoryzon.mc.farmersdelight.papo.logic.GameTicker;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.momirealms.craftengine.bukkit.entity.furniture.BukkitFurniture;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -275,6 +276,14 @@ public final class CookingPotGui implements InventoryHolder {
             int raw = event.getRawSlot();
             if (raw == MEAL_SLOT) {
                 event.setCancelled(true);
+                // UX: explain how to serve instead of failing silently
+                ItemStack meal = event.getView().getTopInventory().getItem(MEAL_SLOT);
+                ItemStack container = event.getView().getTopInventory().getItem(CONTAINER_SLOT);
+                if (meal != null && !meal.getType().isAir()
+                        && (container == null || container.getType().isAir())) {
+                    event.getWhoClicked().sendActionBar(Component.text(
+                            "手持匹配的容器右键锅可取餐", NamedTextColor.GRAY));
+                }
                 return;
             }
             if (raw == OUTPUT_SLOT) {
