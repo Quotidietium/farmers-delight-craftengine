@@ -81,6 +81,28 @@ public final class CookingPotGui implements InventoryHolder {
         }
     }
 
+    /**
+     * Shift-click smart routing: a bowl goes to the container slot, everything else
+     * into the first free ingredient slot. Returns false when nothing fits.
+     */
+    public boolean routeIn(ItemStack moved) {
+        int target = -1;
+        if (moved.getType() == Material.BOWL && inventory.getItem(CONTAINER_SLOT) == null) {
+            target = CONTAINER_SLOT;
+        } else {
+            for (int s : INPUT_SLOTS) {
+                ItemStack cur = inventory.getItem(s);
+                if (cur == null || cur.getType().isAir()) {
+                    target = s;
+                    break;
+                }
+            }
+        }
+        if (target < 0) return false;
+        inventory.setItem(target, moved.clone());
+        return true;
+    }
+
     private void paintFillers() {
         ItemStack filler = filler();
         for (int i = 0; i < 27; i++) {
@@ -236,6 +258,19 @@ public final class CookingPotGui implements InventoryHolder {
         public void onClick(InventoryClickEvent event) {
             CookingPotGui gui = holderOf(event.getView().getTopInventory());
             if (gui == null) return;
+            // shift-click from the player inventory: smart-route into the pot
+            // (bowls -> container slot, anything else -> first free ingredient slot)
+            if (event.getClick().isShiftClick()
+                    && event.getClickedInventory() == event.getView().getBottomInventory()) {
+                event.setCancelled(true);
+                ItemStack moved = event.getCurrentItem();
+                if (moved == null || moved.getType().isAir()) return;
+                if (gui.routeIn(moved)) {
+                    event.getClickedInventory().setItem(event.getSlot(), null);
+                    gui.saveFromGui();
+                }
+                return;
+            }
             if (event.getClickedInventory() != event.getView().getTopInventory()) return;
             int raw = event.getRawSlot();
             if (raw == MEAL_SLOT) {

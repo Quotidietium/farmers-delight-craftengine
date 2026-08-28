@@ -139,6 +139,48 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new com.nhoryzon.mc.farmersdelight.papo.listener.PhysicsListener(this), this);
         Bukkit.getPluginManager().registerEvents(new com.nhoryzon.mc.farmersdelight.papo.gui.CookingPotRecipeBook.ListenerImpl(), this);
         Bukkit.getPluginManager().registerEvents(new com.nhoryzon.mc.farmersdelight.papo.gui.CookingPotBlockGui.ListenerImpl(), this);
+
+        // player/admin convenience command
+        org.bukkit.command.Command fd = new org.bukkit.command.Command("farmersdelight",
+                "Farmer's Delight plugin info", "/farmersdelight help|version|status", java.util.List.of("fd")) {
+            @Override
+            public boolean execute(org.bukkit.command.CommandSender sender, String label, String[] args) {
+                String sub = args.length == 0 ? "help" : args[0].toLowerCase();
+                switch (sub) {
+                    case "version" -> sender.sendMessage(
+                            "FarmersDelight (Papo port) v" + FD.VERSION + " on Papo/Paper 1.21.11 + CraftEngine");
+                    case "status" -> {
+                        var t = gameTicker();
+                        int pots = t.potIndex.totalTracked();
+                        int stoves = t.stoveIndex.totalTracked();
+                        int baskets = t.basketIndex.totalTracked();
+                        int crops = t.cropIndex.totalTracked();
+                        int furniture = furnitureTracker().tracked().size();
+                        sender.sendMessage("FarmersDelight v" + FD.VERSION
+                                + " - cooking pots: " + pots
+                                + ", stoves: " + stoves
+                                + ", baskets: " + baskets
+                                + ", crops: " + crops
+                                + ", furniture tracked: " + furniture
+                                + " | recipes: " + recipes.cooking.size() + " cooking / "
+                                + recipes.cutting.size() + " cutting");
+                    }
+                    default -> sender.sendMessage(
+                            "FarmersDelight v" + FD.VERSION + " - /fd version | /fd status");
+                }
+                return true;
+            }
+            @Override
+            public java.util.List<String> tabComplete(org.bukkit.command.CommandSender sender, String alias, String[] args) {
+                if (args.length == 1) {
+                    String prefix = args[0].toLowerCase(java.util.Locale.ROOT);
+                    return java.util.stream.Stream.of("help", "version", "status")
+                            .filter(s -> s.startsWith(prefix)).toList();
+                }
+                return java.util.List.of();
+            }
+        };
+        Bukkit.getCommandMap().register("farmersdelight", fd);
         Bukkit.getPluginManager().registerEvents(new com.nhoryzon.mc.farmersdelight.papo.listener.GuiDiagnosticListener(this), this);
         Bukkit.getPluginManager().registerEvents(new CookingPotGui.ListenerImpl(this), this);
         Bukkit.getPluginManager().registerEvents(new ContainerBlockGui.ListenerImpl(this), this);

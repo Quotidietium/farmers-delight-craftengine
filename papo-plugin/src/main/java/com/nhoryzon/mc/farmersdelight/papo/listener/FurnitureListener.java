@@ -423,9 +423,11 @@ public final class FurnitureListener implements Listener {
         }
 
         if (held == null || held.getType().isAir()) {
-            // take the stored item back
+            // take the stored item back (mod pullOutItem: wood-hit take sound)
             ticker().setDisplayChild(board, "itemEntity", null, 0.5, 0.12, 0.5, 0.45f);
             giveOrDrop(player, stored);
+            board.location().getWorld().playSound(loc, "minecraft:block.wood.hit",
+                    SoundCategory.BLOCKS, 0.25f, 0.5f);
             return;
         }
 

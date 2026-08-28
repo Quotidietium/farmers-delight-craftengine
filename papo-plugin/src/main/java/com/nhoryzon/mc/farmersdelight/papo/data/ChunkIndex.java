@@ -99,6 +99,15 @@ public final class ChunkIndex {
         return false;
     }
 
+    /** Total tracked positions across all loaded chunks (sum of cached entry lists). */
+    public int totalTracked() {
+        int total = 0;
+        synchronized (entriesCache) {
+            for (List<Location> list : entriesCache.values()) total += list.size();
+        }
+        return total;
+    }
+
     /** Read-only view; cached per chunk until the next write to that chunk's index. */
     public List<Location> entries(Chunk chunk) {
         List<Location> cached = entriesCache.get(chunk);

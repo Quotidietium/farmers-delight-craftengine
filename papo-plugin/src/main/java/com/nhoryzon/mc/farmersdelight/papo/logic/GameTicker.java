@@ -588,6 +588,10 @@ public final class GameTicker {
                 plugin.blockStore().setString(pot, "container", containerId);
                 addExpBlock(pot, recipe);
                 consumeInputsBlock(pot, facing, inv);
+                // UX: the mod finishes silently; a soft chime tells nearby players
+                // the meal is ready without opening the GUI
+                pot.getWorld().playSound(pot.getLocation(), "minecraft:entity.experience_orb.pickup",
+                        SoundCategory.BLOCKS, 0.7f, 1.0f);
                 changed = true;
             }
             plugin.blockStore().setInt(pot, "cook", cook);
@@ -811,6 +815,11 @@ public final class GameTicker {
 
     /* ===================== stove ===================== */
 
+    /** Public wrapper for diagnostics/bench: run one stove tick. */
+    public void tickStovePublic(Block stove) {
+        tickStove(stove);
+    }
+
     public void tickStove(Block stove) {
         var state = CraftEngineHook.customBlockState(stove);
         if (state == null || !state.owner().value().id().equals(FD.STOVE)) {
@@ -841,6 +850,9 @@ public final class GameTicker {
                     items[i] = null;
                     dirty = true;
                     ejectToward(stove, cooked, 0.35);
+                    // UX: audible "food done" pop (mod ejects silently)
+                    stove.getWorld().playSound(stove.getLocation(), "minecraft:entity.item.pickup",
+                            SoundCategory.BLOCKS, 0.5f, 0.9f);
                 }
             }
         }

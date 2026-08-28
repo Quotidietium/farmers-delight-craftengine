@@ -173,6 +173,28 @@ public final class CookingPotBlockGui implements InventoryHolder {
         saveInv(data);
     }
 
+    /**
+     * Shift-click smart routing: a bowl goes to the container slot, everything else
+     * into the first free ingredient slot. Returns false when nothing fits.
+     */
+    public boolean routeIn(ItemStack moved) {
+        int target = -1;
+        if (moved.getType() == Material.BOWL && inventory.getItem(CONTAINER_SLOT) == null) {
+            target = CONTAINER_SLOT;
+        } else {
+            for (int s : INPUT_SLOTS) {
+                ItemStack cur = inventory.getItem(s);
+                if (cur == null || cur.getType().isAir()) {
+                    target = s;
+                    break;
+                }
+            }
+        }
+        if (target < 0) return false;
+        inventory.setItem(target, moved.clone());
+        return true;
+    }
+
     private ItemStack stackAt(int slot) {
         ItemStack stack = inventory.getItem(slot);
         if (stack == null || stack.getType() == Material.BLACK_STAINED_GLASS_PANE) return null;
@@ -236,6 +258,19 @@ public final class CookingPotBlockGui implements InventoryHolder {
         public void onClick(InventoryClickEvent event) {
             CookingPotBlockGui gui = holderOf(event.getView().getTopInventory());
             if (gui == null) return;
+            // shift-click from the player inventory: smart-route into the pot
+            // (bowls -> container slot, anything else -> first free ingredient slot)
+            if (event.getClick().isShiftClick()
+                    && event.getClickedInventory() == event.getView().getBottomInventory()) {
+                event.setCancelled(true);
+                ItemStack moved = event.getCurrentItem();
+                if (moved == null || moved.getType().isAir()) return;
+                if (gui.routeIn(moved)) {
+                    event.getClickedInventory().setItem(event.getSlot(), null);
+                    gui.saveFromGui();
+                }
+                return;
+            }
             if (event.getClickedInventory() != event.getView().getTopInventory()) return;
             int raw = event.getRawSlot();
             if (raw == RECIPE_BOOK_SLOT) {

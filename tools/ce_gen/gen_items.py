@@ -128,6 +128,20 @@ def emit_item(item: dict, foods: dict) -> str | None:
         data.append(f"  animation: {anim}")
         data.append(f"  sound: {sound}")
         data.append("  has_consume_particles: true")
+        eff = food.get("effect")
+        if eff and eff.get("key"):
+            # mod ConsumableItem food-effect tooltip: effect name + duration (+ chance)
+            ns, name = eff["key"].split(":", 1)
+            lang_key = f"effect.{ns}.{name}"
+            mins, secs = divmod(int(eff.get("duration", 0)) // 20, 60)
+            dur_txt = f"{mins}:{secs:02d}"
+            chance_pct = int(round(float(food.get("chance", 1.0)) * 100))
+            prob = f" ({chance_pct}%)" if chance_pct < 100 else ""
+            amp = int(eff.get("amplifier") or 0)
+            amp_txt = f" {amp + 1}" if amp else ""
+            data.append("minecraft:lore:")
+            data.append("  - content:")
+            data.append(f"    - '<!i><gray><lang:{lang_key}>{amp_txt} {dur_txt}{prob}</gray>'")
         if container:
             data.append(f"minecraft:use_remainder: {container}")
         data.append(f"minecraft:max_stack_size: {item_stack_size(item, container)}")
