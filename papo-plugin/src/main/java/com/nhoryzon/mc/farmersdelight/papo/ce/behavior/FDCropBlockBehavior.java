@@ -40,6 +40,8 @@ public final class FDCropBlockBehavior extends BukkitBlockBehavior implements Ra
     public final int minSpawnLight;
     public final boolean isBoneMealTarget;
     public final boolean slowRandomTicks;
+    public final int boneMealMin;
+    public final int boneMealMax;
     private final Key blockId;
     private final List<Soil> soils;
 
@@ -56,13 +58,16 @@ public final class FDCropBlockBehavior extends BukkitBlockBehavior implements Ra
 
     private FDCropBlockBehavior(BlockDefinition block, IntegerProperty ageProperty,
                                 int minGrowLight, int minSpawnLight, boolean isBoneMealTarget,
-                                boolean slowRandomTicks, List<Soil> soils) {
+                                boolean slowRandomTicks, int boneMealMin, int boneMealMax,
+                                List<Soil> soils) {
         super(block);
         this.ageProperty = ageProperty;
         this.minGrowLight = minGrowLight;
         this.minSpawnLight = minSpawnLight;
         this.isBoneMealTarget = isBoneMealTarget;
         this.slowRandomTicks = slowRandomTicks;
+        this.boneMealMin = boneMealMin;
+        this.boneMealMax = boneMealMax;
         this.blockId = block.id();
         this.soils = List.copyOf(soils);
     }
@@ -196,8 +201,11 @@ public final class FDCropBlockBehavior extends BukkitBlockBehavior implements Ra
         ImmutableBlockState state = BlockStateUtils.getOptionalCustomBlockState(args[3]).orElse(null);
         if (state == null) return;
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        // vanilla getBonemealAgeIncrease = nextInt(2,5); beetroot overrides with super()/3 (0..1)
-        int bonus = slowRandomTicks ? random.nextInt(2, 6) / 3 : random.nextInt(2, 6);
+        // vanilla getBonemealAgeIncrease = nextInt(2,5); crop subclasses override:
+        // beetroot = super/3 (0..1), torchflower = fixed 1, pitcher = fixed 1
+        int bonus = boneMealMax > boneMealMin
+                ? random.nextInt(boneMealMin, boneMealMax + 1)
+                : boneMealMin;
         grow(level, pos, state, bonus);
         World world = CeReflection.world(level);
         world.spawnParticle(Particle.HAPPY_VILLAGER,
@@ -205,6 +213,23 @@ public final class FDCropBlockBehavior extends BukkitBlockBehavior implements Ra
                 CeReflection.y(pos) + 0.5,
                 CeReflection.z(pos) + 0.5,
                 15, 0.25, 0.25, 0.25);
+    }
+
+    /** Parses a "min-max" bone-meal bonus range (vanilla default 2-5). */
+    private static int[] boneMealRange(ConfigSection section) {
+        String spec = section.getString("bone_meal_bonus");
+        if (spec == null || spec.isBlank()) return new int[]{2, 5};
+        try {
+            int dash = spec.indexOf('-');
+            if (dash > 0) {
+                return new int[]{Integer.parseInt(spec.substring(0, dash).trim()),
+                        Integer.parseInt(spec.substring(dash + 1).trim())};
+            }
+            int fixed = Integer.parseInt(spec.trim());
+            return new int[]{fixed, fixed};
+        } catch (NumberFormatException e) {
+            return new int[]{2, 5};
+        }
     }
 
     private static final class Factory implements BlockBehaviorFactory<FDCropBlockBehavior> {
@@ -222,6 +247,7 @@ public final class FDCropBlockBehavior extends BukkitBlockBehavior implements Ra
                     soils.add(new Soil(Key.of(value), null));
                 }
             }
+            int[] meal = boneMealRange(section);
             return new FDCropBlockBehavior(
                     block,
                     (IntegerProperty) BlockBehaviorFactory.getProperty(section.path(), block, "age", Integer.class),
@@ -229,6 +255,7 @@ public final class FDCropBlockBehavior extends BukkitBlockBehavior implements Ra
                     section.getInt("light_spawn", 8),
                     section.getBoolean("is_bone_meal_target", true),
                     section.getBoolean("slow_random_ticks", false),
+                    meal[0], meal[1],
                     soils);
         }
     }

@@ -20,6 +20,16 @@ items:
     behavior:
       type: block_item
       block: farmersdelight:advanced_beetroots
+
+  minecraft:torchflower_seeds:
+    behavior:
+      type: block_item
+      block: farmersdelight:advanced_torchflower_crop
+
+  minecraft:pitcher_pod:
+    behavior:
+      type: block_item
+      block: farmersdelight:advanced_pitcher_crop
 blocks:
   "farmersdelight:advanced_wheat":
     settings:
@@ -189,3 +199,78 @@ blocks:
         "age=1": { appearance: s1 }
         "age=2": { appearance: s2 }
         "age=3": { appearance: s3 }
+
+  "farmersdelight:advanced_torchflower_crop":
+    settings:
+      hardness: 0
+      resistance: 0
+      is_suffocating: false
+      is_redstone_conductor: false
+      sounds:
+        break: minecraft:block.grass.break
+        step: minecraft:block.grass.step
+        place: minecraft:item.crop.plant
+        hit: minecraft:block.grass.hit
+        fall: minecraft:block.grass.fall
+      item: minecraft:torchflower_seeds
+    behavior:
+      - type: farmersdelight:crop
+        age: age
+        soils:
+          - block: minecraft:farmland
+          - block: farmersdelight:rich_soil_farmland
+        slow_random_ticks: true
+        bone_meal_bonus: "1-1"
+    states:
+      properties:
+        age:
+          type: int
+          default: 0
+          range: 0~2
+      appearances:
+        s0: { state: "minecraft:torchflower_crop[age=0]" }
+        s1: { state: "minecraft:torchflower_crop[age=1]" }
+        s2: { state: "minecraft:torchflower" }
+      variants:
+        "age=0": { appearance: s0 }
+        "age=1": { appearance: s1 }
+        "age=2": { appearance: s2 }
+
+  "farmersdelight:advanced_pitcher_crop":
+    settings:
+      hardness: 0
+      resistance: 0
+      is_suffocating: false
+      is_redstone_conductor: false
+      sounds:
+        break: minecraft:block.grass.break
+        step: minecraft:block.grass.step
+        place: minecraft:item.crop.plant
+        hit: minecraft:block.grass.hit
+        fall: minecraft:block.grass.fall
+      item: minecraft:pitcher_pod
+    behavior:
+      - type: farmersdelight:crop
+        age: age
+        soils:
+          - block: minecraft:farmland
+          - block: farmersdelight:rich_soil_farmland
+        bone_meal_bonus: "1-1"
+    states:
+      properties:
+        age:
+          type: int
+          default: 0
+          range: 0~4
+      appearances:
+        s0: { state: "minecraft:pitcher_crop[age=0]" }
+        s1: { state: "minecraft:pitcher_crop[age=1]" }
+        s2: { state: "minecraft:pitcher_crop[age=2]" }
+        s3: { state: "minecraft:pitcher_crop[age=3]" }
+        s4: { state: "minecraft:pitcher_crop[age=4]" }
+      variants:
+        "age=0": { appearance: s0 }
+        "age=1": { appearance: s1 }
+        "age=2": { appearance: s2 }
+        "age=3": { appearance: s3 }
+        "age=4": { appearance: s4 }

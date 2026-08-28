@@ -529,6 +529,19 @@ public final class CropManager {
                     if (bonus > 0) drop(block, Key.minecraft("beetroot_seeds"), bonus);
                 }
             }
+            // vanilla stem loot: 0-3 seeds + fortune binomial(p=4/7, extra=3)
+            case "advanced_pumpkin_stem" -> drop(block, Key.minecraft("pumpkin_seeds"), binomial(3 + fortune, rand));
+            case "advanced_melon_stem" -> drop(block, Key.minecraft("melon_seeds"), binomial(3 + fortune, rand));
+            // torchflower: mature breaks into the flower, younger drops its seed
+            case "advanced_torchflower_crop" -> {
+                if (age >= 2) drop(block, Key.minecraft("torchflower"), 1);
+                else drop(block, Key.minecraft("torchflower_seeds"), 1);
+            }
+            // pitcher: vanilla alternatives scale pods with age (approximated)
+            case "advanced_pitcher_crop" -> {
+                int pods = age >= 4 ? 3 : age >= 2 ? 2 : 1;
+                drop(block, Key.minecraft("pitcher_pod"), pods);
+            }
             default -> {
             }
         }
