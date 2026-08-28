@@ -33,26 +33,10 @@ public class FarmersDelightBootstrap implements PluginBootstrap {
 
     @Override
     public void bootstrap(BootstrapContext context) {
-        context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.compose(), event -> {
-            WritableRegistry<Enchantment, EnchantmentRegistryEntry.Builder> registry = event.registry();
-            registry.register(BACKSTABBING_KEY, builder -> builder
-                    .description(Component.translatable("farmersdelight.enchantment.backstabbing")
-                            .color(NamedTextColor.GRAY))
-                    // 刀具的基础材质集合（燧石/铁粒/金粒/钻石/下界合金碎片）
-                    .supportedItems(RegistrySet.keySet(RegistryKey.ITEM,
-                            ItemTypeKeys.FLINT,
-                            ItemTypeKeys.IRON_NUGGET,
-                            ItemTypeKeys.GOLD_NUGGET,
-                            ItemTypeKeys.DIAMOND,
-                            ItemTypeKeys.NETHERITE_SCRAP))
-                    .weight(10)
-                    .maxLevel(3)
-                    .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(15, 9))
-                    .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(65, 9))
-                    .anvilCost(4)
-                    .activeSlots(EquipmentSlotGroup.MAINHAND)
-            );
-        });
+        // Backstabbing moved to a bundled datapack enchantment (1.21 datapack format):
+        // datapack/data/farmersdelight/enchantment/backstabbing.json. The datapack
+        // registry entry is what the vanilla enchanting table enumerates, so Backstabbing
+        // now appears in table offers deterministically (mod parity).
 
         // discover the bundled advancement datapack inside the plugin jar
         context.getLifecycleManager().registerEventHandler(LifecycleEvents.DATAPACK_DISCOVERY, event -> {

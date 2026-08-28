@@ -22,6 +22,7 @@ import com.nhoryzon.mc.farmersdelight.papo.recipe.FDRecipes;
 import com.nhoryzon.mc.farmersdelight.papo.recipe.RecipeLoader;
 import com.nhoryzon.mc.farmersdelight.papo.world.WildCropGenerator;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -82,6 +83,12 @@ public final class FarmersDelightPlugin extends JavaPlugin implements Listener {
         this.skilletHand = new SkilletHand(this);
         this.signSessions = new SignSessions(this);
         this.advancements = new AdvancementListener(this);
+
+        // server-side check that the datapack backstabbing enchantment resolves
+        var backstab = org.bukkit.enchantments.Enchantment.getByKey(
+                new NamespacedKey(FD.MOD_ID, "backstabbing"));
+        getLogger().info("Backstabbing datapack enchantment: "
+                + (backstab != null ? "resolved (" + backstab.getKey() + ")" : "NOT FOUND"));
 
         // install / refresh the bundled CraftEngine pack, then reload CE content
         boolean installed = false;
